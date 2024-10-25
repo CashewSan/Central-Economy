@@ -1,0 +1,14 @@
+CE_TierTriggerArea {
+ ID "626B3E2C8F1E5053"
+ components {
+  RplComponent "{626B3E2C8F1E508D}" {
+  }
+  Hierarchy "{626EE4575C2ED21B}" {
+  }
+ }
+ coords 115.106 1.001 159.53
+ TriggerShapeType Polyline
+ DrawShape 1
+ ShapeColor 0 1 0.969 1
+ TriggerActivationType "Every query"
+}

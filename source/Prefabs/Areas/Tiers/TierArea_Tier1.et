@@ -1,0 +1,4 @@
+CE_TierTriggerArea : "{CCB01F1D970449BB}Prefabs/Areas/Tiers/TierArea_Base.et" {
+ ID "626B3E2C8F1E5053"
+ m_Tier Tier1
+}

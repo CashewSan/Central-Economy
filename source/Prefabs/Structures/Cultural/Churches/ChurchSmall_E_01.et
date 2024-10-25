@@ -1,0 +1,9 @@
+SCR_DestructibleBuildingEntity : "{8E796437146BA2D2}Prefabs/Structures/Cultural/Churches/ChurchSmall_E_01_Base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  GenericEntity : "{B620FF8F28CA768D}Prefabs/Spawners/LootSpawner_Clothing.et" {
+   ID "627117337E7DB8BA"
+   coords 2.657 0.19 2.598
+  }
+ }
+}

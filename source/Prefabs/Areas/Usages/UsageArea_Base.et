@@ -1,0 +1,12 @@
+CE_UsageTriggerArea {
+ ID "626B3E2B5F4D86A9"
+ components {
+  RplComponent "{626B3E2B5F4D86A2}" {
+  }
+  Hierarchy "{626D4C73F3A01D77}" {
+  }
+ }
+ coords 115.106 1.001 159.53
+ TriggerShapeType Polyline
+ DrawShape 1
+}
