@@ -18,8 +18,21 @@ $grp PolylineShapeEntity {
   IsClosed 1
   LineColor 0.502 0 0 1
   {
+   CommentEntity {
+    coords 26.649 2.136 -2.692
+    m_Comment "TIER 4"
+    m_Size 0.5
+    m_Color 0 0 0
+    m_ScaleByDistance 1
+    m_FaceCamera 1
+    m_VisibleOverall 1
+    m_VisibleIngame 1
+    m_TextBackground 1
+    m_BackgroundColor 0.969 1 0
+    m_BackgroundTransparency 0
+   }
    CE_TierTriggerArea : "{61B87E437314014C}Prefabs/Areas/Tiers/TierArea_Tier4.et" {
-    coords 0 0 0
+    coords 25.919 0 -2.987
    }
   }
  }
@@ -41,6 +54,19 @@ $grp PolylineShapeEntity {
   }
   IsClosed 1
   {
+   CommentEntity {
+    coords -7.824 2.197 5.571
+    m_Comment "USAGE: MILITARY"
+    m_Size 0.1
+    m_Color 0 0 0
+    m_ScaleByDistance 1
+    m_FaceCamera 1
+    m_VisibleOverall 1
+    m_VisibleIngame 1
+    m_TextBackground 1
+    m_BackgroundColor 0.969 1 0
+    m_BackgroundTransparency 0
+   }
    CE_UsageTriggerArea : "{DABFAB24173C5C1B}Prefabs/Areas/Usages/UsageArea_Military.et" {
     coords 0 0 0
    }
@@ -64,6 +90,19 @@ $grp PolylineShapeEntity {
   }
   IsClosed 1
   {
+   CommentEntity {
+    coords -7.513 1.339 4.756
+    m_Comment "USAGE: TOWN"
+    m_Size 0.1
+    m_Color 0 0 0
+    m_ScaleByDistance 1
+    m_FaceCamera 1
+    m_VisibleOverall 1
+    m_VisibleIngame 1
+    m_TextBackground 1
+    m_BackgroundColor 0.969 1 0
+    m_BackgroundTransparency 0
+   }
    CE_UsageTriggerArea : "{78155C5236E20EEB}Prefabs/Areas/Usages/UsageArea_Town.et" {
     coords 0 0 0
    }
@@ -87,78 +126,22 @@ $grp PolylineShapeEntity {
   }
   IsClosed 1
   {
+   CommentEntity {
+    coords -8.944 1.23 4.557
+    m_Comment "USAGE: MEDIC"
+    m_Size 0.1
+    m_Color 0 0 0
+    m_ScaleByDistance 1
+    m_FaceCamera 1
+    m_VisibleOverall 1
+    m_VisibleIngame 1
+    m_TextBackground 1
+    m_BackgroundColor 0.969 1 0
+    m_BackgroundTransparency 0
+   }
    CE_UsageTriggerArea : "{78C65334B44B19D9}Prefabs/Areas/Usages/UsageArea_Medic.et" {
     coords 0 0 0
    }
   }
- }
-}
-$grp GenericEntity : "{392864418DAA467A}Prefabs/Spawners/LootSpawner_Tools.et" {
- {
-  coords 155.75 1 102.937
- }
- {
-  coords 138.255 1 102.247
- }
- {
-  coords 119.486 1 103.057
- }
- {
-  coords 120.786 1 103.016
- }
- {
-  coords 122.116 1 102.987
- }
- {
-  coords 123.593 1 102.976
- }
-}
-$grp GenericEntity : "{B620FF8F28CA768D}Prefabs/Spawners/LootSpawner_Clothing.et" {
- {
-  coords 153.487 1 102.793
- }
- {
-  coords 135.992 1 102.103
- }
-}
-$grp GenericEntity : "{E99195907C7200AD}Prefabs/Spawners/LootSpawner_Weapons.et" {
- {
-  coords 154.753 1 103
- }
- {
-  coords 156.813 1 103.006
- }
- {
-  coords 139.318 1 102.316
- }
- {
-  coords 137.258 1 102.31
- }
- {
-  coords 155.348 1 105.075
- }
- {
-  coords 154.55 1 105.106
- }
- {
-  coords 153.61 1 105.088
- }
- {
-  coords 155.193 1 106.678
- }
- {
-  coords 154.395 1 106.708
- }
- {
-  coords 153.455 1 106.691
- }
- {
-  coords 155.167 1 107.943
- }
- {
-  coords 154.369 1 107.973
- }
- {
-  coords 153.429 1 107.956
  }
 }

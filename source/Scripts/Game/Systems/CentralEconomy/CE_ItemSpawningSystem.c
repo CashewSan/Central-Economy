@@ -340,7 +340,7 @@ class CE_ItemSpawningSystem : GameSystem
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	void TryToSpawnLoot()
+	protected void TryToSpawnLoot()
 	{
 		if (!Replication.IsServer())
 			return;
@@ -397,6 +397,8 @@ class CE_ItemSpawningSystem : GameSystem
 				newEnt.SetYawPitchRoll(m_Item.m_vItemRotation + lootSpawn.GetYawPitchRoll());
 				SCR_EntityHelper.SnapToGround(newEnt);
 				
+				SetItemQuantity(newEnt, m_Item.m_iQuantityMinimum, m_Item.m_iQuantityMaximum);
+				
 				m_aSpawnedItems.Insert(m_Item);
 				comp.SetItemSpawned(m_Item);
 				lootSpawn.AddChild(newEnt, -1, EAddChildFlags.NONE);
@@ -412,12 +414,61 @@ class CE_ItemSpawningSystem : GameSystem
 		int count = itemArray.Count() - 1;
 		int random = randomGen.RandInt(0, count);
 		
-		Print(itemArray.Count());
-		
 		CE_Items item = itemArray[random];
 		
 		return item.Item;
     }
+	
+	//------------------------------------------------------------------------------------------------
+	// Performs checks on the new entity to see if it has quantity min and max set above 0, then determines which item type it is to then set quantity of the item (I.E. ammo count in a magazine)
+	protected void SetItemQuantity(IEntity ent, int quantMin, int quantMax)
+	{
+		ResourceName prefabName = ent.GetPrefabData().GetPrefabName();
+		
+		float quantity;
+		
+		if (quantMin > 0 && quantMax > 0)
+		{
+			float randomFloat = Math.RandomIntInclusive(quantMin, quantMax) / 100; // convert it to a decimal to multiplied later on
+			
+			quantity = Math.Round(randomFloat * 10) / 10;
+		}
+		else
+			return;
+		
+		
+		if (prefabName.Contains("Magazine_") || prefabName.Contains("Box_"))
+		{
+			MagazineComponent magComp = MagazineComponent.Cast(ent.FindComponent(MagazineComponent));
+			
+			magComp.SetAmmoCount(magComp.GetMaxAmmoCount() * quantity);
+		}
+		else if (prefabName.Contains("Jerrycan_"))
+		{
+			FuelManagerComponent fuelManager = FuelManagerComponent.Cast(ent.FindComponent(FuelManagerComponent));
+			
+			array<BaseFuelNode> outNodes = {};
+			
+			fuelManager.GetFuelNodesList(outNodes);
+			
+			foreach (BaseFuelNode fuelNode : outNodes)
+			{
+				fuelNode.SetFuel(fuelNode.GetMaxFuel() * quantity);
+			}
+		}
+		/*
+		else if (prefabName.Contains("Canteen_"))
+		{
+			// eventually do this for canteens containing water for metabolism
+		}
+		else if (prefabName.Contains("Food_"))
+		{
+			// eventually do this for canteens containing water for metabolism
+		}
+		*/
+		else
+			return;
+	}
 	
 	//------------------------------------------------------------------------------------------------
 	array<ref CE_ItemData> GetSpawnedItems()
