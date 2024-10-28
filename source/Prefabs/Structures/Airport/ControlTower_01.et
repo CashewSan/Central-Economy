@@ -1,0 +1,46 @@
+SCR_DestructibleBuildingEntity : "{A43A100E3C377DB2}Prefabs/Structures/Core/Building_Base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B8100E10CF4355"
+    coords 5.491 0.17 -1.474
+   }
+   {
+    ID "62B8100E10CF4388"
+    coords 5.023 8.252 -0.425
+   }
+   {
+    ID "62B8100E10CF4394"
+    coords 4.705 11.57 -1.575
+   }
+   {
+    ID "62B8100E10CF43A7"
+    coords 4.988 3.97 -2.148
+   }
+   {
+    ID "62B8100E10CF43B6"
+    coords -4.715 6.396 7.097
+   }
+   {
+    ID "62B8100E10CF43CC"
+    coords -5.112 2.596 1.1
+   }
+   {
+    ID "62B8100E10CF43E5"
+    coords 5.419 15.386 -1.154
+   }
+  }
+  GenericEntity : "{52CAE20AC033CBED}Prefabs/Spawners/LootSpawner_Food.et" {
+   ID "62B8100E10CF4371"
+   coords -3.274 2.708 10.091
+  }
+  CE_UsageTriggerArea : "{DABFAB24173C5C1B}Prefabs/Areas/Usages/UsageArea_Military.et" {
+   ID "62B8100E6567F0C9"
+   coords -0.321 0.027 0.076
+   BoxMins -9 -3 -6
+   BoxMaxs 10 20 12
+   DrawShape 0
+  }
+ }
+}

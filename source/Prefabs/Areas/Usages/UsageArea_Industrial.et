@@ -1,4 +1,7 @@
 CE_UsageTriggerArea : "{543394677EC58B92}Prefabs/Areas/Usages/UsageArea_Base.et" {
  ID "626B3E2B5F4D86A9"
+ TriggerShapeType "Oriented Bounding Box"
+ BoxMins -3 -2 -5.5
+ BoxMaxs 3 4 5.5
  m_Usage INDUSTRIAL
 }

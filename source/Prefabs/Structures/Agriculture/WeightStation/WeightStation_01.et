@@ -1,0 +1,20 @@
+SCR_DestructibleBuildingEntity : "{F3C04211BAE932F2}Prefabs/Structures/Agriculture/WeightStation/WeightStation_01_base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B8100F5C2CFA02"
+    coords 0.972 0 -2.554
+   }
+   {
+    ID "62B8100F5C2CFA21"
+    coords 0.641 0 3.649
+   }
+  }
+  CE_UsageTriggerArea : "{8CE81A62EF61ED50}Prefabs/Areas/Usages/UsageArea_Industrial.et" {
+   ID "62B8100F05B68921"
+   coords 0.695 0 0.427
+   DrawShape 0
+  }
+ }
+}

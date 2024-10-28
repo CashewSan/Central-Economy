@@ -26,7 +26,6 @@ $grp PolylineShapeEntity {
     m_ScaleByDistance 1
     m_FaceCamera 1
     m_VisibleOverall 1
-    m_VisibleIngame 1
     m_TextBackground 1
     m_BackgroundColor 0.969 1 0
     m_BackgroundTransparency 0
@@ -62,7 +61,6 @@ $grp PolylineShapeEntity {
     m_ScaleByDistance 1
     m_FaceCamera 1
     m_VisibleOverall 1
-    m_VisibleIngame 1
     m_TextBackground 1
     m_BackgroundColor 0.969 1 0
     m_BackgroundTransparency 0
@@ -98,7 +96,6 @@ $grp PolylineShapeEntity {
     m_ScaleByDistance 1
     m_FaceCamera 1
     m_VisibleOverall 1
-    m_VisibleIngame 1
     m_TextBackground 1
     m_BackgroundColor 0.969 1 0
     m_BackgroundTransparency 0
@@ -134,7 +131,6 @@ $grp PolylineShapeEntity {
     m_ScaleByDistance 1
     m_FaceCamera 1
     m_VisibleOverall 1
-    m_VisibleIngame 1
     m_TextBackground 1
     m_BackgroundColor 0.969 1 0
     m_BackgroundTransparency 0
@@ -144,4 +140,30 @@ $grp PolylineShapeEntity {
    }
   }
  }
+}
+$grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+ {
+  coords 159.316 1.454 105.921
+ }
+ {
+  coords 158.335 1.454 105.886
+ }
+ {
+  coords 157.375 1.454 105.884
+ }
+ {
+  coords 156.363 1.454 105.819
+ }
+ {
+  coords 155.237 1.454 105.708
+ }
+ {
+  coords 154.233 1.454 105.665
+ }
+}
+GenericEntity : "{85C71F17C37D274C}Prefabs/Structures/BuildingParts/Entry/Entry_Block_Platform_01_3x6.et" {
+ coords 156.894 1.454 106.836
+}
+SCR_DestructibleBuildingEntity : "{F5A2DC0597B53E19}Prefabs/Structures/Agriculture/Barn/Barn_E_02.et" {
+ coords 157.012 -0 123.158
 }

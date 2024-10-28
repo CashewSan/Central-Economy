@@ -5,6 +5,7 @@ GenericEntity {
    m_sConfigs {
     "{71359C0802F4ADA6}Configs/CE_ItemData.conf"
    }
+   m_Category 0
   }
   RplComponent "{626B3C846EE806A3}" {
   }

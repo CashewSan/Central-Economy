@@ -1,0 +1,26 @@
+SCR_DestructibleBuildingEntity : "{D2A960D237D786F5}Prefabs/Structures/Commercial/FuelStations/FuelStation_E_01/FuelStation_E_01_building_base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B81012C0080D87"
+    coords -4.323 1.139 -0.646
+   }
+   {
+    ID "62B81012C0080DED"
+    coords -0.166 0.1 -0.945
+   }
+  }
+  CE_UsageTriggerArea : "{78155C5236E20EEB}Prefabs/Areas/Usages/UsageArea_Town.et" {
+   ID "62B81013350CDAA8"
+   coords 0 0 0
+   TriggerShapeType "Oriented Bounding Box"
+   SphereRadius 1
+   BoxMins -6 -1 -3
+   BoxMaxs 5 4 2.5
+   "Polyline Height" 10
+   DrawShape 0
+   UpdatePeriod 1
+  }
+ }
+}

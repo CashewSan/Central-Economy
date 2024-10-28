@@ -1,0 +1,17 @@
+SCR_DestructibleBuildingEntity : "{0E9DBC9B70C345F3}Prefabs/Structures/Cultural/Chapels/Chapel_01_base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   ID "62B8101B4AE9B119"
+   coords 0.037 0.176 0.074
+  }
+  CE_UsageTriggerArea : "{78155C5236E20EEB}Prefabs/Areas/Usages/UsageArea_Town.et" {
+   ID "62B8101B8ED3B0C4"
+   coords 0 0 0
+   TriggerShapeType "Oriented Bounding Box"
+   BoxMins -2.5 -1 -2.5
+   BoxMaxs 2.5 7 2.5
+   DrawShape 0
+  }
+ }
+}

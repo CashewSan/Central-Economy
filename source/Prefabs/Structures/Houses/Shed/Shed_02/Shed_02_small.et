@@ -1,0 +1,16 @@
+SCR_DestructibleBuildingEntity : "{8533568101A29BE3}Prefabs/Structures/Houses/Shed/Shed_02/Shed_02_Base.et" {
+ ID "51D89213A9F67504"
+ {
+  GenericEntity : "{392864418DAA467A}Prefabs/Spawners/LootSpawner_Tools.et" {
+   ID "62B8101D06864E2C"
+   coords 0 0 0
+  }
+  CE_UsageTriggerArea : "{8CE81A62EF61ED50}Prefabs/Areas/Usages/UsageArea_Industrial.et" {
+   ID "62B8101D2B5F08AB"
+   coords 0 0 -0.137
+   BoxMins -1.75 -1 -1
+   BoxMaxs 1.75 2.5 1
+   DrawShape 0
+  }
+ }
+}

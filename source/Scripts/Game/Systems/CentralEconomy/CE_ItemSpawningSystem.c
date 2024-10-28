@@ -35,6 +35,9 @@ class CE_ItemSpawningSystem : GameSystem
 		{
 			if(m_WorldValidationComponent.GetWorldProcessed())
 			{	
+				SetHasGeneratedSpawnData(false);
+				SetHasGeneratedItemData(false);
+				
 				GenerateSpawnData();
 				GenerateItemData();
 				TryToSpawnLoot();
@@ -62,21 +65,43 @@ class CE_ItemSpawningSystem : GameSystem
 		
 		foreach(CE_ItemSpawningComponent comp : m_aComponents)
 		{
-			foreach(ResourceName m_ResourceName : comp.m_sConfigs)
-			{
-				if(!m_ResourceName)
-					continue;
-				
-				Resource m_Resource = BaseContainerTools.LoadContainer(m_ResourceName);
-				BaseContainer m_Container = m_Resource.GetResource().ToBaseContainer();
-				
-				m_Config = CE_LootSpawningConfig.Cast(BaseContainerTools.CreateInstanceFromContainer(m_Container));
-			}
-			
-			CE_Spawns spawns = new CE_Spawns(comp, comp.m_Tier, comp.m_Usage, comp.m_Category);
-			
 			if (!comp.GetHasItemSpawned())
 			{
+				foreach(ResourceName m_ResourceName : comp.m_sConfigs)
+				{
+					if(!m_ResourceName)
+						continue;
+					
+					Resource m_Resource = BaseContainerTools.LoadContainer(m_ResourceName);
+					BaseContainer m_Container = m_Resource.GetResource().ToBaseContainer();
+					
+					m_Config = CE_LootSpawningConfig.Cast(BaseContainerTools.CreateInstanceFromContainer(m_Container));
+				}
+						
+				array<CE_ELootCategory> categories = {comp.m_Categories};
+				
+				array<CE_ELootCategory> intSpawnCategories = {};
+				
+				foreach (CE_ELootCategory category : categories)
+				{
+					SCR_Enum.BitToIntArray(category, intSpawnCategories);
+				}
+				
+				CE_ELootCategory spawnCategory;
+				
+				if (intSpawnCategories.Count() > 1)
+				{
+					spawnCategory = intSpawnCategories.GetRandomElement();
+				}
+				else if (intSpawnCategories.Count() == 1)
+				{
+					spawnCategory = intSpawnCategories.Get(0);
+				}
+				
+				//Print(SCR_Enum.GetEnumName(CE_ELootCategory, spawnCategory));
+				
+				CE_Spawns spawns = new CE_Spawns(comp, comp.m_Tier, comp.m_Usage, spawnCategory);
+			
 				m_aComponentsForSpawn.Insert(spawns);
 			}
 			/*
@@ -86,6 +111,8 @@ class CE_ItemSpawningSystem : GameSystem
 			}
 			*/
 		}
+						
+		//Print(m_aComponentsForSpawn.Count());
 		
 		SetHasGeneratedSpawnData(true);
 	}
@@ -237,7 +264,7 @@ class CE_ItemSpawningSystem : GameSystem
 		array<CE_ELootUsage> usages = {item.m_ItemUsages};
 		array<CE_Spawns> matchingSpawns = {};
 		
-		foreach (CE_Spawns spawns : m_aComponentsForSpawn)
+		foreach (CE_Spawns spawns : GetGeneratedSpawnData())
 		{
 			array<int> intItemTiers = {};
 			array<int> intItemUsages = {};
@@ -285,7 +312,7 @@ class CE_ItemSpawningSystem : GameSystem
 				SCR_Enum.BitToIntArray(usage, intItemUsages);
 			}
 			
-			foreach (CE_Spawns spawns : m_aComponentsForSpawn)
+			foreach (CE_Spawns spawns : GetGeneratedSpawnData())
 			{	
 				//Print("MatchingItems: " + matchingItems.Count());
 				
@@ -463,7 +490,7 @@ class CE_ItemSpawningSystem : GameSystem
 		}
 		else if (prefabName.Contains("Food_"))
 		{
-			// eventually do this for canteens containing water for metabolism
+			// eventually do this for food items (I.E. canned items)
 		}
 		*/
 		else

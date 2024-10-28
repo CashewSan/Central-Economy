@@ -1,0 +1,16 @@
+SCR_DestructibleBuildingEntity : "{264F14BB6F1309F3}Prefabs/Structures/Agriculture/Greenhouse/Greenhouse_01_Base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  CE_UsageTriggerArea : "{04D70A0CE48CB818}Prefabs/Areas/Usages/UsageArea_Farm.et" {
+   ID "62B81008B970261B"
+   coords 0.006 0.104 0.093
+   BoxMins -2 -0.5 -2.25
+   BoxMaxs 2 3 2.25
+   DrawShape 0
+  }
+  GenericEntity : "{52CAE20AC033CBED}Prefabs/Spawners/LootSpawner_Food.et" {
+   ID "62B81008768ECDBF"
+   coords 0.013 0.107 0.168
+  }
+ }
+}

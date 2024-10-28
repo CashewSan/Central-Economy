@@ -1,4 +1,11 @@
 CE_UsageTriggerArea : "{543394677EC58B92}Prefabs/Areas/Usages/UsageArea_Base.et" {
  ID "626B3E2B5F4D86A9"
+ coords 0.07 0.547 -0.054
+ TriggerShapeType "Oriented Bounding Box"
+ SphereRadius 1
+ BoxMins -13 -2 -9
+ BoxMaxs 12 12 9
+ "Polyline Height" 10
+ UpdatePeriod 1
  m_Usage FARM
 }

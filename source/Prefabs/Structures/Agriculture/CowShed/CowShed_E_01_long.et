@@ -1,0 +1,30 @@
+SCR_DestructibleBuildingEntity : "{5478F1635999CE3B}Prefabs/Structures/Agriculture/CowShed/CowShed_E_01_long_Base.et" {
+ ID "6D222784C250C790"
+ {
+  GenericEntity {
+   ID "555AE7E988E14EA3"
+   coords 0 0 0
+  }
+  CE_UsageTriggerArea : "{04D70A0CE48CB818}Prefabs/Areas/Usages/UsageArea_Farm.et" {
+   ID "62B810096EE2355C"
+   coords 0.672 -0.25 -0.476
+   BoxMins -10 -4 -45
+   BoxMaxs 10 7 26
+   DrawShape 0
+  }
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B8100982B4398B"
+    coords 1.148 -0.25 -26.111
+   }
+   {
+    ID "62B8100982B439A1"
+    coords 0.885 -0.25 -7.425
+   }
+   {
+    ID "62B81009AC7F0F7C"
+    coords -5.142 0 22.117
+   }
+  }
+ }
+}

@@ -1,0 +1,20 @@
+SCR_DestructibleBuildingEntity : "{DD1503B65ED9DA65}Prefabs/Structures/Agriculture/Hayloft/Hayloft_E_01_base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  CE_UsageTriggerArea : "{04D70A0CE48CB818}Prefabs/Areas/Usages/UsageArea_Farm.et" {
+   ID "62B8100FF55D1302"
+   coords 0.009 -0.036 0.036
+   DrawShape 0
+  }
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B8100832342502"
+    coords -5.196 0.018 -3.614
+   }
+   {
+    ID "62B810083F25CE5A"
+    coords 8.633 0 5.313
+   }
+  }
+ }
+}

@@ -1,0 +1,20 @@
+SCR_DestructibleBuildingEntity : "{D6CCD293C7425808}Prefabs/Structures/Commercial/Booth/NewspaperBooth_E_01/NewspaperBooth_E_01_Base.et" {
+ ID "46B2E8273C881DC3"
+ {
+  GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   ID "62B81013657F3DE4"
+   coords 0.28 0.05 -0.556
+  }
+  CE_UsageTriggerArea : "{78155C5236E20EEB}Prefabs/Areas/Usages/UsageArea_Town.et" {
+   ID "62B810139C76A53D"
+   coords 0.012 0.05 0.028
+   TriggerShapeType "Oriented Bounding Box"
+   SphereRadius 1
+   BoxMins -2 -1 -2.5
+   BoxMaxs 2 3 2.5
+   "Polyline Height" 10
+   DrawShape 0
+   UpdatePeriod 1
+  }
+ }
+}

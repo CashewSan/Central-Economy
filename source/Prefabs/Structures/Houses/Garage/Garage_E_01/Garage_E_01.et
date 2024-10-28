@@ -1,0 +1,16 @@
+SCR_DestructibleBuildingEntity : "{B1C6B4A379D1BB77}Prefabs/Structures/Houses/Garage/Garage_E_01/Garage_E_01_Base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  GenericEntity : "{392864418DAA467A}Prefabs/Spawners/LootSpawner_Tools.et" {
+   ID "62B8101FAE685833"
+   coords -0.226 0.003 -1.455
+  }
+  CE_UsageTriggerArea : "{8CE81A62EF61ED50}Prefabs/Areas/Usages/UsageArea_Industrial.et" {
+   ID "62B810181F485972"
+   coords 0 0 0
+   BoxMins -2.5 -1 -4.5
+   BoxMaxs 2.5 3.5 5.5
+   DrawShape 0
+  }
+ }
+}

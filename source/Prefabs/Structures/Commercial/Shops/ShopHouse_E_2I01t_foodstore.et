@@ -1,0 +1,60 @@
+SCR_DestructibleBuildingEntity : "{9064E65F34097C8F}Prefabs/Structures/Commercial/Shops/ShopHouse_E_2I01t_Base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B81015DDC8BB45"
+    coords -5.338 5.192 -4.513
+   }
+   {
+    ID "62B81015DDC8BB82"
+    coords -3.288 7.6 4.493
+   }
+   {
+    ID "62B81015DDC8BB8C"
+    coords -3.052 5.205 6.729
+   }
+   {
+    ID "62B81015DDC8BBA5"
+    coords -5.374 4.713 -5.456
+   }
+   {
+    ID "62B81015DDC8BBB6"
+    coords 3.427 7.6 0.594
+   }
+   {
+    ID "62B81015DDC8BBE9"
+    coords 4.234 4.3 5.802
+   }
+  }
+  $grp GenericEntity : "{52CAE20AC033CBED}Prefabs/Spawners/LootSpawner_Food.et" {
+   {
+    ID "62B81015B8003ACA"
+    coords 1.352 1.276 -2.838
+   }
+   {
+    ID "62B81015B8003ADE"
+    coords 1.901 1.373 3.545
+   }
+   {
+    ID "62B81015B8003AE7"
+    coords 2.323 0.627 5.179
+   }
+   {
+    ID "62B81015DDC8BB93"
+    coords 1.097 5.317 3.476
+   }
+  }
+  CE_UsageTriggerArea : "{78155C5236E20EEB}Prefabs/Areas/Usages/UsageArea_Town.et" {
+   ID "62B81015FD802C24"
+   coords 0 0 0
+   TriggerShapeType "Oriented Bounding Box"
+   SphereRadius 1
+   BoxMins -6.5 -2 -9
+   BoxMaxs 6.5 14 8
+   "Polyline Height" 10
+   DrawShape 0
+   UpdatePeriod 1
+  }
+ }
+}

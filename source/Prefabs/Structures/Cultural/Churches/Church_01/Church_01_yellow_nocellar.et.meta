@@ -1,0 +1,17 @@
+MetaFileClass {
+ Name "{09B93C0C22B3656C}Prefabs/Structures/Cultural/Churches/Church_01/Church_01_yellow_nocellar.et"
+ Configurations {
+  EntityTemplateResourceClass PC {
+  }
+  EntityTemplateResourceClass XBOX_ONE : PC {
+  }
+  EntityTemplateResourceClass XBOX_SERIES : PC {
+  }
+  EntityTemplateResourceClass PS4 : PC {
+  }
+  EntityTemplateResourceClass PS5 : PC {
+  }
+  EntityTemplateResourceClass HEADLESS : PC {
+  }
+ }
+}

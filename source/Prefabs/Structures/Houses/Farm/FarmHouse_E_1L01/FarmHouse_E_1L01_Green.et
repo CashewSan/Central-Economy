@@ -1,0 +1,31 @@
+SCR_DestructibleBuildingEntity : "{23ED22AC15AA9EE7}Prefabs/Structures/Houses/Farm/FarmHouse_E_1L01/FarmHouse_E_1L01_Base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B8101859B08580"
+    coords 1.918 1.304 10.169
+   }
+   {
+    ID "62B8101859B0858B"
+    coords -6.697 3.583 -5.401
+   }
+   {
+    ID "62B8101859B085A6"
+    coords -0.48 0.278 0.154
+   }
+   {
+    ID "62B8101859B085B7"
+    coords 0.976 1.178 -7.407
+   }
+  }
+  CE_UsageTriggerArea : "{78155C5236E20EEB}Prefabs/Areas/Usages/UsageArea_Town.et" {
+   ID "62B8101859B0855F"
+   coords 0 0 0
+   TriggerShapeType "Oriented Bounding Box"
+   BoxMins -10 -2 -10
+   BoxMaxs 6 10 12
+   DrawShape 0
+  }
+ }
+}

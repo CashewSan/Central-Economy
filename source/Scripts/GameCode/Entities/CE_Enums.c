@@ -1,12 +1,12 @@
 enum CE_ELootCategory
 {
-	NONE = 				-1,
-	CLOTHING	=			0,
-	CONTAINERS =			1, // might remove, don't use
-	EXPLOSIVES =			2, // might remove, don't use
-	FOOD =				3,
-	TOOLS =				4,
-	WEAPONS =			5,
+	//NONE = 				1 << -1,
+	CLOTHING	=			1 << 0,
+	//CONTAINERS =			1 << 1, // might remove, don't use
+	//EXPLOSIVES =			1 << 2, // might remove, don't use
+	FOOD =				1 << 3,
+	TOOLS =				1 << 4,
+	WEAPONS =			1 << 5,
 };
 
 enum CE_ELootUsage

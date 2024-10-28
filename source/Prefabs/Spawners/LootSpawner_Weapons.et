@@ -2,7 +2,7 @@ GenericEntity : "{E3DA0DC39C2708DB}Prefabs/Spawners/LootSpawner_Base.et" {
  ID "626B3C846EE806A7"
  components {
   CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
-   m_Category WEAPONS
+   m_Categories WEAPONS
   }
  }
 }

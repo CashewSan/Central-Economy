@@ -1,0 +1,17 @@
+SCR_DestructibleBuildingEntity : "{A43A100E3C377DB2}Prefabs/Structures/Core/Building_Base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  CE_UsageTriggerArea : "{04D70A0CE48CB818}Prefabs/Areas/Usages/UsageArea_Farm.et" {
+   ID "62B8100B3A6E8955"
+   coords 0 0 0
+   TriggerShapeType "Oriented Bounding Box"
+   BoxMins -4.5 -2 -4.5
+   BoxMaxs 4.5 5 4.5
+   DrawShape 0
+  }
+  GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   ID "62B8100ACFC93B84"
+   coords 0.485 0.373 -2.121
+  }
+ }
+}

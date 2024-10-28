@@ -1,0 +1,16 @@
+GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  GenericEntity : "{392864418DAA467A}Prefabs/Spawners/LootSpawner_Tools.et" {
+   ID "62B8100C29EFA374"
+   coords 0.022 0.015 0.127
+  }
+  CE_UsageTriggerArea : "{8CE81A62EF61ED50}Prefabs/Areas/Usages/UsageArea_Industrial.et" {
+   ID "62B8100C2A929B86"
+   coords 0 0 0
+   BoxMins -1 -1 -1
+   BoxMaxs 1 2.5 1
+   DrawShape 0
+  }
+ }
+}

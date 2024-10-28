@@ -1,9 +1,23 @@
 SCR_DestructibleBuildingEntity : "{8E796437146BA2D2}Prefabs/Structures/Cultural/Churches/ChurchSmall_E_01_Base.et" {
  ID "F0DBA538AC2A0552"
  {
-  GenericEntity : "{B620FF8F28CA768D}Prefabs/Spawners/LootSpawner_Clothing.et" {
-   ID "627117337E7DB8BA"
-   coords 2.657 0.19 2.598
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B8101924D97257"
+    coords 2.661 0.19 2.521
+   }
+   {
+    ID "62B8101924D972B7"
+    coords 0.801 4.102 4.461
+   }
+  }
+  CE_UsageTriggerArea : "{78155C5236E20EEB}Prefabs/Areas/Usages/UsageArea_Town.et" {
+   ID "62B810199E10CB36"
+   coords 0 0 0
+   TriggerShapeType "Oriented Bounding Box"
+   BoxMins -6 -2 -13
+   BoxMaxs 6 20 10
+   DrawShape 0
   }
  }
 }

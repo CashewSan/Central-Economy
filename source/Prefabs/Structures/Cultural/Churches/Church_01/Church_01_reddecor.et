@@ -1,0 +1,31 @@
+SCR_DestructibleBuildingEntity : "{A05E08085F564AFB}Prefabs/Structures/Cultural/Churches/Church_01/Church_01_Base.et" {
+ ID "5206DA6BF27D60C9"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B8101A1774D71E"
+    coords -0.895 18.103 15.375
+   }
+   {
+    ID "62B8101A1774D74B"
+    coords 4.631 -0 10.503
+   }
+   {
+    ID "62B8101A1774D769"
+    coords 4.889 3.59 2.384
+   }
+   {
+    ID "62B8101A1774D776"
+    coords 0.929 0.37 -12.177
+   }
+  }
+  CE_UsageTriggerArea : "{78155C5236E20EEB}Prefabs/Areas/Usages/UsageArea_Town.et" {
+   ID "62B8101A1774D7A9"
+   coords 0 0 0
+   TriggerShapeType "Oriented Bounding Box"
+   BoxMins -8 -0.5 -15
+   BoxMaxs 12 25 19
+   DrawShape 0
+  }
+ }
+}

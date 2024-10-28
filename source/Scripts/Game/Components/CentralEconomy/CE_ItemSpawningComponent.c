@@ -8,8 +8,8 @@ class CE_ItemSpawningComponent : ScriptComponent
 	[Attribute(ResourceName.Empty, UIWidgets.Object, "Item data config to be used", "conf", category: "Item Data")]
 	ref array<ref ResourceName> m_sConfigs;
 	
-	[Attribute(ResourceName.Empty, UIWidgets.ComboBox, desc: "Category of loot spawn", enums: ParamEnumArray.FromEnum(CE_ELootCategory), category: "Item Data")]
-	CE_ELootCategory m_Category;
+	[Attribute("", UIWidgets.Flags, desc: "Category of loot spawn", enums: ParamEnumArray.FromEnum(CE_ELootCategory), category: "Item Data")]
+	CE_ELootCategory m_Categories;
 	
 	private const int spawnResetTime = 1800000; // set to 1800000 (30 minutes), this prevents players from spawn camping the loot spawn.
 	
