@@ -1,8 +1,8 @@
 class CE_ItemSpawningSystem : GameSystem
 {
-	private const int							lootSystemRefresh			= 5000; 									// how often the item spawning system will run, set to 5000 (5 seconds)
+	private static const int						CHECK_INTERVAL				= 5; 									// how often the item spawning system will run, (in seconds)
 	
-	protected ref array<CE_ItemData>				m_aItems 					= new array<CE_ItemData>; 				// initial pull of ALL item data directly from config
+	//protected ref array<CE_ItemData>				m_aItems 					= new array<CE_ItemData>; 				// initial pull of ALL item data directly from config
 	protected ref array<ref CE_Items>				m_aItemsToSpawn 				= new array<ref CE_Items>; 				// item data containing items that need to spawn
 	protected ref array<ref CE_ItemData>			m_aSpawnedItems 				= new array<ref CE_ItemData>; 			// items that have spawned in the world
 	protected ref array<CE_ItemSpawningComponent> 	m_aComponents 				= new array<CE_ItemSpawningComponent>; 	// initial pull of ALL item spawning components in the world
@@ -13,18 +13,48 @@ class CE_ItemSpawningSystem : GameSystem
 	protected CE_WorldValidationComponent 			m_WorldValidationComponent;											// component added to world's gamemode for verification
 	protected ref CE_LootSpawningConfig 			m_Config;															// configs pulled from item spawning components
 	
+	protected ref RandomGenerator 				randomGen 					= new RandomGenerator();
+	
 	protected bool 								b_HasGeneratedSpawnData		= false;
 	protected bool 								b_HasGeneratedItemData		= false;
 	
-	protected ref RandomGenerator 				randomGen 					= new RandomGenerator();
+	protected float 								m_fTimer;
 	
 	//------------------------------------------------------------------------------------------------
 	override void OnInit()
 	{
-		Init();
-		GetGame().GetCallqueue().CallLater(Init, lootSystemRefresh, true);
+		if (m_aComponents.IsEmpty())
+			Enable(false);
 	}
 	
+	//------------------------------------------------------------------------------------------------
+	override event protected void OnUpdate(ESystemPoint point)
+	{
+		float timeSlice = GetWorld().GetFixedTimeSlice();
+
+		m_fTimer += timeSlice;
+
+		if (m_fTimer < CHECK_INTERVAL)
+			return;
+
+		m_fTimer = 0;
+		
+		Init();
+				
+		Print("meow");
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	static CE_ItemSpawningSystem GetInstance()
+	{
+		World world = GetGame().GetWorld();
+
+		if (!world)
+			return null;
+
+		return CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+	}
+
 	//------------------------------------------------------------------------------------------------
 	protected void Init()
 	{
@@ -40,6 +70,11 @@ class CE_ItemSpawningSystem : GameSystem
 				
 				GenerateSpawnData();
 				GenerateItemData();
+				
+						
+				if (GetHasGeneratedSpawnData() == false || GetHasGeneratedItemData() == false)
+					return;
+				
 				TryToSpawnLoot();
 			}
 			else
@@ -372,11 +407,6 @@ class CE_ItemSpawningSystem : GameSystem
 		if (!Replication.IsServer())
 			return;
 		
-		//Print(m_aItemsToSpawn.Count());
-		
-		if (GetHasGeneratedSpawnData() == false || GetHasGeneratedItemData() == false)
-			return;
-		
 		m_aMatchedSpawns.Clear(); // doesnt clear properly for some reason?
 		
 		m_aMatchedSpawns = DetermineItemPool();
@@ -505,16 +535,21 @@ class CE_ItemSpawningSystem : GameSystem
 
 	// GameSystem stuff
 	//------------------------------------------------------------------------------------------------
-	void Register(CE_ItemSpawningComponent component)
+	void Register(notnull CE_ItemSpawningComponent component)
 	{
+		if (!IsEnabled())
+			Enable(true);
+		
 		if (!m_aComponents.Contains(component))
 			m_aComponents.Insert(component);
 	}
 
 	//------------------------------------------------------------------------------------------------
-	void Unregister(CE_ItemSpawningComponent component)
+	void Unregister(notnull CE_ItemSpawningComponent component)
 	{
 		m_aComponents.RemoveItem(component);
+		
+		Enable(false);
 	}
 }
 

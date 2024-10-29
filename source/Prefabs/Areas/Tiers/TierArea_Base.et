@@ -10,5 +10,5 @@ CE_TierTriggerArea {
  TriggerShapeType Polyline
  DrawShape 1
  ShapeColor 0 1 0.969 1
- TriggerActivationType "Every query"
+ TriggerActivationType None
 }

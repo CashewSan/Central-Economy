@@ -20,14 +20,12 @@ class CE_ItemSpawningComponent : ScriptComponent
 	protected bool m_bHasItemDespawned = false;
 	protected bool m_bHasItemRestockEnded;
 	protected CE_ItemData m_ItemSpawned;
-	
-	CE_ItemSpawningSystem updateSystem;
 
 	//------------------------------------------------------------------------------------------------
 	protected void ConnectToLootSpawningSystem()
 	{
-		World world = GetOwner().GetWorld();
-		updateSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+		CE_ItemSpawningSystem updateSystem = CE_ItemSpawningSystem.GetInstance();
+		
 		if (!updateSystem)
 			return;
 		
@@ -41,8 +39,8 @@ class CE_ItemSpawningComponent : ScriptComponent
 	//------------------------------------------------------------------------------------------------
 	protected void DisconnectFromLootSpawningSystem()
 	{
-		World world = GetOwner().GetWorld();
-		updateSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+		CE_ItemSpawningSystem updateSystem = CE_ItemSpawningSystem.GetInstance();
+		
 		if (!updateSystem)
 			return;
 
@@ -68,6 +66,8 @@ class CE_ItemSpawningComponent : ScriptComponent
 		GetGame().GetCallqueue().CallLater(idkwhattocallthis, 100, false);
 		GetGame().GetCallqueue().CallLater(RestockReset, GetItemSpawned().m_iRestock * 1000, false, GetItemSpawned());
 		
+		CE_ItemSpawningSystem updateSystem = CE_ItemSpawningSystem.GetInstance();
+		
 		updateSystem.GetItemsNotRestocked().Insert(GetItemSpawned());
 	}
 	
@@ -89,15 +89,20 @@ class CE_ItemSpawningComponent : ScriptComponent
 	{
 		m_bHasItemRestockEnded = true;
 		
+		CE_ItemSpawningSystem updateSystem = CE_ItemSpawningSystem.GetInstance();
+		
 		updateSystem.GetItemsNotRestocked().RemoveItem(item);
 	}
-		
+	
 	//------------------------------------------------------------------------------------------------
 	override void OnPostInit(IEntity owner)
 	{
-		super.OnPostInit(owner);
-		
 		SetEventMask(owner, EntityEvent.INIT);
+	}
+		
+	//------------------------------------------------------------------------------------------------
+	override void EOnInit(IEntity owner)
+	{
 		ConnectToLootSpawningSystem();
 	}
 	
@@ -136,6 +141,8 @@ class CE_ItemSpawningComponent : ScriptComponent
 	//------------------------------------------------------------------------------------------------
 	protected void RemoveItemSpawned(notnull CE_ItemData item)
 	{
+		CE_ItemSpawningSystem updateSystem = CE_ItemSpawningSystem.GetInstance();
+		
 		int index = updateSystem.GetSpawnedItems().Find(item);
 		
 		updateSystem.GetSpawnedItems().RemoveOrdered(index);

@@ -164,6 +164,3 @@ $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.
 GenericEntity : "{85C71F17C37D274C}Prefabs/Structures/BuildingParts/Entry/Entry_Block_Platform_01_3x6.et" {
  coords 156.894 1.454 106.836
 }
-SCR_DestructibleBuildingEntity : "{F5A2DC0597B53E19}Prefabs/Structures/Agriculture/Barn/Barn_E_02.et" {
- coords 157.012 -0 123.158
-}
