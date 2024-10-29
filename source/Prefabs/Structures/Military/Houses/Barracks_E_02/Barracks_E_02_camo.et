@@ -1,0 +1,76 @@
+SCR_DestructibleBuildingEntity : "{60A21DFAFF77773D}Prefabs/Structures/Military/Houses/Barracks_E_02/Barracks_E_02_base.et" {
+ ID "532EF6B341FA8C1B"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B90C3CCDAD8C43"
+    coords -0.95 0.219 1.632
+   }
+   {
+    ID "62B90C3CCDAD8C4D"
+    coords 0.084 1.125 4.764
+   }
+   {
+    ID "62B90C3CCDAD8C55"
+    coords 4.87 0.219 5.171
+   }
+   {
+    ID "62B90C3CCDAD8C83"
+    coords 13.768 1.222 -6.328
+   }
+   {
+    ID "62B90C3CCDAD8C8C"
+    coords 15.538 1.113 -4.882
+   }
+   {
+    ID "62B90C3CCDAD8C90"
+    coords 18.683 0.702 5.526
+   }
+   {
+    ID "62B90C3CCDAD8C99"
+    coords 13.274 1.759 3.846
+   }
+   {
+    ID "62B90C3CCDAD8CA2"
+    coords 9.063 1.763 4.868
+   }
+   {
+    ID "62B90C3CCDAD8CAB"
+    coords 0.383 0.71 -4.018
+   }
+   {
+    ID "62B90C3CCDAD8CB8"
+    coords 9.076 0.699 2.359
+   }
+   {
+    ID "62B90C3CCDAD8CE6"
+    coords 19.912 1.774 2.681
+   }
+   {
+    ID "62B90C3CCDAD8CFE"
+    coords 17.353 0.219 -5.128
+   }
+  }
+  $grp GenericEntity : "{52CAE20AC033CBED}Prefabs/Spawners/LootSpawner_Food.et" {
+   {
+    ID "62B90C3CCDAD8C15"
+    coords -22.008 1.372 6.056
+   }
+   {
+    ID "62B90C3CCDAD8C7A"
+    coords -17.946 1.119 -1.276
+   }
+   {
+    ID "62B90C3CCDAD8CF5"
+    coords -21.941 0.866 4.325
+   }
+  }
+  CE_UsageTriggerArea : "{DABFAB24173C5C1B}Prefabs/Areas/Usages/UsageArea_Military.et" {
+   ID "62B90C3F5DC4A949"
+   coords 0 0 0
+   BoxMins -23 -3 -8
+   BoxMaxs 23 5 8
+   DrawShape 0
+  }
+ }
+}

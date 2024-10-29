@@ -1,0 +1,22 @@
+SCR_DestructibleBuildingEntity : "{26A4193702B0EC4A}Prefabs/Structures/Military/Bunkers/ShelterMilitary_E_01/ShelterMilitary_E_01_base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B90C3BEA099141"
+    coords 3.988 0.096 -0.751
+   }
+   {
+    ID "62B90C3BEA09917C"
+    coords -3.97 0.096 -1.366
+   }
+  }
+  CE_UsageTriggerArea : "{DABFAB24173C5C1B}Prefabs/Areas/Usages/UsageArea_Military.et" {
+   ID "62B90C3A52485F8B"
+   coords 0 0 0
+   BoxMins -5 -1 -5
+   BoxMaxs 6 6 3
+   DrawShape 0
+  }
+ }
+}

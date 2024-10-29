@@ -1,0 +1,79 @@
+SCR_DestructibleBuildingEntity : "{9E1B1BC411CE2CBC}Prefabs/Structures/Military/Houses/Barracks_01/Barracks_01_medical_base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B90C3813502021"
+    coords -6.091 0.119 -10.586
+   }
+   {
+    ID "62B90C381350202B"
+    coords -2.825 1.56 -1.002
+   }
+   {
+    ID "62B90C3813502157"
+    coords -2.928 1.01 -9.15
+   }
+   {
+    ID "62B90C3813502171"
+    coords -3.573 0.119 -14.205
+   }
+   {
+    ID "62B90C3813502186"
+    coords 5.525 0.585 -7.669
+   }
+   {
+    ID "62B90C381350219B"
+    coords 2.272 0.119 -3.062
+   }
+   {
+    ID "62B90C38135021A9"
+    coords 5.706 0.596 -10.136
+   }
+   {
+    ID "62B90C38135021B1"
+    coords 3.484 1.026 -9.337
+   }
+   {
+    ID "62B90C38135021BD"
+    coords 4.514 0.119 -14.41
+   }
+   {
+    ID "62B90C38135021C6"
+    coords -6.413 1.044 4.994
+   }
+   {
+    ID "62B90C38135021CE"
+    coords 5.46 0.592 0.898
+   }
+   {
+    ID "62B90C38135021D4"
+    coords -4.79 0.616 3.152
+   }
+   {
+    ID "62B90C38135021DC"
+    coords -5.184 0.621 1.791
+   }
+   {
+    ID "62B90C38135021E4"
+    coords 0.767 0.617 0.65
+   }
+   {
+    ID "62B90C38135021EE"
+    coords -4.697 0.982 -8.473
+   }
+   {
+    ID "62B90C38135021FA"
+    coords 3.55 1.026 4.839
+   }
+  }
+  CE_UsageTriggerArea : "{78C65334B44B19D9}Prefabs/Areas/Usages/UsageArea_Medic.et" {
+   ID "62B90C38A9D1DE78"
+   coords 0 0 0
+   TriggerShapeType "Oriented Bounding Box"
+   BoxMins -8 -1 -16.5
+   BoxMaxs 8 5 14
+   DrawShape 0
+  }
+ }
+}

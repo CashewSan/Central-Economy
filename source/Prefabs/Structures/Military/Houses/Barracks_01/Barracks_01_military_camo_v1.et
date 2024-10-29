@@ -1,0 +1,71 @@
+SCR_DestructibleBuildingEntity : "{5F97E54397247954}Prefabs/Structures/Military/Houses/Barracks_01/Barracks_01_military_base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B90C3EEB3B9649"
+    coords -5.934 1.025 2.918
+   }
+   {
+    ID "62B90C3EEB3B9685"
+    coords 3.645 1.025 5.165
+   }
+   {
+    ID "62B90C3EEB3B9698"
+    coords -5.114 1.025 -3.891
+   }
+   {
+    ID "62B90C3EEB3B96A1"
+    coords 6.473 0.611 5.071
+   }
+   {
+    ID "62B90C3EEB3B96AE"
+    coords -3.37 0.119 4.396
+   }
+   {
+    ID "62B90C3EEB3B96B2"
+    coords 5.926 0.593 -0.773
+   }
+   {
+    ID "62B90C3EEB3B96C9"
+    coords -5.026 0.255 -15.384
+   }
+   {
+    ID "62B90C3EEB3B96D5"
+    coords 5.077 0.119 7.773
+   }
+   {
+    ID "62B90C3EEB3B96DD"
+    coords 5.339 0.612 -12.382
+   }
+   {
+    ID "62B90C3EEB3B96E2"
+    coords 5.84 0.119 -3.395
+   }
+   {
+    ID "62B90C3EEB3B96EC"
+    coords -2.876 0.119 -6.999
+   }
+   {
+    ID "62B90C3EEB3B96F6"
+    coords -3.203 0.764 -15.51
+   }
+  }
+  CE_UsageTriggerArea : "{DABFAB24173C5C1B}Prefabs/Areas/Usages/UsageArea_Military.et" {
+   ID "62B90C3928A862E9"
+   coords 0 0 0
+   SphereRadius 1
+   BoxMins -8 -1 -16.5
+   BoxMaxs 8 5 14
+   "Polyline Height" 10
+   DrawShape 0
+   UpdatePeriod 1
+   NamesFilter {
+    ""
+   }
+   ClassesFilter {
+    ""
+   }
+  }
+ }
+}

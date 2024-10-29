@@ -1,0 +1,42 @@
+SCR_DestructibleBuildingEntity : "{74CBD673D67C58FF}Prefabs/Structures/Industrial/Houses/Office_E_01/Office_E_01_base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B90C1984115A29"
+    coords 6.114 4.727 1.938
+   }
+   {
+    ID "62B90C1984115A31"
+    coords 2.261 1.054 -3.187
+   }
+   {
+    ID "62B90C1984115A3C"
+    coords 1.192 4.254 -3.604
+   }
+   {
+    ID "62B90C1984115BC4"
+    coords -6.997 1.523 5.612
+   }
+   {
+    ID "62B90C1984115BD7"
+    coords -3.575 5.159 4.23
+   }
+   {
+    ID "62B90C1984115BEE"
+    coords 4.464 1.054 3.362
+   }
+   {
+    ID "62B90C1984115BF3"
+    coords -0.038 1.054 2.91
+   }
+  }
+  CE_UsageTriggerArea : "{8CE81A62EF61ED50}Prefabs/Areas/Usages/UsageArea_Industrial.et" {
+   ID "62B90C19E4CD32BF"
+   coords 0 0 0
+   BoxMins -9 -2 -8
+   BoxMaxs 8.5 10 7
+   DrawShape 0
+  }
+ }
+}

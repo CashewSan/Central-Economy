@@ -1,0 +1,42 @@
+SCR_DestructibleBuildingEntity : "{959977CBD62F40DE}Prefabs/Structures/Military/Houses/GuardHouse_03/GuardHouse_03_base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B90C40F67B3110"
+    coords -1.477 1.095 -6.922
+   }
+   {
+    ID "62B90C40F67B311D"
+    coords -4.283 2.169 -7.643
+   }
+   {
+    ID "62B90C40F67B3137"
+    coords -7.185 1.077 -6.883
+   }
+   {
+    ID "62B90C40F67B3149"
+    coords 10.208 1.222 -3.487
+   }
+   {
+    ID "62B90C40F67B315E"
+    coords -7.861 1.085 1.087
+   }
+   {
+    ID "62B90C40F67B3166"
+    coords -1.967 0.609 3.855
+   }
+   {
+    ID "62B90C40F67B3178"
+    coords 7.595 1.515 0.718
+   }
+  }
+  CE_UsageTriggerArea : "{DABFAB24173C5C1B}Prefabs/Areas/Usages/UsageArea_Military.et" {
+   ID "62B90C435D1ABCEE"
+   coords 0 0 0
+   BoxMins -12.5 -1 -10
+   BoxMaxs 14 6 8
+   DrawShape 0
+  }
+ }
+}

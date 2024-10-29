@@ -1,0 +1,61 @@
+SCR_DestructibleBuildingEntity : "{80F53B22769563A5}Prefabs/Structures/Services/Hotels/MountainHotel_01/MountainHotel_01_base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B90C446C1A6033"
+    coords -6.508 0.9 -9.907
+   }
+   {
+    ID "62B90C446C1A6044"
+    coords 0.083 3.4 -6.368
+   }
+   {
+    ID "62B90C446C1A604F"
+    coords -8.918 3.901 -10.222
+   }
+   {
+    ID "62B90C446C1A6052"
+    coords 6.876 3.88 -8.385
+   }
+   {
+    ID "62B90C446C1A605C"
+    coords 5.374 4.307 -6.197
+   }
+   {
+    ID "62B90C446C1A606F"
+    coords 3.876 -0 1.606
+   }
+   {
+    ID "62B90C446C1A6079"
+    coords -11.875 3.4 -8.053
+   }
+   {
+    ID "62B90C446C1A60A9"
+    coords -12.872 0 0.624
+   }
+  }
+  $grp GenericEntity : "{52CAE20AC033CBED}Prefabs/Spawners/LootSpawner_Food.et" {
+   {
+    ID "62B90C446C1A6008"
+    coords 7.96 0.584 1.777
+   }
+   {
+    ID "62B90C446C1A6018"
+    coords 11.874 0.898 -0.153
+   }
+   {
+    ID "62B90C446C1A602C"
+    coords -5.297 1.075 -5.698
+   }
+  }
+  CE_UsageTriggerArea : "{78155C5236E20EEB}Prefabs/Areas/Usages/UsageArea_Town.et" {
+   ID "62B90C4716D598E1"
+   coords 0 0 0
+   TriggerShapeType "Oriented Bounding Box"
+   BoxMins -19.5 -2 -15
+   BoxMaxs 14 8 4.5
+   DrawShape 0
+  }
+ }
+}

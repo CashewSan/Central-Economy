@@ -1,0 +1,46 @@
+SCR_DestructibleBuildingEntity : "{29CABA57BEA2A188}Prefabs/Structures/Houses/Villa/Villa_E_2I01/Villa_E_2I01_Police_Base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B90C0125C87E52"
+    coords 2.391 0.906 -2.184
+   }
+   {
+    ID "62B90C0125C87E8B"
+    coords 4.744 0.906 1.052
+   }
+   {
+    ID "62B90C0125C87E92"
+    coords 4.453 4.706 -2.43
+   }
+   {
+    ID "62B90C0125C87E9E"
+    coords 4.61 3.8 3.373
+   }
+   {
+    ID "62B90C0125C87EE2"
+    coords -0.309 7.3 2.234
+   }
+  }
+  CE_UsageTriggerArea : "{43E152B5363C6C09}Prefabs/Areas/Usages/UsageArea_Police.et" {
+   ID "62B90C016C4A9D83"
+   coords 0 0 0
+   TriggerShapeType "Oriented Bounding Box"
+   SphereRadius 1
+   BoxMins -8.5 -1 -5
+   BoxMaxs 7.5 13 8
+   "Polyline Height" 10
+   DrawShape 0
+   UpdatePeriod 1
+  }
+  GenericEntity : "{52CAE20AC033CBED}Prefabs/Spawners/LootSpawner_Food.et" {
+   ID "62B90C0125C87EB6"
+   coords 3.221 1.019 6.084
+  }
+  GenericEntity : "{B620FF8F28CA768D}Prefabs/Spawners/LootSpawner_Clothing.et" {
+   ID "62B90C0125C87EF7"
+   coords -4.879 0 -2.524
+  }
+ }
+}

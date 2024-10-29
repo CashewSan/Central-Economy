@@ -1,0 +1,21 @@
+SCR_DestructibleBuildingEntity : "{A43A100E3C377DB2}Prefabs/Structures/Core/Building_Base.et" {
+ ID "51DC7DF1A4094579"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B90C1CAB75C8C9"
+    coords 2.073 0.05 -3.443
+   }
+   {
+    ID "62B90C1CAB75C8EB"
+    coords -1.944 0.05 1.965
+   }
+  }
+  CE_UsageTriggerArea : "{8CE81A62EF61ED50}Prefabs/Areas/Usages/UsageArea_Industrial.et" {
+   ID "62B90C1CCB58811D"
+   coords 0 0 0
+   BoxMins -5 -2 -5.5
+   BoxMaxs 5 5.5 5.5
+  }
+ }
+}

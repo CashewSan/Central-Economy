@@ -1,0 +1,42 @@
+SCR_DestructibleBuildingEntity : "{A5E49CC9C7C6E1E3}Prefabs/Structures/Infrastructure/Power/DieselPowerPlant_01/DieselPowerPlant_01_Base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B90C21A013200B"
+    coords 12.372 0.57 6.705
+   }
+   {
+    ID "62B90C21A0132020"
+    coords 11.252 8.169 -5.064
+   }
+   {
+    ID "62B90C21A013202C"
+    coords 12.091 8.169 6.922
+   }
+   {
+    ID "62B90C21A0132035"
+    coords 12.222 11.969 10.476
+   }
+   {
+    ID "62B90C21A01321C4"
+    coords 12.76 4.369 5.631
+   }
+   {
+    ID "62B90C21A01321D9"
+    coords 9.793 4.369 -3.902
+   }
+   {
+    ID "62B90C21A01321FF"
+    coords 11.299 0.57 -1.451
+   }
+  }
+  CE_UsageTriggerArea : "{8CE81A62EF61ED50}Prefabs/Areas/Usages/UsageArea_Industrial.et" {
+   ID "62B90C2041552D7D"
+   coords 0 0 0
+   BoxMins -9 -2 -12.5
+   BoxMaxs 20 17 16.5
+   DrawShape 0
+  }
+ }
+}

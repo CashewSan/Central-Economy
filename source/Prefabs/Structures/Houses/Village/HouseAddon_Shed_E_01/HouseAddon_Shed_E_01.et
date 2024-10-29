@@ -1,0 +1,16 @@
+SCR_DestructibleBuildingEntity : "{301874A9C9A455C7}Prefabs/Structures/Houses/Village/HouseAddon_Shed_E_01/HouseAddon_Shed_E_01_base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   ID "62B90C1AF28F99C3"
+   coords 0 0.384 0
+  }
+  CE_UsageTriggerArea : "{8CE81A62EF61ED50}Prefabs/Areas/Usages/UsageArea_Industrial.et" {
+   ID "62B90C1515D10132"
+   coords 0 0 0
+   BoxMins -2.5 -1 -4.5
+   BoxMaxs 2.5 5 4.5
+   DrawShape 0
+  }
+ }
+}

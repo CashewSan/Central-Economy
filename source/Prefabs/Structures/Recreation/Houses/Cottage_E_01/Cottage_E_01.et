@@ -1,0 +1,27 @@
+SCR_DestructibleBuildingEntity : "{8F342A3BBEADECD3}Prefabs/Structures/Recreation/Houses/Cottage_E_01/Cottage_E_01_base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B90C4195D2FEC6"
+    coords -2.021 1.93 -1.629
+   }
+   {
+    ID "62B90C4195D2FED9"
+    coords -1.733 2.564 0.76
+   }
+   {
+    ID "62B90C4195D2FEE8"
+    coords 2.001 1.489 -2.198
+   }
+  }
+  CE_UsageTriggerArea : "{E666078673D70FA3}Prefabs/Areas/Usages/UsageArea_Hunting.et" {
+   ID "62B90C41A9D06E40"
+   coords 0 0 0
+   TriggerShapeType "Oriented Bounding Box"
+   BoxMins -3 -0.5 -4.5
+   BoxMaxs 3 5.5 5.25
+   DrawShape 0
+  }
+ }
+}

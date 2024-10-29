@@ -1,0 +1,107 @@
+SCR_DestructibleBuildingEntity : "{5F97E54397247954}Prefabs/Structures/Military/Houses/Barracks_01/Barracks_01_military_base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B90C3E0DCB2E02"
+    coords 3.713 0.629 -15.512
+   }
+   {
+    ID "62B90C3E0DCB2E09"
+    coords -4.02 0.119 -3.208
+   }
+   {
+    ID "62B90C3E0DCB2E1A"
+    coords 0.167 0.119 -8.67
+   }
+   {
+    ID "62B90C3E0DCB2E23"
+    coords -3.806 0.119 -9.967
+   }
+   {
+    ID "62B90C3E0DCB2E2D"
+    coords 6.255 0.576 -9.469
+   }
+   {
+    ID "62B90C3E0DCB2E30"
+    coords 5.692 1.666 -5.688
+   }
+   {
+    ID "62B90C3E0DCB2E39"
+    coords -5.742 0.62 -14.46
+   }
+   {
+    ID "62B90C3E0DCB2E6D"
+    coords 5.255 1.011 13.034
+   }
+   {
+    ID "62B90C3E0DCB2F45"
+    coords 6.328 1.515 9.441
+   }
+   {
+    ID "62B90C3E0DCB2F8B"
+    coords 5.037 0.597 2.62
+   }
+   {
+    ID "62B90C3E0DCB2F92"
+    coords 5.106 0.582 4.98
+   }
+   {
+    ID "62B90C3E0DCB2F9B"
+    coords 6.14 0.595 -0.832
+   }
+   {
+    ID "62B90C3E0DCB2FA2"
+    coords 5.448 0.534 10.147
+   }
+   {
+    ID "62B90C3E0DCB2FAE"
+    coords 5.934 0.533 6.249
+   }
+   {
+    ID "62B90C3E0DCB2FB6"
+    coords 5.712 1.663 1.616
+   }
+   {
+    ID "62B90C3E0DCB2FC0"
+    coords -2.242 0.819 3.498
+   }
+   {
+    ID "62B90C3E0DCB2FC9"
+    coords -3.769 0.119 -0.445
+   }
+   {
+    ID "62B90C3E0DCB2FD7"
+    coords -6.152 0.599 2.621
+   }
+   {
+    ID "62B90C3E0DCB2FE7"
+    coords 5.947 1.686 2.691
+   }
+   {
+    ID "62B90C3E0DCB2FF3"
+    coords -6.167 0.591 -8.054
+   }
+   {
+    ID "62B90C3E0DCB2FFD"
+    coords -6.198 1.667 5.183
+   }
+  }
+  CE_UsageTriggerArea : "{DABFAB24173C5C1B}Prefabs/Areas/Usages/UsageArea_Military.et" {
+   ID "62B90C3E0DCB2E4A"
+   coords 0 0 0
+   SphereRadius 1
+   BoxMins -8 -1 -16.5
+   BoxMaxs 8 5 14
+   "Polyline Height" 10
+   DrawShape 0
+   UpdatePeriod 1
+   NamesFilter {
+    ""
+   }
+   ClassesFilter {
+    ""
+   }
+  }
+ }
+}

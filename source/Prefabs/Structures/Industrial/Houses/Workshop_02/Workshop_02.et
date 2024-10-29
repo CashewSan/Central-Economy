@@ -1,0 +1,26 @@
+SCR_DestructibleBuildingEntity : "{ED6901CF01CD7360}Prefabs/Structures/Industrial/Houses/Workshop_02/Workshop_02_base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B90C22F3CF8447"
+    coords -0.25 0.5 -7.129
+   }
+   {
+    ID "62B90C22F3CF84AC"
+    coords 1.947 0.5 4.063
+   }
+   {
+    ID "62B90C22F3CF84BF"
+    coords -1.25 0.5 -0.726
+   }
+  }
+  CE_UsageTriggerArea : "{8CE81A62EF61ED50}Prefabs/Areas/Usages/UsageArea_Industrial.et" {
+   ID "62B90C1D3EB3C728"
+   coords 0 0 0
+   BoxMins -5 -2 -9.5
+   BoxMaxs 5 5 6.5
+   DrawShape 0
+  }
+ }
+}

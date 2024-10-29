@@ -1,0 +1,16 @@
+SCR_DestructibleBuildingEntity : "{C875B63FF5118515}Prefabs/Structures/Industrial/Houses/PortableCabin_E_01/PortableCabin_E_01_Base.et" {
+ ID "5272E317AAEEC646"
+ {
+  GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   ID "62B90C190EB683BB"
+   coords -0.716 0.314 0.238
+  }
+  CE_UsageTriggerArea : "{8CE81A62EF61ED50}Prefabs/Areas/Usages/UsageArea_Industrial.et" {
+   ID "62B90C19571D9C4F"
+   coords 0 0 0
+   BoxMins -2 -1 -3.25
+   BoxMaxs 2 3.5 3.25
+   DrawShape 0
+  }
+ }
+}

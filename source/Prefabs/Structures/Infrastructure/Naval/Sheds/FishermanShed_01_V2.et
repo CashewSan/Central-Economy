@@ -1,0 +1,17 @@
+SCR_DestructibleBuildingEntity : "{B484E37C0F973EC9}Prefabs/Structures/Infrastructure/Naval/Sheds/FishermanShed_01_base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   ID "62B90C20E4801666"
+   coords -0.856 0.252 -0.827
+  }
+  CE_UsageTriggerArea : "{639185B97538C5F3}Prefabs/Areas/Usages/UsageArea_Coast.et" {
+   ID "62B90C20E4801602"
+   coords 0 0 0
+   TriggerShapeType "Oriented Bounding Box"
+   BoxMins -2.5 -1 -3.5
+   BoxMaxs 2.5 5 3.5
+   DrawShape 0
+  }
+ }
+}

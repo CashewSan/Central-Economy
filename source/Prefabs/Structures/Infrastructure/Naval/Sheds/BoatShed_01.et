@@ -1,0 +1,23 @@
+SCR_DestructibleBuildingEntity : "{A4B690DEC3D39B11}Prefabs/Structures/Infrastructure/Naval/Sheds/BoatShed_01_base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B90C23640CDC4D"
+    coords -2.421 0.99 0.921
+   }
+   {
+    ID "62B90C23640CDC55"
+    coords 2.261 0.99 -2.937
+   }
+  }
+  CE_UsageTriggerArea : "{639185B97538C5F3}Prefabs/Areas/Usages/UsageArea_Coast.et" {
+   ID "62B90C23AC6B3C3E"
+   coords 0 0 0
+   TriggerShapeType "Oriented Bounding Box"
+   BoxMins -3.5 -1 -4.5
+   BoxMaxs 3.5 6 4.5
+   DrawShape 0
+  }
+ }
+}

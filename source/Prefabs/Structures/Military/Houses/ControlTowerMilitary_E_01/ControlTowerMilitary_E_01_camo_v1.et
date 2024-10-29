@@ -1,0 +1,54 @@
+SCR_DestructibleBuildingEntity : "{EFAB965711619154}Prefabs/Structures/Military/Houses/ControlTowerMilitary_E_01/ControlTowerMilitary_E_01_base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B90C3C024AD513"
+    coords 3.981 1.05 -4.426
+   }
+   {
+    ID "62B90C3C024AD51F"
+    coords 1.534 1.956 -5.445
+   }
+   {
+    ID "62B90C3C024AD540"
+    coords -1.086 5.746 -2.923
+   }
+   {
+    ID "62B90C3C024AD549"
+    coords 3.797 6.001 3.943
+   }
+   {
+    ID "62B90C3C024AD555"
+    coords -1.783 4.846 2.279
+   }
+   {
+    ID "62B90C3C024AD568"
+    coords -1.494 1.05 -3.678
+   }
+   {
+    ID "62B90C3C024AD572"
+    coords 3.869 5.491 1.796
+   }
+   {
+    ID "62B90C3C024AD57D"
+    coords -2.838 1.54 4.616
+   }
+   {
+    ID "62B90C3C024AD5A2"
+    coords 3.758 1.956 3.519
+   }
+   {
+    ID "62B90C3C024AD5AB"
+    coords -3.623 9.932 0.757
+   }
+  }
+  CE_UsageTriggerArea : "{DABFAB24173C5C1B}Prefabs/Areas/Usages/UsageArea_Military.et" {
+   ID "62B90C3C024AD521"
+   coords 0 0 0
+   BoxMins -10.5 -3 -7
+   BoxMaxs 7 15 7
+   DrawShape 0
+  }
+ }
+}

@@ -1,0 +1,46 @@
+SCR_DestructibleBuildingEntity : "{A31C6EAC2D6E8BA2}Prefabs/Structures/Industrial/Houses/FactoryHall_E_01/FactoryHall_E_01_Base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B90C1800C7E331"
+    coords -11.615 0.1 1.434
+   }
+   {
+    ID "62B90C1800C7E385"
+    coords 9.393 0.325 3.669
+   }
+   {
+    ID "62B90C1800C7E397"
+    coords 3.209 6.19 9.226
+   }
+   {
+    ID "62B90C1800C7E3BC"
+    coords -3.742 1.25 2.976
+   }
+   {
+    ID "62B90C1800C7E3C8"
+    coords -16.092 0.1 -4.316
+   }
+   {
+    ID "62B90C1800C7E3EB"
+    coords -6.986 6.19 -3.062
+   }
+   {
+    ID "62B90C1800C7E3F3"
+    coords 14.889 6.19 -2.475
+   }
+   {
+    ID "62B90C1800C7E3FE"
+    coords 7.704 6.19 4.897
+   }
+  }
+  CE_UsageTriggerArea : "{8CE81A62EF61ED50}Prefabs/Areas/Usages/UsageArea_Industrial.et" {
+   ID "62B90C186C118569"
+   coords 0 0 0
+   BoxMins -19 -2 -8
+   BoxMaxs 18 18 18
+   DrawShape 0
+  }
+ }
+}

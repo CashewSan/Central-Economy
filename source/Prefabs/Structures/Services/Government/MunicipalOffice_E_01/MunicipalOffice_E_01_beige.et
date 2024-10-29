@@ -1,0 +1,47 @@
+SCR_DestructibleBuildingEntity : "{76D7178C2C1F92A9}Prefabs/Structures/Services/Government/MunicipalOffice_E_01/MunicipalOffice_E_01_Base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B90C47ED7056CA"
+    coords 6.995 0.696 6.859
+   }
+   {
+    ID "62B90C47ED7056DA"
+    coords 9.113 0.2 -1.007
+   }
+   {
+    ID "62B90C47ED705906"
+    coords 2.555 4.903 4.39
+   }
+   {
+    ID "62B90C47ED705912"
+    coords 8.895 1.106 3.263
+   }
+   {
+    ID "62B90C47ED70591B"
+    coords 9.612 3.997 4.427
+   }
+   {
+    ID "62B90C47ED705921"
+    coords -7.354 0.683 5.576
+   }
+   {
+    ID "62B90C47ED70592D"
+    coords -4.179 0.2 5.007
+   }
+   {
+    ID "62B90C47ED705935"
+    coords -7.805 4.903 5.165
+   }
+  }
+  CE_UsageTriggerArea : "{78155C5236E20EEB}Prefabs/Areas/Usages/UsageArea_Town.et" {
+   ID "62B90C47ED7056E4"
+   coords 0 0 0
+   TriggerShapeType "Oriented Bounding Box"
+   BoxMins -12 -2 -9
+   BoxMaxs 12 13 9
+   DrawShape 0
+  }
+ }
+}

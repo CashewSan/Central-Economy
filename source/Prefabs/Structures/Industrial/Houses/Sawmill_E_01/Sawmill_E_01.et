@@ -1,0 +1,22 @@
+SCR_DestructibleBuildingEntity : "{63F42771BBDF3915}Prefabs/Structures/Industrial/Houses/Sawmill_E_01/Sawmill_E_01_Base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B90C1FD97FEADA"
+    coords 3.644 0.049 -11.63
+   }
+   {
+    ID "62B90C1FD97FED21"
+    coords -5.15 0.018 9.509
+   }
+  }
+  CE_UsageTriggerArea : "{8CE81A62EF61ED50}Prefabs/Areas/Usages/UsageArea_Industrial.et" {
+   ID "62B90C1E1F32DAF0"
+   coords 0 0 0
+   BoxMins -14 -2 -15.5
+   BoxMaxs 14 8 17
+   DrawShape 0
+  }
+ }
+}

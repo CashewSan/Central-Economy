@@ -1,0 +1,23 @@
+GenericEntity : "{4C3B4658B6BDA1A2}Prefabs/Structures/Recreation/Beach/LatrineBeach_01_base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B90C41CBECCD99"
+    coords -0.911 0.592 -0.432
+   }
+   {
+    ID "62B90C41CBECCDE5"
+    coords 0.901 0.592 -0.42
+   }
+  }
+  CE_UsageTriggerArea : "{639185B97538C5F3}Prefabs/Areas/Usages/UsageArea_Coast.et" {
+   ID "62B90C41CBECCDC5"
+   coords 0 0 0
+   TriggerShapeType "Oriented Bounding Box"
+   BoxMins -1.5 -0.5 -1
+   BoxMaxs 1.5 3 1
+   DrawShape 0
+  }
+ }
+}

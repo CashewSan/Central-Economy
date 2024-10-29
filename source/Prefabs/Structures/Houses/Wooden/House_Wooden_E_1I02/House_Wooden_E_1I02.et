@@ -1,0 +1,27 @@
+SCR_DestructibleBuildingEntity : "{E0D7741003101A63}Prefabs/Structures/Houses/Wooden/House_Wooden_E_1I02/House_Wooden_E_1I02_Base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B90C1B58020C3F"
+    coords -0.231 1.001 5.67
+   }
+   {
+    ID "62B90C1B58020DC2"
+    coords 4.253 0.588 -3.01
+   }
+  }
+  GenericEntity : "{52CAE20AC033CBED}Prefabs/Spawners/LootSpawner_Food.et" {
+   ID "62B90C1B58020C0C"
+   coords 5.132 1.098 5.339
+  }
+  CE_UsageTriggerArea : "{78155C5236E20EEB}Prefabs/Areas/Usages/UsageArea_Town.et" {
+   ID "62B90C1BBF68AD2D"
+   coords 0 0 0
+   TriggerShapeType "Oriented Bounding Box"
+   BoxMins -6 -1 -5.5
+   BoxMaxs 8.5 7 8
+   DrawShape 0
+  }
+ }
+}

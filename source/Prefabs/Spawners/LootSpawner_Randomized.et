@@ -5,5 +5,5 @@ GenericEntity : "{E3DA0DC39C2708DB}Prefabs/Spawners/LootSpawner_Base.et" {
    m_Categories 57
   }
  }
- coords 4.083 0 -1.044
+ coords 9.81 0.952 0.874
 }

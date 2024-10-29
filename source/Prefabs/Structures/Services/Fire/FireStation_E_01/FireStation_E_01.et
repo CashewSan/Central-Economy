@@ -1,0 +1,30 @@
+SCR_DestructibleBuildingEntity : "{8FE02C29CCA9942D}Prefabs/Structures/Services/Fire/FireStation_E_01/FireStation_E_01_base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B90C46E3E9D649"
+    coords 5.604 0.05 -2.132
+   }
+   {
+    ID "62B90C46E3E9D651"
+    coords -4.853 1.06 -6.542
+   }
+   {
+    ID "62B90C46E3E9D65C"
+    coords 5.114 0.956 3.402
+   }
+   {
+    ID "62B90C46E3E9D662"
+    coords -2.891 0.952 -5.232
+   }
+  }
+  CE_UsageTriggerArea : "{8CE81A62EF61ED50}Prefabs/Areas/Usages/UsageArea_Industrial.et" {
+   ID "62B90C41432157CC"
+   coords 0 0 0
+   BoxMins -8 -2 -8
+   BoxMaxs 8 10 8
+   DrawShape 0
+  }
+ }
+}

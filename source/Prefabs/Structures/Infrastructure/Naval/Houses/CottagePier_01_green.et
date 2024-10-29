@@ -1,0 +1,31 @@
+SCR_DestructibleBuildingEntity : "{BF36B09531B570F1}Prefabs/Structures/Infrastructure/Naval/Houses/CottagePier_01_base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B90C2211EFF448"
+    coords -2.059 0.509 -2.199
+   }
+   {
+    ID "62B90C2211EFF450"
+    coords -1.047 0.526 2.608
+   }
+   {
+    ID "62B90C2211EFF45D"
+    coords -2.339 3.971 -1.83
+   }
+   {
+    ID "62B90C2211EFF47E"
+    coords 2.065 0.509 -1.537
+   }
+  }
+  CE_UsageTriggerArea : "{639185B97538C5F3}Prefabs/Areas/Usages/UsageArea_Coast.et" {
+   ID "62B90C2211EFF402"
+   coords 0 0 0
+   TriggerShapeType "Oriented Bounding Box"
+   BoxMins -5 -0.5 -4.5
+   BoxMaxs 5 8.5 4.5
+   DrawShape 0
+  }
+ }
+}

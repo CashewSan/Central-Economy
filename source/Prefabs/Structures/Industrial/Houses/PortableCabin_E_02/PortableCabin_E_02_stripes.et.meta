@@ -1,0 +1,17 @@
+MetaFileClass {
+ Name "{922C7672F36270F1}Prefabs/Structures/Industrial/Houses/PortableCabin_E_02/PortableCabin_E_02_stripes.et"
+ Configurations {
+  EntityTemplateResourceClass PC {
+  }
+  EntityTemplateResourceClass XBOX_ONE : PC {
+  }
+  EntityTemplateResourceClass XBOX_SERIES : PC {
+  }
+  EntityTemplateResourceClass PS4 : PC {
+  }
+  EntityTemplateResourceClass PS5 : PC {
+  }
+  EntityTemplateResourceClass HEADLESS : PC {
+  }
+ }
+}

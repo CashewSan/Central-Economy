@@ -1,0 +1,22 @@
+SCR_DestructibleBuildingEntity : "{94D0F5E4365E59C7}Prefabs/Structures/Infrastructure/Power/TransformerStation_E_01/TransformerStation_E_01_Base.et" {
+ ID "F0DBA538AC2A0552"
+ {
+  $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+   {
+    ID "62B90C2147D8D11F"
+    coords 7.642 0.84 1.854
+   }
+   {
+    ID "62B90C2147D8D164"
+    coords -4.084 0.04 0.329
+   }
+  }
+  CE_UsageTriggerArea : "{8CE81A62EF61ED50}Prefabs/Areas/Usages/UsageArea_Industrial.et" {
+   ID "62B90C219A1BD891"
+   coords 0 0 0
+   BoxMins -12 -2 -4
+   BoxMaxs 12 7 4
+   DrawShape 0
+  }
+ }
+}
