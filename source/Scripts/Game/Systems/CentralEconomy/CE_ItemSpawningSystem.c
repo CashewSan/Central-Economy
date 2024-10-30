@@ -1,7 +1,5 @@
 class CE_ItemSpawningSystem : GameSystem
 {
-	private static const int						CHECK_INTERVAL				= 15; 											// how often the item spawning system will run, (in seconds)
-	
 	protected ref array<ref CE_ItemData>			m_aItems 					= new array<ref CE_ItemData>; 					// storage of initial item data from config
 	protected ref array<ref CE_Items>				m_aItemsToSpawn 				= new array<ref CE_Items>; 						// item data containing items that need to spawn
 	protected ref array<ref CE_ItemData>			m_aSpawnedItems 				= new array<ref CE_ItemData>; 					// items that have spawned in the world
@@ -23,11 +21,15 @@ class CE_ItemSpawningSystem : GameSystem
 	
 	protected float 								m_fTimer;
 	
+	protected int								CHECK_INTERVAL; 																// how often the item spawning system will run, (in seconds)
+	
 	//------------------------------------------------------------------------------------------------
 	override void OnInit()
 	{
 		if (m_aComponents.IsEmpty())
 			Enable(false);
+		
+		CHECK_INTERVAL = 15;
 		
 		Init();
 	}
@@ -176,10 +178,11 @@ class CE_ItemSpawningSystem : GameSystem
 			
 			case CE_ELootTier.TIER4:
 				GetCurrentSpawnTier() = CE_ELootTier.TIER1;
+				CHECK_INTERVAL = 120;
 				break;
 		}
 		
-		//Print(GetCurrentSpawnTier());
+		Print(" " + GetCurrentSpawnTier() + " " + CHECK_INTERVAL);
 	}
 	
 	//------------------------------------------------------------------------------------------------

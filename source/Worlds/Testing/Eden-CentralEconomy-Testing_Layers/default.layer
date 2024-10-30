@@ -77,3 +77,21 @@ SCR_LoadoutManager LoadoutManager_USxUSSR : "{97EF4C1A41F63DDB}Prefabs/MP/Manage
   }
  }
 }
+GenericEntity Area1 : "{C72F956E4AC6A6E7}Prefabs/ScenarioFramework/Components/Area.et" {
+ coords 4569.262 18.133 10734.819
+ {
+  GenericEntity Layer1 : "{5F9FFF4BF027B3A3}Prefabs/ScenarioFramework/Components/Layer.et" {
+   coords 0 0 0
+   {
+    GenericEntity Slot1 : "{AA01691FDC4E9167}Prefabs/ScenarioFramework/Components/Slot.et" {
+     components {
+      SCR_ScenarioFrameworkSlotBase "{5A22E1D67E712EC8}" {
+       m_sObjectToSpawn "{5A2220DD0C16958B}Prefabs/MP/Spawning/SpawnPoint_US.et"
+      }
+     }
+     coords 0 0 0
+    }
+   }
+  }
+ }
+}

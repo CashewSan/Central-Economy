@@ -13,7 +13,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	[Attribute("", UIWidgets.Flags, desc: "Category of loot spawn", enums: ParamEnumArray.FromEnum(CE_ELootCategory), category: "Item Data")]
 	CE_ELootCategory m_Categories;
 	
-	private const int spawnResetTime = 8000; // set to 1800000 (30 minutes), this prevents players from spawn camping the loot spawn.
+	private const int spawnResetTime = 1800000; // set to 1800000 (30 minutes), this prevents players from spawn camping the loot spawn.
 	
 	CE_ELootUsage m_Usage; // gets set by the Usage Trigger Area Entity
 	CE_ELootTier m_Tier; // gets set by the Tier Trigger Area Entity
