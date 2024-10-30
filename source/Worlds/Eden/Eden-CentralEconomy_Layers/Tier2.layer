@@ -2,55 +2,55 @@ PolylineShapeEntity Polyline_Tier2 {
  coords 2013.05 1.106 4778.813
  Points {
   ShapePoint "{62B90C4D67EB18E9}" {
-   Position 7159.475 -0 2305.36
+   Position 7159.475 0 2305.36
   }
   ShapePoint "{62B90C4C020A85E6}" {
-   Position 5961.457 -0 1609.435
+   Position 5961.457 0 1609.435
   }
   ShapePoint "{62B90C4C0366DBE7}" {
-   Position 5229.544 -0 1729.692
+   Position 5229.544 0 1729.692
   }
   ShapePoint "{62B90C4C0E0CEC3F}" {
-   Position 4973.312 -0 2807.579
+   Position 4973.312 0 2807.579
   }
   ShapePoint "{62B90C4C0D8BE3B3}" {
-   Position 5566.131 -0 3795.718
+   Position 5566.131 0 3795.718
   }
   ShapePoint "{62B90C4C2EBC977D}" {
-   Position 7363.731 -0 3122.27
+   Position 7363.731 0 3122.27
   }
   ShapePoint "{62B90C4C2D59BB95}" {
    Position 9176.479 0 3627.772
   }
   ShapePoint "{62B90C4C2901E1D5}" {
-   Position 9053.169 -0 4334.894
+   Position 9053.169 0 4334.894
   }
   ShapePoint "{62B90C4C579F8C1D}" {
-   Position 5195.518 -0 4960.578
+   Position 5195.518 0 4960.578
   }
   ShapePoint "{62B90C4C4520894E}" {
-   Position 5107.279 -0 4295.103
+   Position 5107.279 0 4295.103
   }
   ShapePoint "{62B90C4C4A866D51}" {
-   Position 3420.159 -0 2087.172
+   Position 3420.159 0 2087.172
   }
   ShapePoint "{62B90C4C97B6BE23}" {
-   Position 2489.553 -0 1941.171
+   Position 2489.553 0 1941.171
   }
   ShapePoint "{62B90C4C9F790DBD}" {
    Position 1751.917 0 2480.512
   }
   ShapePoint "{62B90C4CB482C14C}" {
-   Position 770.882 -0 3394.495
+   Position 770.882 0 3394.495
   }
   ShapePoint "{62B90C4CB1CEEDEB}" {
-   Position -1947.018 -0 3503.774
+   Position -1947.018 0 3503.774
   }
   ShapePoint "{62B90C4CA6F48490}" {
-   Position -1920.805 -0 -395.582
+   Position -1920.805 0 -395.582
   }
   ShapePoint "{62B90C4CA5764363}" {
-   Position -284.066 -0 -502.145
+   Position -284.066 0 -502.145
   }
   ShapePoint "{62B90C4983F01D5C}" {
    Position 0 0 0
@@ -62,22 +62,19 @@ PolylineShapeEntity Polyline_Tier2 {
    Position 5978.333 0 -2372.374
   }
   ShapePoint "{62B90C4E8968AB2C}" {
-   Position 7484.064 -0 -1761.19
+   Position 7484.064 0 -1761.19
   }
   ShapePoint "{62B90C4E6F83BC39}" {
-   Position 7104.741 -0 -319.274
+   Position 7104.741 0 -319.274
   }
   ShapePoint "{62B90C4E7C459B27}" {
-   Position 5115.488 -0 654.215
+   Position 5115.488 0 654.215
   }
  }
  IsClosed 1
  {
   CE_TierTriggerArea TierArea_Tier2 : "{B91017820A9D1F10}Prefabs/Areas/Tiers/TierArea_Tier2.et" {
-   coords -481.894 22.764 315.026
-   "Polyline Height" 500
-   DrawShape 0
-   ShapeColor 0.064 1 0 1
+   coords 0 0 0
   }
  }
 }

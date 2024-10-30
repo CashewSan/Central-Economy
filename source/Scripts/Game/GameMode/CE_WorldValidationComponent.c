@@ -6,6 +6,7 @@ class CE_WorldValidationComponentClass: SCR_BaseGameModeComponentClass
 class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 {
 	protected bool m_Processed = false;
+	
 	override void OnWorldPostProcess(World world)
 	{
 		super.OnWorldPostProcess(world);

@@ -16,6 +16,7 @@ SCR_DestructibleBuildingEntity : "{A43A100E3C377DB2}Prefabs/Structures/Core/Buil
    coords 0 0 0
    BoxMins -5 -2 -5.5
    BoxMaxs 5 5.5 5.5
+   DrawShape 0
   }
  }
 }

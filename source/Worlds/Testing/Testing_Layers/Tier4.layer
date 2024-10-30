@@ -30,8 +30,9 @@ $grp PolylineShapeEntity {
     m_BackgroundColor 0.969 1 0
     m_BackgroundTransparency 0
    }
-   CE_TierTriggerArea : "{61B87E437314014C}Prefabs/Areas/Tiers/TierArea_Tier4.et" {
-    coords 25.919 0 -2.987
+   CE_TierTriggerArea : "{D5442362B659903E}Prefabs/Areas/Tiers/TierArea_Tier1.et" {
+    coords 0 0 0
+    DrawShape 1
    }
   }
  }
@@ -141,26 +142,43 @@ $grp PolylineShapeEntity {
   }
  }
 }
-$grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+$grp GenericEntity : "{85C71F17C37D274C}Prefabs/Structures/BuildingParts/Entry/Entry_Block_Platform_01_3x6.et" {
  {
-  coords 159.316 1.454 105.921
+  coords 156.894 1.454 106.836
  }
  {
-  coords 158.335 1.454 105.886
- }
- {
-  coords 157.375 1.454 105.884
- }
- {
-  coords 156.363 1.454 105.819
- }
- {
-  coords 155.237 1.454 105.708
- }
- {
-  coords 154.233 1.454 105.665
+  coords 163.359 1.454 111.648
  }
 }
-GenericEntity : "{85C71F17C37D274C}Prefabs/Structures/BuildingParts/Entry/Entry_Block_Platform_01_3x6.et" {
- coords 156.894 1.454 106.836
+$grp GenericEntity : "{E99195907C7200AD}Prefabs/Spawners/LootSpawner_Weapons.et" {
+ {
+  coords 165.991 1.454 110.535
+ }
+ {
+  coords 164.839 1.454 110.599
+ }
+ {
+  coords 163.506 1.454 110.668
+ }
+ {
+  coords 162.331 1.454 110.634
+ }
+ {
+  coords 161.138 1.454 110.579
+ }
+ {
+  coords 161.18 1.454 111.909
+ }
+ {
+  coords 162.472 1.454 111.87
+ }
+ {
+  coords 163.665 1.454 111.81
+ }
+ {
+  coords 164.907 1.454 111.734
+ }
+ {
+  coords 166.009 1.454 111.733
+ }
 }

@@ -10,6 +10,7 @@ SCR_DestructibleBuildingEntity : "{4A69647388F17A23}Prefabs/Structures/Houses/Sh
    coords 0 0 0
    BoxMins -2 -1 -1.5
    BoxMaxs 2 2.5 1.5
+   DrawShape 0
   }
  }
 }

@@ -5,31 +5,28 @@ PolylineShapeEntity Polyline_Tier4 {
    Position 1953.486 0 6621.694
   }
   ShapePoint "{62B90C4D08A28D6A}" {
-   Position 2498.189 -0 6593.549
+   Position 2498.189 0 6593.549
   }
   ShapePoint "{62B90C4D33C4E210}" {
-   Position 2535.346 -0 6265.57
+   Position 2535.346 0 6265.57
   }
   ShapePoint "{62B90C4D3DC046A1}" {
-   Position 3139.01 -0 5660.959
+   Position 3139.01 0 5660.959
   }
   ShapePoint "{62B90C4D241A4546}" {
-   Position 3951.371 -0 5533.121
+   Position 3951.371 0 5533.121
   }
   ShapePoint "{62B90C4D538CE3B5}" {
-   Position 5961.831 -0 7774
+   Position 5961.831 0 7774
   }
   ShapePoint "{62B90C5297B40B8B}" {
-   Position 1451.608 -0 7914.112
+   Position 1451.608 0 7914.112
   }
  }
  IsClosed 1
  {
   CE_TierTriggerArea TierArea_Tier4 : "{61B87E437314014C}Prefabs/Areas/Tiers/TierArea_Tier4.et" {
    coords 0 0 0
-   "Polyline Height" 500
-   DrawShape 0
-   ShapeColor 1 0 0 1
   }
  }
 }

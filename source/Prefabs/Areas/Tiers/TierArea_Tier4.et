@@ -1,4 +1,7 @@
 CE_TierTriggerArea : "{CCB01F1D970449BB}Prefabs/Areas/Tiers/TierArea_Base.et" {
  ID "626B3E2C8F1E5053"
+ "Polyline Height" 500
+ DrawShape 0
+ ShapeColor 1 0 0 1
  m_Tier TIER4
 }
