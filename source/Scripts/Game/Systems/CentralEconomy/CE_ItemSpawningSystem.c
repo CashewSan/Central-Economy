@@ -182,7 +182,7 @@ class CE_ItemSpawningSystem : GameSystem
 				break;
 		}
 		
-		Print(" " + GetCurrentSpawnTier() + " " + CHECK_INTERVAL);
+		//Print(" " + GetCurrentSpawnTier() + " " + CHECK_INTERVAL);
 	}
 	
 	//------------------------------------------------------------------------------------------------
