@@ -1,16 +1,16 @@
 class CE_ItemSpawningSystem : GameSystem
 {
-	protected ref array<ref CE_ItemData>			m_aItems 					= new array<ref CE_ItemData>; 					// storage of initial item data from config
-	protected ref array<ref CE_Items>				m_aItemsToSpawn 				= new array<ref CE_Items>; 						// item data containing items that need to spawn
-	protected ref array<ref CE_ItemData>			m_aSpawnedItems 				= new array<ref CE_ItemData>; 					// items that have spawned in the world
-	protected ref array<CE_ItemSpawningComponent> 	m_aComponents 				= new array<CE_ItemSpawningComponent>; 			// initial pull of ALL item spawning components in the world
-	protected ref array<ref CE_Spawns> 			m_aComponentsForSpawn 		= new array<ref CE_Spawns>;  						// item spawning components in the world WITH NO LOOT
-	protected ref array<CE_Spawns> 				m_aMatchedSpawns 			= new array<CE_Spawns>;							// spawns matched to item array
-	protected ref array<ref CE_ItemData>			m_aItemsNotRestocked 			= new array<ref CE_ItemData>;						// items whose restocking timer has not ended
+	protected ref array<ref CE_ItemDataNEW>			m_aItems 					= new array<ref CE_ItemDataNEW>; 					// storage of initial item data from config
+	protected ref array<ref CE_Items>					m_aItemsToSpawn 				= new array<ref CE_Items>; 						// item data containing items that need to spawn
+	protected ref array<ref CE_ItemDataNEW>			m_aSpawnedItems 				= new array<ref CE_ItemDataNEW>; 					// items that have spawned in the world
+	protected ref array<CE_ItemSpawningComponent> 		m_aComponents 				= new array<CE_ItemSpawningComponent>; 			// initial pull of ALL item spawning components in the world
+	protected ref array<ref CE_Spawns> 				m_aComponentsForSpawn 		= new array<ref CE_Spawns>;  						// item spawning components in the world WITH NO LOOT
+	protected ref array<CE_Spawns> 					m_aMatchedSpawns 			= new array<CE_Spawns>;							// spawns matched to item array
+	protected ref array<ref CE_ItemDataNEW>			m_aItemsNotRestocked 			= new array<ref CE_ItemDataNEW>;					// items whose restocking timer has not ended
 	
 	protected CE_WorldValidationComponent 			m_WorldValidationComponent;													// component added to world's gamemode for verification
-	protected ref Resource 						m_itemDataConfig 			= BaseContainerTools.LoadContainer("{71359C0802F4ADA6}Configs/CE_ItemData.conf" /*"{F373DD039FDB3699}Configs/Testing/CE_ItemData_TEST.conf"*/); // config for item data
-	protected ref CE_LootSpawningConfig			m_Config;
+	//protected ref Resource 						m_itemDataConfig 			= BaseContainerTools.LoadContainer("{71359C0802F4ADA6}Configs/CE_ItemDataNEW.conf" /*"{F373DD039FDB3699}Configs/Testing/CE_ItemData_TEST.conf"*/); // config for item data
+	protected ref CE_ItemDataJson					m_Config;
 	protected CE_ELootTier						m_currentSpawnTier;															// current spawn tier that items are spawning at
 	
 	protected ref RandomGenerator 				m_randomGen 					= new RandomGenerator();
@@ -75,9 +75,7 @@ class CE_ItemSpawningSystem : GameSystem
 			{	
 				b_WorldProcessed = true;
 				
-				BaseContainer m_Container = m_itemDataConfig.GetResource().ToBaseContainer();
-				
-				m_Config = CE_LootSpawningConfig.Cast(BaseContainerTools.CreateInstanceFromContainer(m_Container));
+				m_Config = m_WorldValidationComponent.GetItemData();
 				
 				GenerateItemData();
 				
@@ -107,14 +105,35 @@ class CE_ItemSpawningSystem : GameSystem
 		
 		m_aItems.Clear();
 		
-		foreach(CE_ItemData item: m_Config.m_ItemData)
+		foreach(CE_ItemDataNEW item: m_Config.m_ItemData)
 		{
 			// basically, if missing any variable besides rotation or quantity min and max
-			if(!item.m_sName || !item.m_sPrefab || !item.m_iRestock || !item.m_iNominal || !item.m_iMinimum || !item.m_ItemTiers || !item.m_iLifetime || !item.m_ItemUsages || !item.m_ItemCategory)
+			if(!item.m_sName || !item.m_sPrefab || !item.m_iNominal || !item.m_iMinimum || !item.m_iLifetime || !item.m_iRestock || !item.m_sItemCategory || !item.m_sItemUsages || !item.m_sItemTiers)
+			{
+				Print("[CentralEconomy] " + item.m_sName + " is missing information!", LogLevel.ERROR);
 				continue;
+			}
+			
+			item.m_ItemCategory = typename.StringToEnum(CE_ELootCategory, item.m_sItemCategory);
+			
+			foreach (string usage : item.m_sItemUsages)
+			{
+				CE_ELootTier value = typename.StringToEnum(CE_ELootUsage, usage);
+				
+				item.m_ItemUsages.Insert(value);
+			}
+			
+			foreach (string tier : item.m_sItemTiers)
+			{
+				CE_ELootTier value = typename.StringToEnum(CE_ELootTier, tier);
+				
+				item.m_ItemTiers.Insert(value);
+			}
 			
 			m_aItems.Insert(item);
 		}
+		
+		Print(m_aItems.Count());
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -261,9 +280,9 @@ class CE_ItemSpawningSystem : GameSystem
 	{	
 		m_aItemsToSpawn.Clear();
 		
-		foreach(CE_ItemData item: m_aItems)
+		foreach(CE_ItemDataNEW item: m_aItems)
 		{
-			if (item.m_ItemTiers & GetCurrentSpawnTier())
+			if (item.m_ItemTiers.Contains(GetCurrentSpawnTier()))
 			{
 				int itemTargetCount = DetermineItemTargetCount(item, item.m_iMinimum, item.m_iNominal);
 				
@@ -301,7 +320,7 @@ class CE_ItemSpawningSystem : GameSystem
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	protected int DetermineItemTargetCount(CE_ItemData item, int minimum, int nominal) // double-check over all of this, items are spawning more than nominal
+	protected int DetermineItemTargetCount(CE_ItemDataNEW item, int minimum, int nominal) // double-check over all of this, items are spawning more than nominal
 	{
 		int itemTargetCount;
 		int itemsNotRestocked = 0;
@@ -310,7 +329,7 @@ class CE_ItemSpawningSystem : GameSystem
 		{
 			int itemCount = 0;
 			
-			foreach (CE_ItemData spawnedItem : GetSpawnedItems())
+			foreach (CE_ItemDataNEW spawnedItem : GetSpawnedItems())
 			{
 				string name = spawnedItem.m_sName;
 				
@@ -339,7 +358,7 @@ class CE_ItemSpawningSystem : GameSystem
 		
 		if (GetItemsNotRestocked().Contains(item))
 		{
-			foreach (CE_ItemData itemNotRestocked : GetItemsNotRestocked())
+			foreach (CE_ItemDataNEW itemNotRestocked : GetItemsNotRestocked())
 			{
 				itemsNotRestocked = itemsNotRestocked + 1;
 			}
@@ -358,20 +377,20 @@ class CE_ItemSpawningSystem : GameSystem
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	array<ref CE_ItemData> GetItemsNotRestocked()
+	array<ref CE_ItemDataNEW> GetItemsNotRestocked()
 	{
 		return m_aItemsNotRestocked;
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	protected int DetermineAvailableSpawnCount(CE_ItemData item)
+	protected int DetermineAvailableSpawnCount(CE_ItemDataNEW item)
 	{
 		array<CE_Spawns> availableSpawns = {};
 		
 		foreach (CE_Spawns spawns : GetGeneratedSpawnData())
 		{
-			if (item.m_ItemTiers & spawns.Tier &&
-			item.m_ItemUsages & spawns.Usage &&
+			if (item.m_ItemTiers.Contains(spawns.Tier) &&
+			item.m_ItemUsages.Contains(spawns.Usage) &&
 			item.m_ItemCategory & spawns.Category)
 			{
 				availableSpawns.Insert(spawns);
@@ -390,8 +409,8 @@ class CE_ItemSpawningSystem : GameSystem
 		{	
 			foreach (CE_Spawns spawns : GetGeneratedSpawnData())
 			{	
-				if (item.Tiers & spawns.Tier &&
-				item.Usages & spawns.Usage &&
+				if (item.Tiers.Contains(spawns.Tier) &&
+				item.Usages.Contains(spawns.Usage) &&
 				item.Category & spawns.Category)
 				{
 					if (!matchingSpawns.Contains(spawns))
@@ -414,8 +433,8 @@ class CE_ItemSpawningSystem : GameSystem
 				foreach (CE_Spawns matchedSpawn : matchingSpawns)
 				{
 					// why I gotta check again, idk, but it works now
-					if (matchedItem.Tiers & matchedSpawn.Tier &&
-					matchedItem.Usages & matchedSpawn.Usage &&
+					if (matchedItem.Tiers.Contains(matchedSpawn.Tier) &&
+					matchedItem.Usages.Contains(matchedSpawn.Usage) &&
 					matchedItem.Category & matchedSpawn.Category)
 					{
 						matchedSpawn.Items.Insert(matchedItem);
@@ -439,7 +458,7 @@ class CE_ItemSpawningSystem : GameSystem
 		if (m_aMatchedSpawns.Count() == 0)
 			return;
 		
-		CE_ItemData m_Item;
+		CE_ItemDataNEW m_Item;
 		Resource m_Resource;
 		
 		foreach (CE_Spawns spawns : m_aMatchedSpawns)
@@ -478,13 +497,14 @@ class CE_ItemSpawningSystem : GameSystem
 				
 				m_aSpawnedItems.Insert(m_Item);
 				comp.SetItemSpawned(m_Item);
+				
 				lootSpawn.AddChild(newEnt, -1, EAddChildFlags.NONE);
 			}
 		}
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	protected CE_ItemData GetRandomItem(array<CE_Items> itemArray)
+	protected CE_ItemDataNEW GetRandomItem(array<CE_Items> itemArray)
 	{
 		if(itemArray.Count() == 0)
 			return null;
@@ -548,7 +568,7 @@ class CE_ItemSpawningSystem : GameSystem
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	array<ref CE_ItemData> GetSpawnedItems()
+	array<ref CE_ItemDataNEW> GetSpawnedItems()
 	{
 		return m_aSpawnedItems;
 	}
@@ -575,13 +595,13 @@ class CE_ItemSpawningSystem : GameSystem
 
 class CE_Items
 {
-	CE_ItemData Item;
-	CE_ELootTier Tiers;
-	CE_ELootUsage Usages;
+	CE_ItemDataNEW Item;
+	ref array<CE_ELootTier> Tiers;
+	ref array<CE_ELootUsage> Usages;
 	CE_ELootCategory Category;
 	
 	//------------------------------------------------------------------------------------------------
-	void CE_Items(CE_ItemData item, CE_ELootTier tiers, CE_ELootUsage usages, CE_ELootCategory category)
+	void CE_Items(CE_ItemDataNEW item, array<CE_ELootTier> tiers, array<CE_ELootUsage> usages, CE_ELootCategory category)
 	{
 		Item = item;
 		Tiers = tiers;

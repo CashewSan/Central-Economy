@@ -1,0 +1,6517 @@
+{
+    "ItemData": [
+        {
+            "Name": "CombatBoots_Soviet_01",
+            "Prefab": "C7923961D7235D70",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY",
+                "POLICE"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "CombatBoots_US_01",
+            "Prefab": "DAAFD15478BDE1C3",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY",
+                "POLICE"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "JungleBoots_01",
+            "Prefab": "203EEA924B049EF1",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "FARM",
+                "HUNTING",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Gloves_Leather_01",
+            "Prefab": "4F71E7468E78DDD2",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "COAST",
+                "FARM",
+                "HUNTING",
+                "INDUSTRIAL",
+                "MILITARY",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Gloves_Wool_01",
+            "Prefab": "8266820FFDE17477",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "COAST",
+                "FARM",
+                "HUNTING",
+                "INDUSTRIAL",
+                "MILITARY",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Gloves_Pilot_US_01",
+            "Prefab": "D19C474FA0F42CC4",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_Boonie_US_01",
+            "Prefab": "E12126CDE731EED5",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "COAST",
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_Boonie_US_02",
+            "Prefab": "8D75122D5BF561FB",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "COAST",
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_FlatCap_01_Blue",
+            "Prefab": "DD565E2C7E00A5BB",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "FARM",
+                "INDUSTRIAL",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_FlatCap_01_darkgrey",
+            "Prefab": "67662815EFF734DD",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "FARM",
+                "INDUSTRIAL",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_FlatCap_01_lightgrey",
+            "Prefab": "6FEB0D9130EC400E",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "FARM",
+                "INDUSTRIAL",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_Hard_01_blue",
+            "Prefab": "024D6092DA006DD1",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "INDUSTRIAL"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_Hard_01_green",
+            "Prefab": "112EF132833109C8",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "INDUSTRIAL"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_Hard_01_white",
+            "Prefab": "DF26044449C06EAB",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "INDUSTRIAL"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_Hard_01_yellow",
+            "Prefab": "8F5261C6B57B95C8",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "INDUSTRIAL"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_Knitted_01_black",
+            "Prefab": "BE19A15F1073E7BD",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "COAST",
+                "FARM",
+                "HUNTING",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_Knitted_01_blue",
+            "Prefab": "6B2256EBB8E267DD",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "COAST",
+                "FARM",
+                "HUNTING",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_Knitted_01_brown",
+            "Prefab": "B9687B8829272E14",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "COAST",
+                "FARM",
+                "HUNTING",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_Knitted_01_red",
+            "Prefab": "D8D9EE7F3966589E",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "COAST",
+                "FARM",
+                "HUNTING",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_M70_01",
+            "Prefab": "B02281435AED8274",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_M88_01_v1",
+            "Prefab": "2B29B7E1C6BD1048",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_M88_01_v2",
+            "Prefab": "B54B78383E64268F",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_Panama_Soviet_01_v1",
+            "Prefab": "793EEE2C133176F9",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_Panama_Soviet_01_v2",
+            "Prefab": "6852E0D026AA8F79",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_Patrol_US_01",
+            "Prefab": "F545C1BE7C99954A",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_Patrol_US_02",
+            "Prefab": "9911F55EC05D1A64",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_PeakedCap_USSR_01",
+            "Prefab": "3523CB7D5961246B",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_RadiovkaBeret_01_beige",
+            "Prefab": "C0B4276A1405ED14",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_RadiovkaBeret_01_black",
+            "Prefab": "200D967D2612147C",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_RadiovkaBeret_01_brown",
+            "Prefab": "6E0EC7AC1F6D748F",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_TruckerCap_01_alsworth",
+            "Prefab": "17674905311133D7",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "FARM",
+                "INDUSTRIAL",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_TruckerCap_01_enp",
+            "Prefab": "C9886336AAD9F74C",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "FARM",
+                "INDUSTRIAL",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_TruckerCap_01_everon",
+            "Prefab": "6D08415FD18F2775",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "FARM",
+                "INDUSTRIAL",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_TruckerCap_01_fkdynamo",
+            "Prefab": "3E2C2A050DE84A64",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "FARM",
+                "INDUSTRIAL",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_TruckerCap_01_moto",
+            "Prefab": "5977C0A606B65E6D",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "FARM",
+                "INDUSTRIAL",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_TruckerCap_01_pohona",
+            "Prefab": "477D52F01DC45C55",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "FARM",
+                "INDUSTRIAL",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_TruckerCap_01_sawmillregina",
+            "Prefab": "554D761A11D3D7EC",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "FARM",
+                "INDUSTRIAL",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_Ushanka_01_folded",
+            "Prefab": "A22C976003AA5BA3",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY",
+                "POLICE"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_Ushanka_01_unfolded",
+            "Prefab": "323641C91965842E",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY",
+                "POLICE"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_ZmijovkaCap_01_black",
+            "Prefab": "6BCAA9E5BC957693",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "COAST",
+                "HUNTING",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_ZmijovkaCap_01_green",
+            "Prefab": "6D225E61B31D513A",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "COAST",
+                "HUNTING",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Hat_ZmijovkaCap_01_red",
+            "Prefab": "1B568A254D1E519B",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "COAST",
+                "HUNTING",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Helmet_M1_01",
+            "Prefab": "6E14F80C250F85FC",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Helmet_M1_01_Cover_ERDL",
+            "Prefab": "2E1199EFECE50F35",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Helmet_M1_01_Cover_Frogskin",
+            "Prefab": "F31A715FFDB2BD8E",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Helmet_M1_01_Cover_Wineleaf",
+            "Prefab": "E456D2F5F718AEBE",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Helmet_M1_01_Cover_Woodland",
+            "Prefab": "E873B54F01D7C6D8",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Helmet_PASGT_01",
+            "Prefab": "B74A4FF0DD8BB116",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Helmet_PASGT_01_cover",
+            "Prefab": "FE5C49069C2499D9",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Helmet_PASGT_01_cover_w_goggles",
+            "Prefab": "E685A8D337D36204",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Helmet_PASGT_01_cover_w_scrim",
+            "Prefab": "03C1F3DB6BB9796A",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Helmet_SPH4_01",
+            "Prefab": "483A80042765275F",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Helmet_SSh68_01",
+            "Prefab": "A7E6D7ECD5F684D7",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Helmet_SSh68_01_camo",
+            "Prefab": "66196D85AB93D2BE",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Helmet_SSh68_01_camonet",
+            "Prefab": "D4028ED16DEE99EE",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Helmet_SSh68_01_cover",
+            "Prefab": "3D74845B9D0867B0",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Helmet_SSh68_01_cover_KLMK",
+            "Prefab": "DD35D5EBA6364E77",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Helmet_SSh68_01_cover_KLMK_net",
+            "Prefab": "12035A212B2BE371",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Helmet_SSh68_01_cover_KZS",
+            "Prefab": "5F8928B41FB86990",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Helmet_SSh68_01_net",
+            "Prefab": "22963D69CA50EB9E",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Helmet_ZSh5_01",
+            "Prefab": "E49D9EE7E2B3016C",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Jacket_M70",
+            "Prefab": "BBA08EC4EC40FA94",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Jacket_M88",
+            "Prefab": "9F546CCA2582D16F",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Jacket_M88_rolledup",
+            "Prefab": "D262D2102B9931C6",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Jacket_US_BDU",
+            "Prefab": "C7861F11D5334C0E",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Jacket_US_BDU_02",
+            "Prefab": "293F577C298061E3",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Jacket_US_BDU_rolledup",
+            "Prefab": "3CCA7A9BB4FD3197",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Jacket_US_BDU_rolledup_02",
+            "Prefab": "A080C1AEBF921DC4",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Jacket_Denim_01_brownShirt",
+            "Prefab": "27162F1F6EE6581A",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "COAST",
+                "FARM",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Jacket_Denim_01_strippedShirt",
+            "Prefab": "EB0D74A43F74B522",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "COAST",
+                "FARM",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Jacket_KZS",
+            "Prefab": "F1E29085C62F0D55",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Jacket_Pilot_USSR_01",
+            "Prefab": "6835DAF42A09E23C",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Jacket_Raincoat_01_green",
+            "Prefab": "7F1451790F3D75BD",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "COAST",
+                "FARM",
+                "INDUSTRIAL",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Jacket_Raincoat_01_orange",
+            "Prefab": "690819A92A3A8D14",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "COAST",
+                "FARM",
+                "INDUSTRIAL",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Jacket_Raincoat_01_yellow",
+            "Prefab": "FD39B0B833BB927E",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "COAST",
+                "FARM",
+                "INDUSTRIAL",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Jacket_Suit_01_black_V1",
+            "Prefab": "AE93D885FDF713D4",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Jacket_Suit_01_Brown_V1",
+            "Prefab": "52AB6EC3FE535303",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Jacket_Suit_01_Grey_V1",
+            "Prefab": "E652D625A46A00FC",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Jacket_TAZ83_01",
+            "Prefab": "CC2BAD4EACC9B2CA",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Pants_M70",
+            "Prefab": "06BC3F18B47799AE",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Pants_M88",
+            "Prefab": "DCF980831E880F6A",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Pants_US_BDU",
+            "Prefab": "604BB72BE8E023C2",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Pants_US_M65",
+            "Prefab": "86BB79B9A2233780",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Pants_Fisherman_01_green",
+            "Prefab": "0B1F0174869E0351",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "COAST",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Pants_Fisherman_01_orange",
+            "Prefab": "5B29F970DC4022D5",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "COAST",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Pants_Fisherman_01_yellow",
+            "Prefab": "CF185061C5C13DBF",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "COAST",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Pants_KZS",
+            "Prefab": "5E17C1AE66A6FF00",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Pants_Pilot_USSR_01",
+            "Prefab": "83DFA8F68CA40B10",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Pants_Pilot_USSR_01_tucked",
+            "Prefab": "6B7F32F1F8A191B0",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Pants_Suit_01_black_V1",
+            "Prefab": "1A65EADE4B08583E",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Pants_Suit_01_brown_V1",
+            "Prefab": "E65D5C9848AC18E9",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Pants_Suit_01_grey_V1",
+            "Prefab": "401072A652DD9849",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Pants_TAZ83_01",
+            "Prefab": "27364244288DA83B",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Pants_Trousers_01_DarkBrown",
+            "Prefab": "6925E6C63EBCF623",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Pants_Trousers_01_DarkGrey",
+            "Prefab": "5A8C9A020BD7ABA6",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Pants_Trousers_01_LightBrown",
+            "Prefab": "65B7093231FBF67E",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Shirt_CottonShirt_01_V1",
+            "Prefab": "D0C27D8DB0CC73D9",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Shirt_CottonShirt_01_V2",
+            "Prefab": "86E0117B630414B5",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Shirt_CottonShirt_01_V3",
+            "Prefab": "637C5D826FE183DE",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Shirt_CottonShirt_01_V4",
+            "Prefab": "5E4878BA1A8D0AE9",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Shirt_CottonShirt_01_V5",
+            "Prefab": "BBD4344316689D82",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Shirt_CottonShirt_01_V6",
+            "Prefab": "D78000A3AAAC12AC",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Shirt_Turtleneck_01_beige",
+            "Prefab": "50F8B1F928F93ABD",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Shirt_Turtleneck_01_DarkBlue",
+            "Prefab": "6A3F994EFFE22995",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Shirt_Turtleneck_01_grey",
+            "Prefab": "B0F4EAC29E9058EA",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Vest_6B2",
+            "Prefab": "ADE19B33DCBB9005",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Vest_6B3",
+            "Prefab": "4CBDC206FEF9897C",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Vest_ALICE_AR",
+            "Prefab": "156DC7109CEE6F69",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Vest_ALICE_commander",
+            "Prefab": "2E8829632CBA7A9B",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Vest_ALICE_GL",
+            "Prefab": "18B8B9316B590643",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Vest_ALICE_MG",
+            "Prefab": "477A190AF2A17B8A",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Vest_ALICE_officer",
+            "Prefab": "BD205C7B90BD399E",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Vest_ALICE_rifleman",
+            "Prefab": "2835A0EA3B79E63E",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Vest_ALICE_sniper",
+            "Prefab": "9CEA24A1A9CC2675",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Vest_Lifchik",
+            "Prefab": "9713FE6DDCC9510D",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Vest_Lifchik_GL",
+            "Prefab": "C8516078375CBE45",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Vest_M69_M81woodland",
+            "Prefab": "725C5E1C75CADAF4",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Vest_M69_olive",
+            "Prefab": "F9ACDDE62D906D61",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Vest_M79GrenadeCarrier",
+            "Prefab": "9945D5435F12C370",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Vest_NAZ",
+            "Prefab": "506EF3B2F0A69D34",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Vest_PASGT",
+            "Prefab": "4B57C11AA5161760",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Vest_SovietHarness_AR",
+            "Prefab": "4711A4CAF64C4CEE",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Vest_SovietHarness_Commander",
+            "Prefab": "D8DDD4941197A929",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Vest_SovietHarness_medic",
+            "Prefab": "6726C63F4F56F12F",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Vest_SovietHarness_MG",
+            "Prefab": "15067AD09803580D",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Vest_SovietHarness_officer",
+            "Prefab": "F2D03ED36FAC87FF",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Vest_SovietHarness_rifleman",
+            "Prefab": "08155E701A949620",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Vest_SovietHarness_sharpshooter",
+            "Prefab": "12C8933903D18885",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Vest_SRU21P",
+            "Prefab": "F396524995F06BFA",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Vest_Type56",
+            "Prefab": "ED5574EA7F63B457",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Backpack_ALICE_Medium",
+            "Prefab": "06B68C58B72EAAC6",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Backpack_IIFS_FieldPack",
+            "Prefab": "95D4766BBE46F23D",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Backpack_Kolobok",
+            "Prefab": "41A9C55B61F375F0",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN",
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Backpack_M70_Swiss",
+            "Prefab": "FDA7B6630DB87991",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN",
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Backpack_Medical_M5",
+            "Prefab": "4805E67E2AE30F8D",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN",
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Backpack_Medical_Soviet",
+            "Prefab": "7AC107CA7AFC9B59",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN",
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Backpack_Medical_Soviet_02",
+            "Prefab": "79015191C0E77E48",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN",
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Backpack_Medical_Soviet_NoCross_01",
+            "Prefab": "AC298BA8A7D27007",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN",
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Backpack_Medical_Soviet_NoCross_02",
+            "Prefab": "E90F2EB67A9CF49A",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN",
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Backpack_RPG_Assistant",
+            "Prefab": "6A39B5843B3F36DA",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Backpack_RPG_Gunner",
+            "Prefab": "0D39750E5695B9D8",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Backpack_Veshmeshok",
+            "Prefab": "3DE0155EC9767B98",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "CLOTHING",
+            "Usages": [
+                "TOWN",
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Binoculars_B12",
+            "Prefab": "F2539FA5706E51E4",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "TOOLS",
+            "Usages": [
+                "HUNTING",
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Binoculars_B8",
+            "Prefab": "243948B23D90BECB",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "TOOLS",
+            "Usages": [
+                "HUNTING",
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Binoculars_M22",
+            "Prefab": "0CF54B9A85D8E0D4",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "TOOLS",
+            "Usages": [
+                "HUNTING",
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Compass_Adrianov",
+            "Prefab": "7CEF68E2BC68CE71",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "TOOLS",
+            "Usages": [
+                "COAST",
+                "HUNTING",
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Compass_SY183",
+            "Prefab": "61D4F80E49BF9B12",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "TOOLS",
+            "Usages": [
+                "COAST",
+                "HUNTING",
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "BlastingMachine_KPM_3U1",
+            "Prefab": "90976DC90A223095",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "TOOLS",
+            "Usages": [
+                "INDUSTRIAL",
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "BlastingMachine_M34",
+            "Prefab": "CE0AF733722B3978",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "TOOLS",
+            "Usages": [
+                "INDUSTRIAL",
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Flashlight_MX991",
+            "Prefab": "3A421547BC29F679",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "TOOLS",
+            "Usages": [
+                "COAST",
+                "FARM",
+                "HUNTING",
+                "INDUSTRIAL",
+                "MILITARY",
+                "POLICE",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Flashlight_Soviet_01",
+            "Prefab": "575EA58E67448C2A",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "TOOLS",
+            "Usages": [
+                "COAST",
+                "FARM",
+                "HUNTING",
+                "INDUSTRIAL",
+                "MILITARY",
+                "POLICE",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "PaperMap_01_folded",
+            "Prefab": "13772C903CB5E4F7",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "TOOLS",
+            "Usages": [
+                "COAST",
+                "FARM",
+                "HUNTING",
+                "INDUSTRIAL",
+                "MILITARY",
+                "POLICE",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Radio_ANPRC68",
+            "Prefab": "73950FBA2D7DB5C5",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "TOOLS",
+            "Usages": [
+                "MILITARY",
+                "POLICE"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Radio_ANPRC77",
+            "Prefab": "9B6B61BB3FE3DFB0",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "TOOLS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Radio_R148",
+            "Prefab": "E1A5D4B878AA8980",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "TOOLS",
+            "Usages": [
+                "MILITARY",
+                "POLICE"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Watch_SandY184A",
+            "Prefab": "78ED4FEF62BBA728",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "TOOLS",
+            "Usages": [
+                "COAST",
+                "FARM",
+                "HUNTING",
+                "INDUSTRIAL",
+                "MILITARY",
+                "POLICE",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Watch_Vostok",
+            "Prefab": "6FD6C96121905202",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "TOOLS",
+            "Usages": [
+                "COAST",
+                "FARM",
+                "HUNTING",
+                "INDUSTRIAL",
+                "MILITARY",
+                "POLICE",
+                "TOWN"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "FieldDressing_US_01",
+            "Prefab": "A81F501D3EF6F38E",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "TOOLS",
+            "Usages": [
+                "MEDIC"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "FieldDressing_USSR_01",
+            "Prefab": "C3F1FA1E2EC2B345",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "TOOLS",
+            "Usages": [
+                "MEDIC"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "MorphineInjection_01",
+            "Prefab": "0D9A5DCF89AE7AA9",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "TOOLS",
+            "Usages": [
+                "MEDIC"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "SalineBag_US_01",
+            "Prefab": "00E36F41CA310E2A",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "TOOLS",
+            "Usages": [
+                "MEDIC"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "SalineBag_USSR_01",
+            "Prefab": "527D7C5D2E476BDC",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "TOOLS",
+            "Usages": [
+                "MEDIC"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Tourniquet_US_01",
+            "Prefab": "D70216B1B2889129",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "TOOLS",
+            "Usages": [
+                "MEDIC"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Tourniquet_USSR_01",
+            "Prefab": "80E75A71C29190DB",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "TOOLS",
+            "Usages": [
+                "MEDIC"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Bayonet_VZ58_v1",
+            "Prefab": "3F1B1BAD1F6DDC28",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Bayonet_VZ58_v2",
+            "Prefab": "F4B9ADFE20D0D6B8",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Bayonet_VZ58_v3",
+            "Prefab": "1125E1072C3541D3",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Bayonet_6Kh4",
+            "Prefab": "98C79F5FAE12F9B6",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Bayonet_M9",
+            "Prefab": "558117556F3880A8",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "FlashHider_AK74",
+            "Prefab": "4A815EB8B824974A",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "FlashHider_AKS74u",
+            "Prefab": "06D4C36A6D585275",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "FlashHider_M16",
+            "Prefab": "6288A1F1A5E3AC37",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Suppressor_M16",
+            "Prefab": "E52C9791E1554A5F",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Suppressor_PBS4",
+            "Prefab": "3B96FAC169E27037",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Optic_1P29",
+            "Prefab": "ACDF49FACD0701A8",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Optic_4x20",
+            "Prefab": "BD496EE1B40DC510",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Optic_AP2k",
+            "Prefab": "08286DDBB1F33FF1",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Optic_ARTII",
+            "Prefab": "D2018EDB1BBF4C88",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Optic_PGO7V3",
+            "Prefab": "E5E9DBBF3BFB88C6",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Optic_PSO1",
+            "Prefab": "C850A33226B8F9C1",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "DemoBlock_M112",
+            "Prefab": "33CBDE73AB48172A",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "DemoBlock_TSh400g",
+            "Prefab": "97064F8597F2D7BF",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Mine_M15AT",
+            "Prefab": "49FFE8F373F55960",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Mine_TM62M",
+            "Prefab": "D6EF54367CECE1D9",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Grenade_M67",
+            "Prefab": "E8F00BF730225B00",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Grenade_RGD5",
+            "Prefab": "645C73791ECA1698",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Smoke_ANM8HC",
+            "Prefab": "9DB69176CEF0EE97",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Smoke_RDG2",
+            "Prefab": "77EAE5E07DC4678A",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Smoke_M18_Green",
+            "Prefab": "D41D22DD1B8E921E",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Smoke_M18_Red",
+            "Prefab": "3343A055A83CB30D",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Smoke_M18_Violet",
+            "Prefab": "14C1A0F061D9DDEE",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Smoke_M18_Yellow",
+            "Prefab": "9BBDEE253A16CC66",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Handgun_M9",
+            "Prefab": "1353C6EAD1DCFE43",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY",
+                "POLICE"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Handgun_PM",
+            "Prefab": "C0F7DD85A86B2900",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY",
+                "POLICE"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Launcher_M72A3",
+            "Prefab": "9C5C20FB0E01E64F",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Launcher_RPG7",
+            "Prefab": "7A82FE978603F137",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "MG_M249",
+            "Prefab": "D2B48DEBEF38D7D7",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "MG_M60",
+            "Prefab": "D182DCDD72BF7E34",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "MG_PKM",
+            "Prefab": "A89BC9D55FFB4CD8",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "MG_RPK74",
+            "Prefab": "A7AF84C6C58BA3E8",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "MG_RPK74N",
+            "Prefab": "5F365605E36597FB",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "MG_UK59",
+            "Prefab": "026CE108BFB3EC03",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Rifle_AK74",
+            "Prefab": "FA5C25BF66A53DCF",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Rifle_AK74N",
+            "Prefab": "96DFD2E7E63B3386",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Rifle_AKS74U",
+            "Prefab": "BFEA719491610A45",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Rifle_AKS74UN",
+            "Prefab": "FA0E25CE35EE945F",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Rifle_M21",
+            "Prefab": "B31929F65F0D0279",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Rifle_M16A2",
+            "Prefab": "B31929F65F0D0279",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Rifle_M16A2_carbine",
+            "Prefab": "F97A4AC994231900",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Rifle_SVD",
+            "Prefab": "3EB02CDAD5F23C82",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Rifle_VZ58P",
+            "Prefab": "9C948630078D154D",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Rifle_VZ58V",
+            "Prefab": "443CEFF17E040B11",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_762x54_UK59_50rnd_4Ball_1Tracer",
+            "Prefab": "03094E059B554A9C",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_762x54_UK59_50rnd_Ball",
+            "Prefab": "BB6613EBCE484822",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_762x54_UK59_50rnd_Tracer",
+            "Prefab": "0AFA7580D190A36A",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_127x99_M2_100rnd_4AP_1APIT",
+            "Prefab": "C820846B0521423B",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_127x99_M2_100rnd_4AP_1Tracer",
+            "Prefab": "50A242E5D9742C62",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_127x99_M2_100rnd_4Ball_1Tracer",
+            "Prefab": "CC7F787C3ECF678F",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_127x99_M2_100rnd_AP",
+            "Prefab": "25CE9A2A7EAD5B9D",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_127x99_M2_100rnd_Ball",
+            "Prefab": "B8921B7BFE8CAEF0",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_127x99_M2_100rnd_Tracer",
+            "Prefab": "4068585808DF8DF2",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_145x114_KPVT_50rnd_4API_1APIT",
+            "Prefab": "8257B5AFDE7AE5CB",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_145x114_KPVT_50rnd_API",
+            "Prefab": "BFD6872B1C069136",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_145x114_KPVT_50rnd_APIT",
+            "Prefab": "EA806763FE4EDDDF",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_556x45_M249_200rnd_4Ball_1Tracer",
+            "Prefab": "06D722FC2666EB83",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_556x45_M249_200rnd_Ball",
+            "Prefab": "4FCBBDF274FD2157",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_556x45_M249_200rnd_Tracer",
+            "Prefab": "4EEDDB27C023B8B9",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_762x51_M60_100rnd_4AP_1Tracer",
+            "Prefab": "AAF51CFA75A9CF8B",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_762x51_M60_100rnd_4Ball_1Tracer",
+            "Prefab": "4D2C1E8F3A81F894",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_762x51_M60_100rnd_AP",
+            "Prefab": "75632A0CA07D3817",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_762x51_M60_100rnd_Ball",
+            "Prefab": "982F5BA41A3738CF",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_762x51_M60_100rnd_Tracer",
+            "Prefab": "AD8AB93729348C3E",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_762x51_M60_500rnd_2Ball_1Tracer",
+            "Prefab": "423D78F865E8AF8A",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_762x51_M60_500rnd_Ball",
+            "Prefab": "3D9AD4314FE34F5B",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_762x51_M60_500rnd_Tracer",
+            "Prefab": "F7D5504B665E1375",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_762x54_PK_100rnd_4Ball_1Tracer",
+            "Prefab": "E5E9C5897CF47F44",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_762x54_PK_100rnd_Ball",
+            "Prefab": "A6737DA00653A39C",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_762x54_PK_100rnd_Tracer",
+            "Prefab": "BEEA49E27174B224",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_762x54_PK_250rnd_2Ball_1Tracer",
+            "Prefab": "AFC7F529E6293E2A",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_762x54_PK_250rnd_4Ball_1Tracer",
+            "Prefab": "D8421F6E70B2FB4F",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_762x54_PK_250rnd_Ball",
+            "Prefab": "1C260E65B7F290BA",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Box_762x54_PK_250rnd_Tracer",
+            "Prefab": "B386EEE8AED8E386",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Magazine_545x39_AK_30rnd_Ball",
+            "Prefab": "BBB50A815A2F916B",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Magazine_545x39_AK_30rnd_Last_5Tracer",
+            "Prefab": "0A84AA5A3884176F",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Magazine_545x39_AK_30rnd_Tracer",
+            "Prefab": "E5912E45754CD421",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Magazine_545x39_RPK_45rnd_4Ball_1Tracer",
+            "Prefab": "D78C667F59829717",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Magazine_545x39_RPK_45rnd_Ball",
+            "Prefab": "BC74DAC891D48540",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Magazine_545x39_RPK_45rnd_Tracer",
+            "Prefab": "5897D01F41DB5D2D",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Magazine_556x45_STANAG_30rnd_M193_Ball",
+            "Prefab": "FB5EB0F6D447E858",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Magazine_556x45_STANAG_30rnd_M193_M196_Last_5Tracer",
+            "Prefab": "7ECA478D7C80ACC0",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Magazine_556x45_STANAG_30rnd_M196_Tracer",
+            "Prefab": "4575737B3D3A4505",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Magazine_556x45_STANAG_30rnd_M855_Ball",
+            "Prefab": "2EBF60EF24B108FC",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Magazine_556x45_STANAG_30rnd_M855_M856_Last_5Tracer",
+            "Prefab": "D8F2CA92583B23D3",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Magazine_556x45_STANAG_30rnd_M856_Tracer",
+            "Prefab": "A9A385FE1F7BF4BD",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Magazine_762x51_M14_20rnd_M61_AP",
+            "Prefab": "C319540BC96AE9BB",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Magazine_762x51_M14_20rnd_M62_Tracer",
+            "Prefab": "F7C9D35FB2AFADFF",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Magazine_762x51_M14_20rnd_M80",
+            "Prefab": "BCB5E5C608ECFF50",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Magazine_762x51_M14_20rnd_SpecialBall",
+            "Prefab": "627255315038152A",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Magazine_762x54_SVD_10rnd_7BZ3API",
+            "Prefab": "19600CCA33279D20",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Magazine_762x54_SVD_10rnd_LPS",
+            "Prefab": "77595CB9F596E6AC",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Magazine_762x54_SVD_10rnd_Sniper",
+            "Prefab": "9CCB46C6EE632C1A",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Magazine_762x54_SVD_10rnd_Tracer",
+            "Prefab": "4A3649DFF8A3F0E3",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Magazine_9x18_PM_8rnd_Ball",
+            "Prefab": "8B853CDD11BA916E",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Magazine_9x19_M9_15rnd_Ball",
+            "Prefab": "9C05543A503DB80E",
+            "Rotation": [
+                0.0,
+                0.0,
+                90.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER1",
+                "TIER2",
+                "TIER3",
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Ammo_Rocket_PG7VM",
+            "Prefab": "32E12D322E107F1C",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        },
+        {
+            "Name": "Ammo_Rocket_M72A3",
+            "Prefab": "79FA751EEBE25DDE",
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Nominal": 2,
+            "Minimum": 1,
+            "Lifetime": 14400,
+            "Restock": 3600,
+            "QuantityMax": -1,
+            "QuantityMin": -1,
+            "Category": "WEAPONS",
+            "Usages": [
+                "MILITARY"
+            ],
+            "Tiers": [
+                "TIER4"
+            ]
+        }
+    ]
+}

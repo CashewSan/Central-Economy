@@ -2,9 +2,10 @@ GenericEntity {
  ID "626B3C846EE806A7"
  components {
   CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
-   m_sConfigs {
-    "{71359C0802F4ADA6}Configs/CE_ItemData.conf"
-   }
+  }
+  RplComponent "{645F746B5AA158CA}" {
+  }
+  Hierarchy "{645F746B47AAF38C}" {
   }
  }
  coords 115.106 1.001 159.53

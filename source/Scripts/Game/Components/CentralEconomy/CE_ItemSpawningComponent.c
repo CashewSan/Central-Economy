@@ -21,7 +21,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	protected bool m_bHasItemSpawned = false;
 	protected bool m_bHasItemDespawned = false;
 	protected bool m_bHasItemRestockEnded;
-	protected CE_ItemData m_ItemSpawned;
+	protected CE_ItemDataNEW m_ItemSpawned;
 
 	//------------------------------------------------------------------------------------------------
 	protected void ConnectToLootSpawningSystem()
@@ -83,7 +83,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	void RestockReset(CE_ItemData item)
+	void RestockReset(CE_ItemDataNEW item)
 	{
 		m_bHasItemRestockEnded = true;
 		
@@ -125,19 +125,19 @@ class CE_ItemSpawningComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	CE_ItemData GetItemSpawned()
+	CE_ItemDataNEW GetItemSpawned()
 	{
 		return m_ItemSpawned;
 	}
-		
+	
 	//------------------------------------------------------------------------------------------------
-	void SetItemSpawned(notnull CE_ItemData item)
+	void SetItemSpawned(notnull CE_ItemDataNEW item)
 	{
 		m_ItemSpawned = item;
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	protected void RemoveItemSpawned(notnull CE_ItemData item)
+	protected void RemoveItemSpawned(notnull CE_ItemDataNEW item)
 	{
 		CE_ItemSpawningSystem updateSystem = CE_ItemSpawningSystem.GetInstance();
 		

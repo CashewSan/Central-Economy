@@ -33,6 +33,7 @@ $grp PolylineShapeEntity {
    CE_TierTriggerArea : "{D5442362B659903E}Prefabs/Areas/Tiers/TierArea_Tier1.et" {
     coords 0 0 0
     DrawShape 1
+    m_Tier TIER4
    }
   }
  }
@@ -151,34 +152,34 @@ $grp GenericEntity : "{85C71F17C37D274C}Prefabs/Structures/BuildingParts/Entry/E
  }
 }
 $grp GenericEntity : "{E99195907C7200AD}Prefabs/Spawners/LootSpawner_Weapons.et" {
- {
+ LootSpawner_Weapons_645F760283418BD3 {
   coords 165.991 1.454 110.535
  }
- {
+ LootSpawner_Weapons_645F760283418DB7 {
   coords 164.839 1.454 110.599
  }
- {
+ LootSpawner_Weapons_645F760283418C30 {
   coords 163.506 1.454 110.668
  }
- {
+ LootSpawner_Weapons_645F760283418C9F {
   coords 162.331 1.454 110.634
  }
- {
+ LootSpawner_Weapons_645F760283418F37 {
   coords 161.138 1.454 110.579
  }
- {
+ LootSpawner_Weapons_645F760283418F54 {
   coords 161.18 1.454 111.909
  }
- {
+ LootSpawner_Weapons_645F760283418FDC {
   coords 162.472 1.454 111.87
  }
- {
+ LootSpawner_Weapons_645F760283418E76 {
   coords 163.665 1.454 111.81
  }
- {
+ LootSpawner_Weapons_645F760283418E94 {
   coords 164.907 1.454 111.734
  }
- {
+ LootSpawner_Weapons_645F76028341B11D {
   coords 166.009 1.454 111.733
  }
 }
