@@ -66,4 +66,5 @@ The spawn parameters of each item are configured through a Json in the server's 
 - Some items that spawn may be invisible to the player (it's actually just clipping into the structure, will fix as it's reported).
 - Some spawns don't spawn items (this is due to the lack of diversity in the CE_ItemData.json, not many vanilla items in the game tbh).
 - Some items are very commonly spawning (this is also due to the lack of diversity in the CE_ItemData.json, not many vanilla items in the game tbh. But also, double-check your nominal and minimum numbers in comparison to comparable items).
+
 **IF YOU EXPERIENCE ANY BUGS OR ISSUES, PLEASE REPORT THEM IN [ISSUES](https://github.com/CashewSan/Central-Economy/issues) HERE ON GITHUB OR DIRECTLY TO ME IN THE [ARMA DISCORD](https://discord.com/channels/105462288051380224/1301291009635909664) @CASHEWSAN**
