@@ -56,13 +56,13 @@ The spawn parameters of each item are configured through a Json in the server's 
 - The spawning system is currently set to run every 15 seconds on server launch to quickly populate item spawns that are empty, doing a single tier at a time. Then after the initial spawns are performed by the spawning system, it increases to check every 120 seconds (2 minutes).
 - While the spawning system is performing it's initial run through of item spawns, it's **normal** to see minor stuttering of server performance. After the initial run through, the stuttering is virtually unnoticeable or nonexistent, even.
 
-## Planned Features
+## PLANNED FEATURES
 - Add default Arland map tiers.
 - Add ability for Dynamic Event loot spawns.
 - Add ability to check for items inside storages.
 - Further bug fixes and optimizations.
 
-## Known Issues
+## KNOWN ISSUES
 - Some items that spawn may be invisible to the player (it's actually just clipping into the structure, will fix as it's reported).
 - Some spawns don't spawn items (this is due to the lack of diversity in the CE_ItemData.json, not many vanilla items in the game tbh).
 - Some items are very commonly spawning (this is also due to the lack of diversity in the CE_ItemData.json, not many vanilla items in the game tbh. But also, double-check your nominal and minimum numbers in comparison to comparable items).
