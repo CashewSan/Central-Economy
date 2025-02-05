@@ -7,6 +7,7 @@
 <br/><br/>
 
 <div align="left">
+  
 ## SUMMARY
 Central Economy allows for the dynamic spawning of items around a terrain with a master config file!
 This mod overrides almost EVERY structure in ARMA Reforger to add a usage zone and item spawners to it. As well, it creates a new version of the Everon terrain to add tier zones for item spawning.
