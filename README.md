@@ -55,3 +55,15 @@ The spawn parameters of each item are configured through a Json in the server's 
 - I *HIGHLY* recommend adjusting the nominal and minimum values for each item in the CE_ItemData.json, otherwise it'll be a poor experience as everything by default has an equal chance of spawning in their respective locations.
 - The spawning system is currently set to run every 15 seconds on server launch to quickly populate item spawns that are empty, doing a single tier at a time. Then after the initial spawns are performed by the spawning system, it increases to check every 120 seconds (2 minutes).
 - While the spawning system is performing it's initial run through of item spawns, it's **normal** to see minor stuttering of server performance. After the initial run through, the stuttering is virtually unnoticeable or nonexistent, even.
+
+## Planned Features
+- Add default Arland map tiers.
+- Add ability for Dynamic Event loot spawns.
+- Add ability to check for items inside storages.
+- Further bug fixes and optimizations.
+
+## Known Issues
+- Some items that spawn may be invisible to the player (it's actually just clipping into the structure, will fix as it's reported).
+- Some spawns don't spawn items (this is due to the lack of diversity in the CE_ItemData.json, not many vanilla items in the game tbh).
+- Some items are very commonly spawning (this is also due to the lack of diversity in the CE_ItemData.json, not many vanilla items in the game tbh. But also, double-check your nominal and minimum numbers in comparison to comparable items).
+**IF YOU EXPERIENCE ANY BUGS OR ISSUES, PLEASE REPORT THEM IN [ISSUES](https://github.com/CashewSan/Central-Economy/issues) HERE ON GITHUB OR DIRECTLY TO ME IN THE [ARMA DISCORD](https://discord.com/channels/105462288051380224/1301291009635909664) @CASHEWSAN**
