@@ -10,7 +10,8 @@ class CE_ItemSpawningSystem : GameSystem
 	
 	protected CE_WorldValidationComponent 			m_WorldValidationComponent;													// component added to world's gamemode for verification
 	//protected ref Resource 						m_itemDataConfig 			= BaseContainerTools.LoadContainer("{71359C0802F4ADA6}Configs/CE_ItemDataNEW.conf" /*"{F373DD039FDB3699}Configs/Testing/CE_ItemData_TEST.conf"*/); // config for item data
-	protected ref CE_ItemDataJson					m_Config;
+	//protected ref CE_ItemDataJson					m_Config;
+	protected ref CE_LootSpawningConfig				m_Config;
 	protected CE_ELootTier						m_currentSpawnTier;															// current spawn tier that items are spawning at
 	
 	protected ref RandomGenerator 				m_randomGen 					= new RandomGenerator();
@@ -105,6 +106,7 @@ class CE_ItemSpawningSystem : GameSystem
 		
 		m_aItems.Clear();
 		
+		/*
 		foreach(CE_ItemDataNEW item: m_Config.m_ItemData)
 		{
 			// basically, if missing any variable besides rotation or quantity min and max
@@ -132,6 +134,7 @@ class CE_ItemSpawningSystem : GameSystem
 			
 			m_aItems.Insert(item);
 		}
+		*/
 		
 		Print(m_aItems.Count());
 	}
