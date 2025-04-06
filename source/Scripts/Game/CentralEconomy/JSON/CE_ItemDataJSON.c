@@ -1,3 +1,4 @@
+/*
 class CE_ItemDataNEW : Managed
 {
 	string m_sName;

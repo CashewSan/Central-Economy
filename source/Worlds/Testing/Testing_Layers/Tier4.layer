@@ -33,7 +33,6 @@ $grp PolylineShapeEntity {
    CE_TierTriggerArea : "{D5442362B659903E}Prefabs/Areas/Tiers/TierArea_Tier1.et" {
     coords 0 0 0
     DrawShape 1
-    m_Tier TIER4
    }
   }
  }
