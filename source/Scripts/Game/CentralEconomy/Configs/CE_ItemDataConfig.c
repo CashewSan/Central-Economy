@@ -38,9 +38,6 @@ class CE_ItemData
 	CE_ELootTier m_ItemTiers;
 }
 
-
-
-
 [BaseContainerProps(configRoot: true)]
 class CE_ItemDataConfig
 {
