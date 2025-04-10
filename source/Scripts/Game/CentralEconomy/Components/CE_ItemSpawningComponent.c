@@ -1,3 +1,5 @@
+// Big thanks to Wyqydsyq for help with handling the vehicle features <3
+
 [ComponentEditorProps(category: "CentralEconomy/Components", description: "")]
 class CE_ItemSpawningComponentClass : ScriptComponentClass
 {
@@ -8,9 +10,6 @@ class CE_ItemSpawningComponent : ScriptComponent
 	[Attribute(ResourceName.Empty, UIWidgets.Object, "Item data config to be used (If set, universal config through CE_WorldValidationComponent will be ignored)", "conf", category: "Item Data")]
 	ref CE_ItemDataConfig m_ItemDataConfig;
 	
-	[Attribute(ResourceName.Empty, UIWidgets.ResourcePickerThumbnail, desc: "Prefab to be spawned (If set, Item Data Config will be ignored)", "et", category: "Item Data")]
-    ResourceName m_sPrefab;
-	
 	[Attribute("", UIWidgets.Flags, desc: "Category of loot spawn", enums: ParamEnumArray.FromEnum(CE_ELootCategory), category: "Item Data")]
 	CE_ELootCategory m_Categories;
 	
@@ -20,13 +19,16 @@ class CE_ItemSpawningComponent : ScriptComponent
 	protected CE_ELootUsage 								m_Usage; 																	// gets set by the Usage Trigger Area Entity
 	protected CE_ELootTier 								m_Tier; 																		// gets set by the Tier Trigger Area Entity
 		
-	protected bool 										m_bHasItemSpawned 						= false;
-	protected bool 										m_bHasItemDespawned 						= false;
-	protected bool										m_bHasItemRestockEnded;
+	protected bool 										m_bHasItemSpawned 						= false;								// has item spawned on the spawner?
+	protected bool 										m_bWasItemDespawned 						= false;								// was the item despawned by the system?
+	protected bool 										m_bHasItemBeenTaken 						= false;								// has item been taken from spawner?
+	protected bool										m_bHasItemRestockEnded					= false;								// has item restock timer ended?
 	
-	protected CE_ItemData 								m_ItemSpawned;
+	protected CE_ItemData 								m_ItemSpawned;																// item that has spawned on the spawner
 	
-	//protected ref CE_ItemDataConfig						m_Config;																	// config containing item data (typically in server profile folder)
+	protected CE_ItemDataConfig							m_Config;																	// the set config for spawner, can be unique config or universal config
+	
+	protected CE_ItemSpawningSystem 						m_SpawningSystem;															// the spawning game system used to control spawning
 
 	//------------------------------------------------------------------------------------------------
 	void CE_ItemSpawningComponent(IEntityComponentSource src, IEntity ent, IEntity parent)
@@ -44,22 +46,20 @@ class CE_ItemSpawningComponent : ScriptComponent
 	//------------------------------------------------------------------------------------------------
 	protected void ConnectToLootSpawningSystem()
 	{
-		CE_ItemSpawningSystem updateSystem = CE_ItemSpawningSystem.GetInstance();
-		
-		if (!updateSystem)
+		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
+		if (!m_SpawningSystem)
 			return;
 		
-		updateSystem.Register(this);
+		m_SpawningSystem.Register(this);
 		
-		if (m_sPrefab)
+		GetGame().GetCallqueue().CallLater(LoadConfig, 100);
+	}
+	
+	protected void LoadConfig()
+	{
+		if (m_ItemDataConfig)
 		{
-			return;
-		}
-		else if (m_ItemDataConfig)
-		{
-			//m_Config = m_ItemDataConfig;
-			
-			GetItemToSpawn(m_ItemDataConfig);
+			m_Config = m_ItemDataConfig;
 		}
 		else
 		{
@@ -71,9 +71,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 				{
 					if(m_WorldValidationComponent.GetWorldProcessed())
 					{	
-						//m_Config = m_WorldValidationComponent.GetItemDataConfig();
-						
-						GetItemToSpawn(m_WorldValidationComponent.GetItemDataConfig());
+						m_Config = m_WorldValidationComponent.GetItemDataConfig();
 					}
 					else
 					{
@@ -88,68 +86,223 @@ class CE_ItemSpawningComponent : ScriptComponent
 				}
 			}
 		}
+		
+		if (!m_Config)
+			Print("[CentralEconomy] NO ITEM DATA CONFIG FOUND!", LogLevel.ERROR);
 	}
 
 	//------------------------------------------------------------------------------------------------
 	protected void DisconnectFromLootSpawningSystem()
 	{
-		CE_ItemSpawningSystem updateSystem = CE_ItemSpawningSystem.GetInstance();
-		
-		if (!updateSystem)
+		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
+		if (!m_SpawningSystem)
 			return;
 
-		updateSystem.Unregister(this);
+		m_SpawningSystem.Unregister(this);
 	}
 	
+	//------------------------------------------------------------------------------------------------
+	void RequestItemToSpawn()
+	{
+		CE_ItemData item = GetItemToSpawn(m_Config);
+		if (!item)
+			return;
+		
+		GetGame().GetCallqueue().CallLater(TryToSpawnItem, 5000, false, item);
+	}
+	
+	//------------------------------------------------------------------------------------------------
 	CE_ItemData GetItemToSpawn(CE_ItemDataConfig config)
 	{
-		CE_ItemSpawningSystem updateSystem = CE_ItemSpawningSystem.GetInstance();
-		
-		if (!updateSystem)
+		if (!m_SpawningSystem)
 			return null;
 
-		return updateSystem.GetItem(config, m_Tier, m_Usage);
+		return m_SpawningSystem.GetItem(config, m_Tier, m_Usage);
 	}
 	
+	//------------------------------------------------------------------------------------------------
+	protected void TryToSpawnItem(CE_ItemData item)
+	{
+		if (!Replication.IsServer())
+			return;
+		
+		if (HasItemSpawned())
+		{		
+			return;
+		}
+		else if (m_Config)
+		{
+			IEntity spawnEntity = GetOwner();
+		
+			vector m_WorldTransform[4];
+			spawnEntity.GetWorldTransform(m_WorldTransform);
+			
+			EntitySpawnParams params();
+			m_WorldTransform[3][1] = m_WorldTransform[3][1] + 0.200;
+			params.Transform = m_WorldTransform;
+			
+			Resource m_Resource = Resource.Load(item.m_sPrefab);
+		
+			IEntity newEnt = GetGame().SpawnEntityPrefab(m_Resource, GetGame().GetWorld(), params);
+			
+			newEnt.SetYawPitchRoll(item.m_vItemRotation + spawnEntity.GetYawPitchRoll());
+			SCR_EntityHelper.SnapToGround(newEnt);
+			
+			SetItemQuantity(newEnt, item.m_iQuantityMinimum, item.m_iQuantityMaximum);
+			
+			SetItemSpawned(item);
+			
+			if (m_SpawningSystem)
+				m_SpawningSystem.GetSpawnedItems().Insert(item);
+			
+			// if item is a vehicle, or at least categorized as one (vehicles don't have a hierarchy component, so adding as child doesn't work)
+			if (item.m_ItemCategory == CE_ELootCategory.VEHICLES
+			|| item.m_ItemCategory == CE_ELootCategory.VEHICLES_SEA
+			|| item.m_ItemCategory == CE_ELootCategory.VEHICLES_AIR)
+			{
+				// Vehicle enter/leave event
+		        EventHandlerManagerComponent eventHandler = EventHandlerManagerComponent.Cast(newEnt.FindComponent(EventHandlerManagerComponent));
+		        if (eventHandler)
+		        {
+		           	eventHandler.RegisterScriptHandler("OnCompartmentEntered", this, OnVehicleActivated, true, false);
+					eventHandler.RegisterScriptHandler("OnCompartmentLeft", this, OnVehicleDeactivated, true, false);
+					OnItemSpawned(newEnt);
+		        }
+			}
+			else
+				spawnEntity.AddChild(newEnt, -1, EAddChildFlags.NONE);
+		}
+	}
 	
+	//------------------------------------------------------------------------------------------------
+	// Performs checks on the new entity to see if it has quantity min and max set above 0, then determines which item type it is to then set quantity of the item (I.E. ammo count in a magazine)
+	protected void SetItemQuantity(IEntity ent, int quantMin, int quantMax)
+	{
+		float quantity;
+		
+		if (quantMin > 0 && quantMax > 0)
+		{
+			float randomFloat = Math.RandomIntInclusive(quantMin, quantMax) / 100; // convert it to a decimal to multiplied later on
+			
+			quantity = Math.Round(randomFloat * 10) / 10;
+		}
+		else
+			return;
+		
+		ResourceName prefabName = ent.GetPrefabData().GetPrefabName();
+		
+		if (prefabName.Contains("Magazine_") || prefabName.Contains("Box_"))
+		{
+			MagazineComponent magComp = MagazineComponent.Cast(ent.FindComponent(MagazineComponent));
+			
+			magComp.SetAmmoCount(magComp.GetMaxAmmoCount() * quantity);
+		}
+		else if (prefabName.Contains("Jerrycan_"))
+		{
+			FuelManagerComponent fuelManager = FuelManagerComponent.Cast(ent.FindComponent(FuelManagerComponent));
+			
+			array<BaseFuelNode> outNodes = {};
+			
+			fuelManager.GetFuelNodesList(outNodes);
+			
+			foreach (BaseFuelNode fuelNode : outNodes)
+			{
+				fuelNode.SetFuel(fuelNode.GetMaxFuel() * quantity);
+			}
+		}
+		else
+			return;
+	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	/*
 	//------------------------------------------------------------------------------------------------
 	override void OnChildAdded(IEntity parent, IEntity child)
 	{
-		SetHasItemSpawned(true);
-		
-		m_bHasItemDespawned = false;
-		
-		m_bHasItemRestockEnded = false;
-		
-		GetGame().GetCallqueue().CallLater(DespawnItem, GetItemSpawned().m_iLifetime * 1000, false, child);
+		OnItemSpawned(child);
 	}
 	
 	//------------------------------------------------------------------------------------------------
 	override void OnChildRemoved(IEntity parent, IEntity child)
 	{
-		GetGame().GetCallqueue().CallLater(RemoveItemSpawned, 100, false, GetItemSpawned());
-		GetGame().GetCallqueue().CallLater(idkwhattocallthis, 100, false);
-		GetGame().GetCallqueue().CallLater(RestockReset, GetItemSpawned().m_iRestock * 1000, false, GetItemSpawned());
-		
-		CE_ItemSpawningSystem updateSystem = CE_ItemSpawningSystem.GetInstance();
-		
-		updateSystem.GetItemsNotRestocked().Insert(GetItemSpawned());
+		OnItemTaken(child);
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	protected void idkwhattocallthis()
+	protected void OnVehicleActivated(IEntity vehicle, BaseCompartmentManagerComponent mgr, IEntity occupant, int managerId, int slotID)
 	{
-		if (m_bHasItemDespawned)
+		GetGame().GetCallqueue().CallLater(DeferredVehicleRespawnCheck, 10000, false, vehicle);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	protected void OnVehicleDeactivated(IEntity vehicle, BaseCompartmentManagerComponent mgr, IEntity occupant, int managerId, int slotID)
+	{
+		GetGame().GetCallqueue().Remove(DeferredVehicleRespawnCheck);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	protected void DeferredVehicleRespawnCheck(IEntity vehicle)
+	{
+		const float VEHICLE_RESPAWN_DISTANCE_THRESHOLD = 2000.0;
+		
+		float distance = vector.DistanceSq(vehicle.GetOrigin(), GetOwner().GetOrigin());
+		
+		PrintFormat("MO: DeferredVehicleRespawnCheck(%1, %2): Distance from spawn: %3", this, vehicle, distance);
+		if (distance > VEHICLE_RESPAWN_DISTANCE_THRESHOLD)
+		{
+			// vehicle has moved away from spawn so enable respawning it
+			PrintFormat("MO: DeferredVehicleRespawnCheck(%1, %2): Enabling respawn", this, vehicle);
+			
+			OnItemTaken(vehicle);
+		}
+		else
+		{
+			// if vehicle hasn't moved far enough, do another check until it has moved far enough
+			GetGame().GetCallqueue().CallLater(DeferredVehicleRespawnCheck, 10000, false, vehicle);
+		}
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	protected void OnItemSpawned(IEntity item)
+	{
+		SetHasItemSpawned(true);
+		SetWasItemDespawned(false);
+		SetHasItemRestockEnded(false);
+		SetHasItemBeenTaken(false);
+		
+		GetGame().GetCallqueue().CallLater(DespawnItem, GetItemSpawned().m_iLifetime * 1000, false, item);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	protected void OnItemTaken(IEntity item)
+	{
+		SetHasItemBeenTaken(true);
+		
+		GetGame().GetCallqueue().CallLater(SpawnerReset, 100, false);
+		GetGame().GetCallqueue().CallLater(RemoveItemSpawnedFromSystem, 100, false, GetItemSpawned());
+		GetGame().GetCallqueue().CallLater(RestockReset, GetItemSpawned().m_iRestock * 1000, false, GetItemSpawned());
+		
+		GetGame().GetCallqueue().Remove(DespawnItem);
+		
+		if (m_SpawningSystem)
+			m_SpawningSystem.GetItemsNotRestockReady().Insert(GetItemSpawned(), GetItemSpawned().m_sName);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	void DespawnItem(IEntity item)
+	{
+		if (item && !WasItemDespawned() && !HasItemBeenTaken())
+		{
+			SCR_EntityHelper.DeleteEntityAndChildren(item);
+		
+			SetWasItemDespawned(true);
+			
+			GetGame().GetCallqueue().CallLater(RemoveItemSpawnedFromSystem, 100, false, GetItemSpawned());
+		}
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	protected void SpawnerReset()
+	{
+		if (WasItemDespawned())
 		{
 			SetHasItemSpawned(false);
 		}
@@ -162,43 +315,28 @@ class CE_ItemSpawningComponent : ScriptComponent
 	//------------------------------------------------------------------------------------------------
 	protected void RestockReset(CE_ItemData item)
 	{
-		m_bHasItemRestockEnded = true;
+		SetHasItemRestockEnded(true);
 		
-		CE_ItemSpawningSystem updateSystem = CE_ItemSpawningSystem.GetInstance();
-		
-		updateSystem.GetItemsNotRestocked().RemoveItem(item);
+		if (m_SpawningSystem)
+			m_SpawningSystem.GetItemsNotRestockReady().Remove(item);
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	protected void RemoveItemSpawned(notnull CE_ItemData item)
+	protected void RemoveItemSpawnedFromSystem(notnull CE_ItemData item)
 	{
-		CE_ItemSpawningSystem updateSystem = CE_ItemSpawningSystem.GetInstance();
-		
-		int index = updateSystem.GetSpawnedItems().Find(item);
-		
-		updateSystem.GetSpawnedItems().RemoveOrdered(index);
-		
-		GetGame().GetCallqueue().Remove(DespawnItem);
-	}
-	
-	void DespawnItem(IEntity item)
-	{
-		if (item)
+		if (m_SpawningSystem)
 		{
-			if (!m_bHasItemDespawned)
-			{
-				SCR_EntityHelper.DeleteEntityAndChildren(item);
+			int index = m_SpawningSystem.GetSpawnedItems().Find(item);
 			
-				m_bHasItemDespawned = true;
-			}
+			m_SpawningSystem.GetSpawnedItems().RemoveOrdered(index);
 		}
 	}
-	*/
 	
+	// Component Stuff
 	//------------------------------------------------------------------------------------------------
-	override void OnPostInit(IEntity owner)
+	void ~CE_ItemSpawningComponent(IEntityComponentSource src, IEntity ent, IEntity parent)
 	{
-		SetEventMask(owner, EntityEvent.INIT);
+		DisconnectFromLootSpawningSystem();
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -209,8 +347,9 @@ class CE_ItemSpawningComponent : ScriptComponent
 		super.OnDelete(owner);
 	}
 	
+	// Getters/Setters
 	//------------------------------------------------------------------------------------------------
-	bool GetHasItemSpawned()
+	bool HasItemSpawned()
 	{
 		return m_bHasItemSpawned;
 	}
@@ -219,6 +358,42 @@ class CE_ItemSpawningComponent : ScriptComponent
 	void SetHasItemSpawned(bool spawned)
 	{
 		m_bHasItemSpawned = spawned;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	bool HasItemRestockEnded()
+	{
+		return m_bHasItemRestockEnded;
+	}
+		
+	//------------------------------------------------------------------------------------------------
+	void SetHasItemRestockEnded(bool ended)
+	{
+		m_bHasItemRestockEnded = ended;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	bool WasItemDespawned()
+	{
+		return m_bWasItemDespawned;
+	}
+		
+	//------------------------------------------------------------------------------------------------
+	void SetWasItemDespawned(bool despawned)
+	{
+		m_bWasItemDespawned = despawned;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	bool HasItemBeenTaken()
+	{
+		return m_bHasItemBeenTaken;
+	}
+		
+	//------------------------------------------------------------------------------------------------
+	void SetHasItemBeenTaken(bool taken)
+	{
+		m_bHasItemBeenTaken = taken;
 	}
 	
 	//------------------------------------------------------------------------------------------------

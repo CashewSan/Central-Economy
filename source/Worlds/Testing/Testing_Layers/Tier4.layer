@@ -20,7 +20,7 @@ $grp PolylineShapeEntity {
   {
    CommentEntity {
     coords 26.649 2.136 -2.692
-    m_Comment "TIER 4"
+    m_Comment "TIER 1"
     m_Size 0.5
     m_Color 0 0 0
     m_ScaleByDistance 1
@@ -68,11 +68,12 @@ $grp PolylineShapeEntity {
    }
    CE_UsageTriggerArea : "{DABFAB24173C5C1B}Prefabs/Areas/Usages/UsageArea_Military.et" {
     coords 0 0 0
+    ShapeColor 0 0.502 0.1255 1
    }
   }
  }
  {
-  coords 151.032 1 101.477
+  coords 168.703 1.027 122.115
   Points {
    ShapePoint "{629F0148E39F240A}" {
     Position 0 0 0
@@ -90,7 +91,7 @@ $grp PolylineShapeEntity {
   IsClosed 1
   {
    CommentEntity {
-    coords -7.513 1.339 4.756
+    coords -11.011 2.197 2.774
     m_Comment "USAGE: TOWN"
     m_Size 0.1
     m_Color 0 0 0
@@ -102,42 +103,10 @@ $grp PolylineShapeEntity {
     m_BackgroundTransparency 0
    }
    CE_UsageTriggerArea : "{78155C5236E20EEB}Prefabs/Areas/Usages/UsageArea_Town.et" {
-    coords 0 0 0
-   }
-  }
- }
- {
-  coords 134.022 1 101.632
-  Points {
-   ShapePoint "{629F0148E39F240A}" {
-    Position 0 0 0
-   }
-   ShapePoint "{629F0148E39F364E}" {
-    Position -15.892 0 0
-   }
-   ShapePoint "{629F0148E4D9F3CB}" {
-    Position -15.137 0 9.98
-   }
-   ShapePoint "{629F0148E7224D98}" {
-    Position 0.462 0 10.202
-   }
-  }
-  IsClosed 1
-  {
-   CommentEntity {
-    coords -8.944 1.23 4.557
-    m_Comment "USAGE: MEDIC"
-    m_Size 0.1
-    m_Color 0 0 0
-    m_ScaleByDistance 1
-    m_FaceCamera 1
-    m_VisibleOverall 1
-    m_TextBackground 1
-    m_BackgroundColor 0.969 1 0
-    m_BackgroundTransparency 0
-   }
-   CE_UsageTriggerArea : "{78C65334B44B19D9}Prefabs/Areas/Usages/UsageArea_Medic.et" {
-    coords 0 0 0
+    coords -23.224 0 -5.371
+    TriggerShapeType "Oriented Bounding Box"
+    BoxMins 0 -3 0
+    BoxMaxs 25 15 15
    }
   }
  }

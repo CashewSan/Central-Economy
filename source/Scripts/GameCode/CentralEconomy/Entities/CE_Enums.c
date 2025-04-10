@@ -7,6 +7,9 @@ enum CE_ELootCategory
 	FOOD =				1 << 3,
 	TOOLS =				1 << 4,
 	WEAPONS =			1 << 5,
+	VEHICLES =			1 << 6,
+	VEHICLES_SEA =		1 << 7,
+	VEHICLES_AIR =		1 << 8,
 };
 
 enum CE_ELootUsage

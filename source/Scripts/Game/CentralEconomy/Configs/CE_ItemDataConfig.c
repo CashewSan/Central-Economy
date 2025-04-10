@@ -1,7 +1,7 @@
 [BaseContainerProps(), BaseContainerCustomTitleField("m_sName")]
 class CE_ItemData
 {
-	[Attribute("", UIWidgets.Auto, desc: "Name of Item")]
+	[Attribute("", UIWidgets.Auto, desc: "Name of Item **MUST BE UNIQUE**")]
 	string m_sName;
 	
     [Attribute(ResourceName.Empty, UIWidgets.ResourcePickerThumbnail, desc: "Prefab to be spawned", "et")]
