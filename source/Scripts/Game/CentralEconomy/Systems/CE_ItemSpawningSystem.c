@@ -15,8 +15,12 @@ class CE_ItemSpawningSystem : GameSystem
 	
 	protected float 									m_fTimer						= 0;												// timer for check interval
 	
-	protected int									CHECK_INTERVAL				= 0; 											// how often the item spawning system will run (in seconds)
+	protected int									m_iCheckInterval				= 0; 											// how often the item spawning system will run (in seconds)
 	protected int 									m_iSpawningCount 			= 0;												// count for spawning limit
+	protected int 									m_iSpawningLimit 			= 30; 											// process only up to this amount of spawning at a time (helps performance)
+	protected int 									m_iItemSpawnCount 			= 0; 											// count for item limit
+	protected int 									m_iItemSpawnLimit 			= 20; 											// process only up to this amount of items at a time (helps performance)
+	
 	
 	//------------------------------------------------------------------------------------------------
 	override void OnInit()
@@ -24,7 +28,7 @@ class CE_ItemSpawningSystem : GameSystem
 		if (m_aComponents.IsEmpty())
 			Enable(false);
 		
-		CHECK_INTERVAL = 20;
+		m_iCheckInterval = 60;
 		
 		//SetCurrentSpawnTier(CE_ELootTier.TIER1);
 		
@@ -38,7 +42,7 @@ class CE_ItemSpawningSystem : GameSystem
 
 		m_fTimer += timeSlice;
 
-		if (m_fTimer < CHECK_INTERVAL)
+		if (m_fTimer < 0.1)
 			return;
 
 		m_fTimer = 0;
@@ -68,6 +72,8 @@ class CE_ItemSpawningSystem : GameSystem
 				SetNextSpawnTier();
 				
 				TryToSpawnItems();
+				
+				//Print("Spawner Count: " + m_aComponents.Count());
 			}
 		}
 	}
@@ -75,27 +81,36 @@ class CE_ItemSpawningSystem : GameSystem
 	//------------------------------------------------------------------------------------------------
 	protected void TryToSpawnItems()
 	{
-		//Print("Spawner Count: " + m_aComponents.Count());
+		m_iItemSpawnCount = 0;
 		
-		int itemCount = 0; // count for item limit
-		int itemLimit = 20; // process only up to this amount of items at a time (helps performance)
-		int spawningLimit = 30; // process only up to this amount of spawning at a time (helps performance)
-		// so essentially, it'll process 20 items per 0.5 seconds 30 times. Potential for up to 600 items spawning in 15 seconds
+		if (m_WorldValidationComponent)
+		{
+			m_iSpawningLimit = m_WorldValidationComponent.m_iSpawningLimit;
+			m_iItemSpawnLimit = m_WorldValidationComponent.m_iItemSpawnLimit;
+		}
+		else
+		{
+			// Default values
+			m_iSpawningLimit = 600;
+			m_iItemSpawnLimit = 1;
+		}
 		
 		foreach (CE_ItemSpawningComponent comp : m_aComponents)
 		{
-			if (itemCount >= itemLimit)
+			if (m_iItemSpawnCount >= m_iItemSpawnLimit)
 			{
-				if (m_iSpawningCount <= spawningLimit)
+				/*
+ 				if (m_iSpawningCount <= m_iSpawningLimit)
 				{
-					GetGame().GetCallqueue().CallLater(TryToSpawnItems, 500);
+					GetGame().GetCallqueue().CallLater(TryToSpawnItems, 100);
 					m_iSpawningCount++;
 				}
 				else
 				{
-					//Print("SPAWNING LIMIT REACHED");
+					Print("SPAWNING LIMIT REACHED");
 					m_iSpawningCount = 0;
 				}
+				*/
 				
 				//Print("ITEM LIMIT REACHED");
 				break;
@@ -105,12 +120,18 @@ class CE_ItemSpawningSystem : GameSystem
 			{		
 				continue;
 			}
-			else if (comp.GetSpawnerTier() == GetCurrentSpawnTier())
+			else/* if (comp.GetSpawnerTier() == GetCurrentSpawnTier())*/
 			{
+				//Print("RequestingItem");
+				
 				comp.RequestItemToSpawn();
 				
-				itemCount++;
+				m_iItemSpawnCount++;
 			}
+			/*
+			else
+				continue;
+			*/
 		}
 	}
 	
@@ -145,14 +166,14 @@ class CE_ItemSpawningSystem : GameSystem
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	CE_ItemData GetItem(CE_ItemDataConfig config, CE_ELootTier tier, CE_ELootUsage usage)
+	CE_ItemData GetItem(CE_ItemDataConfig config, CE_ELootTier tier, CE_ELootUsage usage, CE_ELootCategory category)
 	{
 		CE_ItemData itemChosen;
 		
 		if (!config || !config.m_ItemData || config.m_ItemData.IsEmpty())
 			return null;
 		
-		array<ref CE_Item> items = GenerateItems(config.m_ItemData, tier, usage);
+		array<ref CE_Item> items = GenerateItems(config.m_ItemData, tier, usage, category);
 		
 		if (items.IsEmpty())
 			itemChosen = null;
@@ -196,7 +217,7 @@ class CE_ItemSpawningSystem : GameSystem
 	*/
 	
 	//------------------------------------------------------------------------------------------------
-	protected array<ref CE_Item> GenerateItems(array<ref CE_ItemData> items, CE_ELootTier tier, CE_ELootUsage usage)
+	protected array<ref CE_Item> GenerateItems(array<ref CE_ItemData> items, CE_ELootTier tier, CE_ELootUsage usage, CE_ELootCategory category)
 	{
 		array<ref CE_Item> itemsToSpawn = {};
 		
@@ -218,9 +239,12 @@ class CE_ItemSpawningSystem : GameSystem
 			}
 			else if (itemData.m_ItemTiers & tier 
 			&& itemData.m_ItemUsages & usage 
-			&& itemData.m_ItemTiers & GetCurrentSpawnTier()) // matches tier & usage of spawner component, as well as current tier being processed
+			&& itemData.m_ItemCategory & category
+			/*&& itemData.m_ItemTiers & GetCurrentSpawnTier()*/) // matches tier, usage, and category of spawner component, as well as current tier being processed
 			{
 				int itemTargetCount = DetermineItemTargetCount(itemData, itemData.m_iMinimum, itemData.m_iNominal);
+				
+				//Print("Item: " + itemData.m_sName + ", TargetCount: " + itemTargetCount);
 				
 				if (itemTargetCount != 0)
 				{
@@ -314,15 +338,19 @@ class CE_ItemSpawningSystem : GameSystem
 			}
 		}
 		
+		//Print("Probability Total: " + probabilityTotal);
+		
 		return itemData;
     }
 	
 	//------------------------------------------------------------------------------------------------
 	protected bool Probability(float probability, float probabilityTotal)
 	{
+		//Print("Probability: " + probability);
+		
 		int random = m_randomGen.RandInt(0, probabilityTotal);
 		
-		return random <= probability;
+		return probability >= random;
 	}
 	
 	// Getters, Setters
@@ -361,8 +389,12 @@ class CE_ItemSpawningSystem : GameSystem
 			
 			case CE_ELootTier.TIER4:
 				SetCurrentSpawnTier(CE_ELootTier.TIER1);
-				if (CHECK_INTERVAL != 120)
-					CHECK_INTERVAL = 120;
+			/*
+				if (m_iCheckInterval == 60)
+					m_iCheckInterval = 90;
+				else if (m_iCheckInterval == 90)
+					m_iCheckInterval = 120;
+			*/
 				break;
 		}
 	}

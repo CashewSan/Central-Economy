@@ -36,6 +36,59 @@ class CE_ItemData
 	
 	[Attribute("", UIWidgets.Flags, desc: "Which tier(s) will this item spawn in?", enums: ParamEnumArray.FromEnum(CE_ELootTier))]
 	CE_ELootTier m_ItemTiers;
+	
+	//################################################################################################
+	//! Codec methods
+	//------------------------------------------------------------------------------------------------
+	static void Encode(SSnapSerializerBase snapshot, ScriptCtx hint, ScriptBitSerializer packet) 
+	{
+		snapshot.Serialize(packet, 9);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	static bool Decode(ScriptBitSerializer packet, ScriptCtx hint, SSnapSerializerBase snapshot) 
+	{
+		return snapshot.Serialize(packet, 9);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	static bool SnapCompare(SSnapSerializerBase lhs, SSnapSerializerBase rhs, ScriptCtx hint) 
+	{
+		return lhs.CompareSnapshots(rhs, 9);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	static bool PropCompare(CE_ItemData prop, SSnapSerializerBase snapshot, ScriptCtx hint) 
+	{
+		return snapshot.Compare(prop.m_sName, 4) 
+			&& snapshot.Compare(prop.m_sPrefab, 4)
+			&& snapshot.Compare(prop.m_vItemRotation, 12) 
+			&& snapshot.Compare(prop.m_sPrefab, 4) 
+			&& snapshot.Compare(prop.m_sPrefab, 4) 
+			&& snapshot.Compare(prop.m_sPrefab, 4) 
+			&& snapshot.Compare(prop.m_sPrefab, 4);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	static bool Extract(CE_ItemData prop, ScriptCtx hint, SSnapSerializerBase snapshot) 
+	{
+		//snapshot.SerializeBytes(prop.iVal, 4);
+		//snapshot.SerializeBytes(prop.fVal, 4);
+		//snapshot.SerializeBytes(prop.bVal, 1);
+
+		return true;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	static bool Inject(SSnapSerializerBase snapshot, ScriptCtx hint, CE_ItemData prop) 
+	{
+		//snapshot.SerializeBytes(prop.iVal, 4);
+		//snapshot.SerializeBytes(prop.fVal, 4);
+		//snapshot.SerializeBytes(prop.bVal, 1);
+
+		return true;
+	}
+	//################################################################################################
 }
 
 [BaseContainerProps(configRoot: true)]

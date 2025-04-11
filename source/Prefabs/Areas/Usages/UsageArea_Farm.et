@@ -6,6 +6,7 @@ CE_UsageTriggerArea : "{543394677EC58B92}Prefabs/Areas/Usages/UsageArea_Base.et"
  BoxMins -13 -2 -9
  BoxMaxs 12 12 9
  "Polyline Height" 10
+ DrawShape 0
  UpdatePeriod 1
  m_Usage FARM
 }

@@ -34,7 +34,7 @@ SCR_FactionManager FactionManager_USxUSSR : "{589540B35EBA8CDC}Prefabs/MP/Manage
 RadioManagerEntity RadioManager : "{B8E09FAB91C4ECCD}Prefabs/Radio/RadioManager.et" {
  coords 7114.537 74.066 6406
 }
-SCR_BaseGameMode GameModeSF : "{ECEEDB2D3737204B}Prefabs/ScenarioFramework/GameModeSF.et" {
+SCR_BaseGameMode GameModeSF : "{ECEEDB2D3737204B}Prefabs/Systems/ScenarioFramework/GameModeSF.et" {
  components {
   CE_WorldValidationComponent "{62B90C568891D6AD}" {
   }
@@ -47,7 +47,7 @@ SCR_BaseGameMode GameModeSF : "{ECEEDB2D3737204B}Prefabs/ScenarioFramework/GameM
 ScriptedChatEntity ScriptedChatEntity : "{F69BC912AC8236F9}Prefabs/MP/ScriptedChatEntity.et" {
  coords 7114.537 73.598 6408
 }
-SCR_BaseTaskManager TaskManager : "{1AC69CD7907FB4F8}Prefabs/ScenarioFramework/Tasks/TaskManager.et" {
+SCR_BaseTaskManager TaskManager : "{1AC69CD7907FB4F8}Prefabs/Systems/ScenarioFramework/Tasks/TaskManager.et" {
  coords 7114.537 74.769 6403
  {
   CommentEntity {
@@ -77,13 +77,13 @@ SCR_LoadoutManager LoadoutManager_USxUSSR : "{97EF4C1A41F63DDB}Prefabs/MP/Manage
   }
  }
 }
-GenericEntity Area1 : "{C72F956E4AC6A6E7}Prefabs/ScenarioFramework/Components/Area.et" {
+GenericEntity Area1 : "{C72F956E4AC6A6E7}Prefabs/Systems/ScenarioFramework/Components/Area.et" {
  coords 4569.262 18.133 10734.819
  {
-  GenericEntity Layer1 : "{5F9FFF4BF027B3A3}Prefabs/ScenarioFramework/Components/Layer.et" {
+  GenericEntity Layer1 : "{5F9FFF4BF027B3A3}Prefabs/Systems/ScenarioFramework/Components/Layer.et" {
    coords 0 0 0
    {
-    GenericEntity Slot1 : "{AA01691FDC4E9167}Prefabs/ScenarioFramework/Components/Slot.et" {
+    GenericEntity Slot1 : "{AA01691FDC4E9167}Prefabs/Systems/ScenarioFramework/Components/Slot.et" {
      components {
       SCR_ScenarioFrameworkSlotBase "{5A22E1D67E712EC8}" {
        m_sObjectToSpawn "{5A2220DD0C16958B}Prefabs/MP/Spawning/SpawnPoint_US.et"
@@ -94,4 +94,12 @@ GenericEntity Area1 : "{C72F956E4AC6A6E7}Prefabs/ScenarioFramework/Components/Ar
    }
   }
  }
+}
+GenericEntity LootSpawner_Vehicles_6515348DD3A2427D : "{EF5366EC75D39FF9}Prefabs/Spawners/LootSpawner_Vehicles.et" {
+ components {
+  CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
+   m_ItemUsage TOWN
+  }
+ }
+ coords 9703.354 12.197 1555.979
 }

@@ -7,8 +7,11 @@ class CE_ItemSpawningComponentClass : ScriptComponentClass
 
 class CE_ItemSpawningComponent : ScriptComponent
 {
-	[Attribute(ResourceName.Empty, UIWidgets.Object, "Item data config to be used (If set, universal config through CE_WorldValidationComponent will be ignored)", "conf", category: "Item Data")]
+	[Attribute(ResourceName.Empty, UIWidgets.Object, "Item data config to be used (If set, universal config through CE_WorldValidationComponent will be ignored!)", "conf", category: "Item Data")]
 	ref CE_ItemDataConfig m_ItemDataConfig;
+	
+	[Attribute("", UIWidgets.ComboBox, desc: "Which spawn location(s) will this item spawn in? (If set, universal usages set throughout the world will be ignored!)", enums: ParamEnumArray.FromEnum(CE_ELootUsage), category: "Item Data")]
+	CE_ELootUsage m_ItemUsage;
 	
 	[Attribute("", UIWidgets.Flags, desc: "Category of loot spawn", enums: ParamEnumArray.FromEnum(CE_ELootCategory), category: "Item Data")]
 	CE_ELootCategory m_Categories;
@@ -23,6 +26,9 @@ class CE_ItemSpawningComponent : ScriptComponent
 	protected bool 										m_bWasItemDespawned 						= false;								// was the item despawned by the system?
 	protected bool 										m_bHasItemBeenTaken 						= false;								// has item been taken from spawner?
 	protected bool										m_bHasItemRestockEnded					= false;								// has item restock timer ended?
+	
+	[RplProp()]
+	protected CE_ItemData 								m_ItemChosen;																// item that was chosen to spawn
 	
 	protected CE_ItemData 								m_ItemSpawned;																// item that has spawned on the spawner
 	
@@ -39,6 +45,10 @@ class CE_ItemSpawningComponent : ScriptComponent
 		if (!m_Tier)
 			m_Tier = CE_ELootTier.TIER1;
 		
+		if (m_ItemUsage)
+		{
+			m_Usage = m_ItemUsage;
+		}
 		if (!m_Usage)
 			m_Usage = CE_ELootUsage.TOWN;
 	}
@@ -108,7 +118,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 		if (!item)
 			return;
 		
-		GetGame().GetCallqueue().CallLater(TryToSpawnItem, 5000, false, item);
+		GetGame().GetCallqueue().CallLater(TryToSpawnItem, 100, false, item);
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -117,7 +127,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 		if (!m_SpawningSystem)
 			return null;
 
-		return m_SpawningSystem.GetItem(config, m_Tier, m_Usage);
+		return m_SpawningSystem.GetItem(config, m_Tier, m_Usage, m_Categories);
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -132,6 +142,11 @@ class CE_ItemSpawningComponent : ScriptComponent
 		}
 		else if (m_Config)
 		{
+			m_ItemChosen = item;
+			
+			Rpc(RpcAsk_TryToSpawnItem, SCR_PlayerController.GetLocalPlayerId());
+			
+			/*
 			IEntity spawnEntity = GetOwner();
 		
 			vector m_WorldTransform[4];
@@ -152,6 +167,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 			
 			SetItemSpawned(item);
 			
+			m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
 			if (m_SpawningSystem)
 				m_SpawningSystem.GetSpawnedItems().Insert(item);
 			
@@ -171,8 +187,55 @@ class CE_ItemSpawningComponent : ScriptComponent
 			}
 			else
 				spawnEntity.AddChild(newEnt, -1, EAddChildFlags.NONE);
+			*/
 		}
 	}
+	
+	//------------------------------------------------------------------------------------------------
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	protected void RpcAsk_TryToSpawnItem()
+	{
+		IEntity spawnEntity = GetOwner();
+	
+		vector m_WorldTransform[4];
+		spawnEntity.GetWorldTransform(m_WorldTransform);
+		
+		EntitySpawnParams params();
+		m_WorldTransform[3][1] = m_WorldTransform[3][1] + 0.200;
+		params.Transform = m_WorldTransform;
+		
+		Resource m_Resource = Resource.Load(m_ItemChosen.m_sPrefab);
+	
+		IEntity newEnt = GetGame().SpawnEntityPrefab(m_Resource, GetGame().GetWorld(), params);
+		
+		newEnt.SetYawPitchRoll(m_ItemChosen.m_vItemRotation + spawnEntity.GetYawPitchRoll());
+		SCR_EntityHelper.SnapToGround(newEnt);
+		
+		SetItemQuantity(newEnt, m_ItemChosen.m_iQuantityMinimum, m_ItemChosen.m_iQuantityMaximum);
+		
+		SetItemSpawned(m_ItemChosen);
+		
+		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
+		if (m_SpawningSystem)
+			m_SpawningSystem.GetSpawnedItems().Insert(m_ItemChosen);
+		
+		// if item is a vehicle, or at least categorized as one (vehicles don't have a hierarchy component, so adding as child doesn't work)
+		if (m_ItemChosen.m_ItemCategory == CE_ELootCategory.VEHICLES
+		|| m_ItemChosen.m_ItemCategory == CE_ELootCategory.VEHICLES_SEA
+		|| m_ItemChosen.m_ItemCategory == CE_ELootCategory.VEHICLES_AIR)
+		{
+			// Vehicle enter/leave event
+	        EventHandlerManagerComponent eventHandler = EventHandlerManagerComponent.Cast(newEnt.FindComponent(EventHandlerManagerComponent));
+	        if (eventHandler)
+	        {
+	           	eventHandler.RegisterScriptHandler("OnCompartmentEntered", this, OnVehicleActivated, true, false);
+				eventHandler.RegisterScriptHandler("OnCompartmentLeft", this, OnVehicleDeactivated, true, false);
+				OnItemSpawned(newEnt);
+	        }
+		}
+		else
+			spawnEntity.AddChild(newEnt, -1, EAddChildFlags.NONE);
+	};
 	
 	//------------------------------------------------------------------------------------------------
 	// Performs checks on the new entity to see if it has quantity min and max set above 0, then determines which item type it is to then set quantity of the item (I.E. ammo count in a magazine)
@@ -268,7 +331,10 @@ class CE_ItemSpawningComponent : ScriptComponent
 		SetHasItemRestockEnded(false);
 		SetHasItemBeenTaken(false);
 		
-		GetGame().GetCallqueue().CallLater(DespawnItem, GetItemSpawned().m_iLifetime * 1000, false, item);
+		if (!GetItemSpawned() || !GetItemSpawned().m_iLifetime)
+			GetGame().GetCallqueue().CallLater(DespawnItem, 14400 * 1000, false, item);
+		else
+			GetGame().GetCallqueue().CallLater(DespawnItem, GetItemSpawned().m_iLifetime * 1000, false, item);
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -278,7 +344,11 @@ class CE_ItemSpawningComponent : ScriptComponent
 		
 		GetGame().GetCallqueue().CallLater(SpawnerReset, 100, false);
 		GetGame().GetCallqueue().CallLater(RemoveItemSpawnedFromSystem, 100, false, GetItemSpawned());
-		GetGame().GetCallqueue().CallLater(RestockReset, GetItemSpawned().m_iRestock * 1000, false, GetItemSpawned());
+		
+		if (!GetItemSpawned() || !GetItemSpawned().m_iRestock)
+			GetGame().GetCallqueue().CallLater(RestockReset, 3600 * 1000, false, GetItemSpawned()); // default restock
+		else
+			GetGame().GetCallqueue().CallLater(RestockReset, GetItemSpawned().m_iRestock * 1000, false, GetItemSpawned());
 		
 		GetGame().GetCallqueue().Remove(DespawnItem);
 		
@@ -324,6 +394,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	//------------------------------------------------------------------------------------------------
 	protected void RemoveItemSpawnedFromSystem(notnull CE_ItemData item)
 	{
+		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
 		if (m_SpawningSystem)
 		{
 			int index = m_SpawningSystem.GetSpawnedItems().Find(item);

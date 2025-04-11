@@ -150,4 +150,34 @@ $grp GenericEntity : "{E99195907C7200AD}Prefabs/Spawners/LootSpawner_Weapons.et"
  LootSpawner_Weapons_645F76028341B11D {
   coords 166.009 1.454 111.733
  }
+ LootSpawner_Weapons_645F76028341B11D2 {
+  coords 159.247 1.454 107.329
+ }
+ LootSpawner_Weapons_645F760283418BD2 {
+  coords 159.229 1.454 106.131
+ }
+ LootSpawner_Weapons_645F760283418C2 {
+  coords 156.744 1.454 106.264
+ }
+ LootSpawner_Weapons_645F760283418C9F2 {
+  coords 155.569 1.454 106.23
+ }
+ LootSpawner_Weapons_645F760283418DB2 {
+  coords 158.077 1.454 106.195
+ }
+ LootSpawner_Weapons_645F760283418E2 {
+  coords 156.903 1.454 107.406
+ }
+ LootSpawner_Weapons_645F760283418E3 {
+  coords 158.145 1.454 107.33
+ }
+ LootSpawner_Weapons_645F760283418F2 {
+  coords 154.376 1.454 106.175
+ }
+ LootSpawner_Weapons_645F760283418F3 {
+  coords 154.418 1.454 107.505
+ }
+ LootSpawner_Weapons_645F760283418FDC2 {
+  coords 155.71 1.454 107.466
+ }
 }

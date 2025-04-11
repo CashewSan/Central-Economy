@@ -5,6 +5,12 @@ class CE_WorldValidationComponentClass: SCR_BaseGameModeComponentClass
 
 class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 {
+	[Attribute("1", UIWidgets.EditBox, desc: "How many potential item spawns to process per 0.1 seconds (Higher is more performance heavy)", category: "Spawn Rate")]
+	int m_iItemSpawnLimit;
+	
+	[Attribute("600", UIWidgets.EditBox, desc: "How many times to process the items spawn limit gradually (I.E. If set to 1000, it'll process the above amount of items every 0.05 seconds up to 100 times. Meaning the items will spawn gradually over 20 seconds) (Higher is more performance heavy and may interfere with check interval if higher)", category: "Spawn Rate")]
+	int m_iSpawningLimit;
+	
 	protected bool 											m_Processed 			= false;
 	
 	protected ref CE_ItemDataConfig 							m_ItemDataConfig;
@@ -77,20 +83,23 @@ class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 	//------------------------------------------------------------------------------------------------
 	protected void CreateConfig()
 	{
-		if (!FileIO.FileExists(DB_DIR))
+		if (Replication.IsServer()) // only create the config or load config if you're the server
 		{
-			FileIO.MakeDirectory(DB_DIR);
+			if (!FileIO.FileExists(DB_DIR))
+			{
+				FileIO.MakeDirectory(DB_DIR);
+			}
+			
+			ResourceName m_sDb = string.Format("%1/%2", DB_DIR, DB_NAME_CONF);
+			
+			CE_ItemDataConfig obj = new CE_ItemDataConfig();
+			
+			Resource holder = BaseContainerTools.CreateContainerFromInstance(obj);
+			
+			BaseContainerTools.SaveContainer(holder.GetResource().ToBaseContainer(), m_sDb);
+			
+			Print("[CentralEconomy] CE_ItemData.conf created! Please add items to config and then restart server!");
 		}
-		
-		ResourceName m_sDb = string.Format("%1/%2", DB_DIR, DB_NAME_CONF);
-		
-		CE_ItemDataConfig obj = new CE_ItemDataConfig();
-		
-		Resource holder = BaseContainerTools.CreateContainerFromInstance(obj);
-		
-		BaseContainerTools.SaveContainer(holder.GetResource().ToBaseContainer(), m_sDb);
-		
-		Print("[CentralEconomy] CE_ItemData.conf created! Please add items to config and then restart server!");
 	}
 	
 	// Old stuff that I'm keeping for reference
