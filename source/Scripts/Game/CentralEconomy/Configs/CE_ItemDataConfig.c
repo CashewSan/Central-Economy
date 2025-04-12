@@ -37,58 +37,110 @@ class CE_ItemData
 	[Attribute("", UIWidgets.Flags, desc: "Which tier(s) will this item spawn in?", enums: ParamEnumArray.FromEnum(CE_ELootTier))]
 	CE_ELootTier m_ItemTiers;
 	
+	/*
 	//################################################################################################
 	//! Codec methods
 	//------------------------------------------------------------------------------------------------
+	static bool Extract(CE_ItemData instance, ScriptCtx hint, SSnapSerializerBase snapshot) 
+	{
+		snapshot.SerializeString(instance.m_sName);
+		snapshot.SerializeString(instance.m_sPrefab);
+		snapshot.SerializeVector(instance.m_vItemRotation);
+		snapshot.SerializeInt(instance.m_iNominal);
+		snapshot.SerializeInt(instance.m_iMinimum);
+		snapshot.SerializeInt(instance.m_iLifetime);
+		snapshot.SerializeInt(instance.m_iRestock);
+		snapshot.SerializeInt(instance.m_iQuantityMinimum);
+		snapshot.SerializeInt(instance.m_iQuantityMaximum);
+		snapshot.SerializeInt(instance.m_ItemCategory);
+		snapshot.SerializeInt(instance.m_ItemUsages);
+		snapshot.SerializeInt(instance.m_ItemTiers);
+		
+		return true;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	static bool Inject(SSnapSerializerBase snapshot, ScriptCtx hint, CE_ItemData instance) 
+	{
+		snapshot.SerializeString(instance.m_sName);
+		snapshot.SerializeString(instance.m_sPrefab);
+		snapshot.SerializeVector(instance.m_vItemRotation);
+		snapshot.SerializeInt(instance.m_iNominal);
+		snapshot.SerializeInt(instance.m_iMinimum);
+		snapshot.SerializeInt(instance.m_iLifetime);
+		snapshot.SerializeInt(instance.m_iRestock);
+		snapshot.SerializeInt(instance.m_iQuantityMinimum);
+		snapshot.SerializeInt(instance.m_iQuantityMaximum);
+		snapshot.SerializeInt(instance.m_ItemCategory);
+		snapshot.SerializeInt(instance.m_ItemUsages);
+		snapshot.SerializeInt(instance.m_ItemTiers);
+
+		return true;
+	}
+	
+	//------------------------------------------------------------------------------------------------
 	static void Encode(SSnapSerializerBase snapshot, ScriptCtx hint, ScriptBitSerializer packet) 
 	{
-		snapshot.Serialize(packet, 9);
+		snapshot.EncodeString(packet); // m_sName
+		snapshot.EncodeString(packet); // m_sPrefab
+		snapshot.EncodeVector(packet); // m_vItemRotation
+		snapshot.EncodeInt(packet); // m_iNominal
+		snapshot.EncodeInt(packet); // m_iMinimum
+		snapshot.EncodeInt(packet); // m_iLifetime
+		snapshot.EncodeInt(packet); // m_iRestock
+		snapshot.EncodeInt(packet); // m_iQuantityMinimum
+		snapshot.EncodeInt(packet); // m_iQuantityMaximum
+		snapshot.EncodeInt(packet); // m_ItemCategory
+		snapshot.EncodeInt(packet); // m_ItemUsages
+		snapshot.EncodeInt(packet); // m_ItemTiers
 	}
 	
 	//------------------------------------------------------------------------------------------------
 	static bool Decode(ScriptBitSerializer packet, ScriptCtx hint, SSnapSerializerBase snapshot) 
 	{
-		return snapshot.Serialize(packet, 9);
+		snapshot.DecodeString(packet); // m_sName
+		snapshot.DecodeString(packet); // m_sPrefab
+		snapshot.DecodeVector(packet); // m_vItemRotation
+		snapshot.DecodeInt(packet); // m_iNominal
+		snapshot.DecodeInt(packet); // m_iMinimum
+		snapshot.DecodeInt(packet); // m_iLifetime
+		snapshot.DecodeInt(packet); // m_iRestock
+		snapshot.DecodeInt(packet); // m_iQuantityMinimum
+		snapshot.DecodeInt(packet); // m_iQuantityMaximum
+		snapshot.DecodeInt(packet); // m_ItemCategory
+		snapshot.DecodeInt(packet); // m_ItemUsages
+		snapshot.DecodeInt(packet); // m_ItemTiers
+		
+		return true;
 	}
 	
 	//------------------------------------------------------------------------------------------------
 	static bool SnapCompare(SSnapSerializerBase lhs, SSnapSerializerBase rhs, ScriptCtx hint) 
 	{
-		return lhs.CompareSnapshots(rhs, 9);
+		return lhs.CompareStringSnapshots(rhs) // m_sName
+			&& lhs.CompareStringSnapshots(rhs) // m_sPrefab
+			&& lhs.CompareSnapshots(rhs, 12) // m_vItemRotation
+			&& lhs.CompareSnapshots(rhs, 4+4+4+4+4+4+4+4+4); // m_iNominal, m_iMinimum, m_iLifetime, m_iRestock, m_iQuantityMinimum, m_iQuantityMaximum, m_ItemCategory, m_ItemUsages, m_ItemTiers
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	static bool PropCompare(CE_ItemData prop, SSnapSerializerBase snapshot, ScriptCtx hint) 
+	static bool PropCompare(CE_ItemData instance, SSnapSerializerBase snapshot, ScriptCtx hint) 
 	{
-		return snapshot.Compare(prop.m_sName, 4) 
-			&& snapshot.Compare(prop.m_sPrefab, 4)
-			&& snapshot.Compare(prop.m_vItemRotation, 12) 
-			&& snapshot.Compare(prop.m_sPrefab, 4) 
-			&& snapshot.Compare(prop.m_sPrefab, 4) 
-			&& snapshot.Compare(prop.m_sPrefab, 4) 
-			&& snapshot.Compare(prop.m_sPrefab, 4);
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	static bool Extract(CE_ItemData prop, ScriptCtx hint, SSnapSerializerBase snapshot) 
-	{
-		//snapshot.SerializeBytes(prop.iVal, 4);
-		//snapshot.SerializeBytes(prop.fVal, 4);
-		//snapshot.SerializeBytes(prop.bVal, 1);
-
-		return true;
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	static bool Inject(SSnapSerializerBase snapshot, ScriptCtx hint, CE_ItemData prop) 
-	{
-		//snapshot.SerializeBytes(prop.iVal, 4);
-		//snapshot.SerializeBytes(prop.fVal, 4);
-		//snapshot.SerializeBytes(prop.bVal, 1);
-
-		return true;
+		return snapshot.CompareString(instance.m_sName) 
+			&& snapshot.CompareString(instance.m_sPrefab)
+			&& snapshot.CompareVector(instance.m_vItemRotation) 
+			&& snapshot.CompareInt(instance.m_iNominal) 
+			&& snapshot.CompareInt(instance.m_iMinimum) 
+			&& snapshot.CompareInt(instance.m_iLifetime) 
+			&& snapshot.CompareInt(instance.m_iRestock)
+			&& snapshot.CompareInt(instance.m_iQuantityMinimum)
+			&& snapshot.CompareInt(instance.m_iQuantityMaximum)
+			&& snapshot.CompareInt(instance.m_ItemCategory)
+			&& snapshot.CompareInt(instance.m_ItemUsages)
+			&& snapshot.CompareInt(instance.m_ItemTiers);
 	}
 	//################################################################################################
+	*/
 }
 
 [BaseContainerProps(configRoot: true)]

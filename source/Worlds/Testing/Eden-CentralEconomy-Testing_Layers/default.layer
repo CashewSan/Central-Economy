@@ -17,7 +17,7 @@ PerceptionManager PerceptionManager : "{028DAEAD63E056BE}Prefabs/World/Game/Perc
  coords 7114.537 73.832 6407
 }
 SCR_FactionManager FactionManager_USxUSSR : "{589540B35EBA8CDC}Prefabs/MP/Managers/Factions/FactionManager_USxUSSR.et" {
- coords 7114.537 74.535 6404
+ coords 7114.537 103.319 6281.017
  {
   CommentEntity {
    coords 0 1 0
@@ -32,23 +32,20 @@ SCR_FactionManager FactionManager_USxUSSR : "{589540B35EBA8CDC}Prefabs/MP/Manage
  }
 }
 RadioManagerEntity RadioManager : "{B8E09FAB91C4ECCD}Prefabs/Radio/RadioManager.et" {
- coords 7114.537 74.066 6406
+ coords 7114.537 103.057 6283.017
 }
 SCR_BaseGameMode GameModeSF : "{ECEEDB2D3737204B}Prefabs/Systems/ScenarioFramework/GameModeSF.et" {
  components {
-  CE_WorldValidationComponent "{62B90C568891D6AD}" {
-  }
-  SCR_SupportStationManagerComponent "{5B0AB3A852FCBF7E}" {
-   Enabled 0
+  CE_WorldValidationComponent "{65174A6200291F4C}" {
   }
  }
- coords 7114.537 75.238 6401
+ coords 7114.537 103.771 6278.017
 }
 ScriptedChatEntity ScriptedChatEntity : "{F69BC912AC8236F9}Prefabs/MP/ScriptedChatEntity.et" {
- coords 7114.537 73.598 6408
+ coords 7114.537 102.785 6285.017
 }
 SCR_BaseTaskManager TaskManager : "{1AC69CD7907FB4F8}Prefabs/Systems/ScenarioFramework/Tasks/TaskManager.et" {
- coords 7114.537 74.769 6403
+ coords 7114.537 103.491 6280.017
  {
   CommentEntity {
    coords 0 1 0
@@ -63,7 +60,7 @@ SCR_BaseTaskManager TaskManager : "{1AC69CD7907FB4F8}Prefabs/Systems/ScenarioFra
  }
 }
 SCR_LoadoutManager LoadoutManager_USxUSSR : "{97EF4C1A41F63DDB}Prefabs/MP/Managers/Loadouts/LoadoutManager_USxUSSR.et" {
- coords 7114.537 74.301 6405
+ coords 7114.537 103.198 6282.017
  {
   CommentEntity {
    coords 0 1 0
@@ -94,12 +91,4 @@ GenericEntity Area1 : "{C72F956E4AC6A6E7}Prefabs/Systems/ScenarioFramework/Compo
    }
   }
  }
-}
-GenericEntity LootSpawner_Vehicles_6515348DD3A2427D : "{EF5366EC75D39FF9}Prefabs/Spawners/LootSpawner_Vehicles.et" {
- components {
-  CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
-   m_ItemUsage TOWN
-  }
- }
- coords 9703.354 12.197 1555.979
 }

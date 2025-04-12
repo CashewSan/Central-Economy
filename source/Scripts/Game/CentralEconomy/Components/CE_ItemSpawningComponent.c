@@ -10,10 +10,10 @@ class CE_ItemSpawningComponent : ScriptComponent
 	[Attribute(ResourceName.Empty, UIWidgets.Object, "Item data config to be used (If set, universal config through CE_WorldValidationComponent will be ignored!)", "conf", category: "Item Data")]
 	ref CE_ItemDataConfig m_ItemDataConfig;
 	
-	[Attribute("", UIWidgets.ComboBox, desc: "Which spawn location(s) will this item spawn in? (If set, universal usages set throughout the world will be ignored!)", enums: ParamEnumArray.FromEnum(CE_ELootUsage), category: "Item Data")]
+	[Attribute(ResourceName.Empty, UIWidgets.ComboBox, desc: "Which spawn location(s) will this item spawn in? (If set, universal usages set throughout the world will be ignored!)", enums: ParamEnumArray.FromEnum(CE_ELootUsage), category: "Item Data")]
 	CE_ELootUsage m_ItemUsage;
 	
-	[Attribute("", UIWidgets.Flags, desc: "Category of loot spawn", enums: ParamEnumArray.FromEnum(CE_ELootCategory), category: "Item Data")]
+	[Attribute(ResourceName.Empty, UIWidgets.Flags, desc: "Category of loot spawn", enums: ParamEnumArray.FromEnum(CE_ELootCategory), category: "Item Data")]
 	CE_ELootCategory m_Categories;
 	
 	[Attribute("1800000", UIWidgets.EditBox, desc: "Time (in seconds) it takes for the spawner to reset after spawned item was taken from it. Helps prevent loot camping.", category: "Item Data")] // default set to 1800000 seconds (30 minutes)
@@ -27,9 +27,9 @@ class CE_ItemSpawningComponent : ScriptComponent
 	protected bool 										m_bHasItemBeenTaken 						= false;								// has item been taken from spawner?
 	protected bool										m_bHasItemRestockEnded					= false;								// has item restock timer ended?
 	
-	[RplProp()]
-	protected CE_ItemData 								m_ItemChosen;																// item that was chosen to spawn
+	protected ref array<ref CE_ItemData>					m_aItemData								= new array<ref CE_ItemData>;			// CE_ItemData array, item data gets inserted from config item data
 	
+	protected CE_ItemData 								m_ItemChosen;																// item chosen to spawn
 	protected CE_ItemData 								m_ItemSpawned;																// item that has spawned on the spawner
 	
 	protected CE_ItemDataConfig							m_Config;																	// the set config for spawner, can be unique config or universal config
@@ -49,7 +49,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 		{
 			m_Usage = m_ItemUsage;
 		}
-		if (!m_Usage)
+		else if (!m_Usage)
 			m_Usage = CE_ELootUsage.TOWN;
 	}
 	
@@ -70,6 +70,14 @@ class CE_ItemSpawningComponent : ScriptComponent
 		if (m_ItemDataConfig)
 		{
 			m_Config = m_ItemDataConfig;
+			
+			if (m_Config)
+			{
+				foreach (CE_ItemData itemData : m_Config.m_ItemData)
+				{
+					m_aItemData.Insert(itemData);
+				}
+			}
 		}
 		else
 		{
@@ -82,6 +90,16 @@ class CE_ItemSpawningComponent : ScriptComponent
 					if(m_WorldValidationComponent.GetWorldProcessed())
 					{	
 						m_Config = m_WorldValidationComponent.GetItemDataConfig();
+						
+						if (m_Config)
+						{
+							foreach (CE_ItemData itemData : m_Config.m_ItemData)
+							{
+								m_aItemData.Insert(itemData);
+							}
+						}
+						
+						//Print("Config Item Count: " + m_Config.m_ItemData.Count());
 					}
 					else
 					{
@@ -112,26 +130,23 @@ class CE_ItemSpawningComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	void RequestItemToSpawn()
+	CE_ItemData RequestItemToSpawn()
 	{
-		CE_ItemData item = GetItemToSpawn(m_Config);
-		if (!item)
-			return;
-		
-		GetGame().GetCallqueue().CallLater(TryToSpawnItem, 100, false, item);
+		return GetItemToSpawn(m_aItemData);
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	CE_ItemData GetItemToSpawn(CE_ItemDataConfig config)
+	CE_ItemData GetItemToSpawn(array<ref CE_ItemData> itemDataArray)
 	{
+		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
 		if (!m_SpawningSystem)
 			return null;
 
-		return m_SpawningSystem.GetItem(config, m_Tier, m_Usage, m_Categories);
+		return m_SpawningSystem.GetItem(itemDataArray, m_Tier, m_Usage, m_Categories);
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	protected void TryToSpawnItem(CE_ItemData item)
+	void TryToSpawnItem(CE_ItemData item)
 	{
 		if (!Replication.IsServer())
 			return;
@@ -140,13 +155,10 @@ class CE_ItemSpawningComponent : ScriptComponent
 		{		
 			return;
 		}
-		else if (m_Config)
+		else if (item)
 		{
-			m_ItemChosen = item;
+			//Print("Asking To Spawn");
 			
-			Rpc(RpcAsk_TryToSpawnItem, SCR_PlayerController.GetLocalPlayerId());
-			
-			/*
 			IEntity spawnEntity = GetOwner();
 		
 			vector m_WorldTransform[4];
@@ -169,7 +181,13 @@ class CE_ItemSpawningComponent : ScriptComponent
 			
 			m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
 			if (m_SpawningSystem)
-				m_SpawningSystem.GetSpawnedItems().Insert(item);
+			{
+				if (!m_SpawningSystem.GetSpawnedItems().Contains(item))
+					m_SpawningSystem.GetSpawnedItems().Insert(item);
+				
+				m_SpawningSystem.SetSpawnedItemCount(m_SpawningSystem.GetSpawnedItemCount() + 1);
+				m_SpawningSystem.GetComponentsWithoutItem().RemoveItem(this);
+			}
 			
 			// if item is a vehicle, or at least categorized as one (vehicles don't have a hierarchy component, so adding as child doesn't work)
 			if (item.m_ItemCategory == CE_ELootCategory.VEHICLES
@@ -186,59 +204,14 @@ class CE_ItemSpawningComponent : ScriptComponent
 		        }
 			}
 			else
+			{
 				spawnEntity.AddChild(newEnt, -1, EAddChildFlags.NONE);
-			*/
+			}
 		}
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
-	protected void RpcAsk_TryToSpawnItem()
-	{
-		IEntity spawnEntity = GetOwner();
-	
-		vector m_WorldTransform[4];
-		spawnEntity.GetWorldTransform(m_WorldTransform);
-		
-		EntitySpawnParams params();
-		m_WorldTransform[3][1] = m_WorldTransform[3][1] + 0.200;
-		params.Transform = m_WorldTransform;
-		
-		Resource m_Resource = Resource.Load(m_ItemChosen.m_sPrefab);
-	
-		IEntity newEnt = GetGame().SpawnEntityPrefab(m_Resource, GetGame().GetWorld(), params);
-		
-		newEnt.SetYawPitchRoll(m_ItemChosen.m_vItemRotation + spawnEntity.GetYawPitchRoll());
-		SCR_EntityHelper.SnapToGround(newEnt);
-		
-		SetItemQuantity(newEnt, m_ItemChosen.m_iQuantityMinimum, m_ItemChosen.m_iQuantityMaximum);
-		
-		SetItemSpawned(m_ItemChosen);
-		
-		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
-		if (m_SpawningSystem)
-			m_SpawningSystem.GetSpawnedItems().Insert(m_ItemChosen);
-		
-		// if item is a vehicle, or at least categorized as one (vehicles don't have a hierarchy component, so adding as child doesn't work)
-		if (m_ItemChosen.m_ItemCategory == CE_ELootCategory.VEHICLES
-		|| m_ItemChosen.m_ItemCategory == CE_ELootCategory.VEHICLES_SEA
-		|| m_ItemChosen.m_ItemCategory == CE_ELootCategory.VEHICLES_AIR)
-		{
-			// Vehicle enter/leave event
-	        EventHandlerManagerComponent eventHandler = EventHandlerManagerComponent.Cast(newEnt.FindComponent(EventHandlerManagerComponent));
-	        if (eventHandler)
-	        {
-	           	eventHandler.RegisterScriptHandler("OnCompartmentEntered", this, OnVehicleActivated, true, false);
-				eventHandler.RegisterScriptHandler("OnCompartmentLeft", this, OnVehicleDeactivated, true, false);
-				OnItemSpawned(newEnt);
-	        }
-		}
-		else
-			spawnEntity.AddChild(newEnt, -1, EAddChildFlags.NONE);
-	};
-	
-	//------------------------------------------------------------------------------------------------
-	// Performs checks on the new entity to see if it has quantity min and max set above 0, then determines which item type it is to then set quantity of the item (I.E. ammo count in a magazine)
+	//! Performs checks on the new entity to see if it has quantity min and max set above 0, then determines which item type it is to then set quantity of the item (I.E. ammo count in a magazine)
 	protected void SetItemQuantity(IEntity ent, int quantMin, int quantMax)
 	{
 		float quantity;
@@ -308,11 +281,11 @@ class CE_ItemSpawningComponent : ScriptComponent
 		
 		float distance = vector.DistanceSq(vehicle.GetOrigin(), GetOwner().GetOrigin());
 		
-		PrintFormat("MO: DeferredVehicleRespawnCheck(%1, %2): Distance from spawn: %3", this, vehicle, distance);
+		//PrintFormat("MO: DeferredVehicleRespawnCheck(%1, %2): Distance from spawn: %3", this, vehicle, distance);
 		if (distance > VEHICLE_RESPAWN_DISTANCE_THRESHOLD)
 		{
 			// vehicle has moved away from spawn so enable respawning it
-			PrintFormat("MO: DeferredVehicleRespawnCheck(%1, %2): Enabling respawn", this, vehicle);
+			//PrintFormat("MO: DeferredVehicleRespawnCheck(%1, %2): Enabling respawn", this, vehicle);
 			
 			OnItemTaken(vehicle);
 		}

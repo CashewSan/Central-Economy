@@ -5,20 +5,15 @@ class CE_WorldValidationComponentClass: SCR_BaseGameModeComponentClass
 
 class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 {
-	[Attribute("1", UIWidgets.EditBox, desc: "How many potential item spawns to process per 0.1 seconds (Higher is more performance heavy)", category: "Spawn Rate")]
-	int m_iItemSpawnLimit;
+	protected bool 											m_Processed 				= false;							// has world been processed?
 	
-	[Attribute("600", UIWidgets.EditBox, desc: "How many times to process the items spawn limit gradually (I.E. If set to 1000, it'll process the above amount of items every 0.05 seconds up to 100 times. Meaning the items will spawn gradually over 20 seconds) (Higher is more performance heavy and may interfere with check interval if higher)", category: "Spawn Rate")]
-	int m_iSpawningLimit;
+	protected ref CE_ItemDataConfig 							m_ItemDataConfig;										// universal config from server profile folder
 	
-	protected bool 											m_Processed 			= false;
-	
-	protected ref CE_ItemDataConfig 							m_ItemDataConfig;
-	
-	protected const string 									DB_DIR 					= "$profile:/CentralEconomy";
-	protected const string 									DB_NAME_CONF 			= "CE_ItemData.conf";
+	protected const string 									DB_DIR 					= "$profile:/CentralEconomy";		// directory name in the server profile folder
+	protected const string 									DB_NAME_CONF 			= "CE_ItemData.conf";				// config file name in the server profile folder
 	
 	//------------------------------------------------------------------------------------------------
+	//!
 	override void OnWorldPostProcess(World world)
 	{
 		super.OnWorldPostProcess(world);

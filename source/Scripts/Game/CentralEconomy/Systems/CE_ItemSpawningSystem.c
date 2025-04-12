@@ -4,60 +4,72 @@ class CE_ItemSpawningSystem : GameSystem
 	
 	protected ref array<ref CE_ItemData>				m_aSpawnedItems 				= new array<ref CE_ItemData>; 					// items that have spawned in the world
 	protected ref array<CE_ItemSpawningComponent> 		m_aComponents 				= new array<CE_ItemSpawningComponent>; 			// initial pull of ALL item spawning components in the world
+	protected ref array<CE_ItemSpawningComponent> 		m_aComponentsWithoutItem 		= new array<CE_ItemSpawningComponent>; 			// copy of m_aComponents, with components removed over time when they have items spawned
 	protected ref map<ref CE_ItemData, string>			m_aItemsNotRestockReady 		= new map<ref CE_ItemData, string>;				// items whose restocking timer has not ended
 	
 	protected CE_WorldValidationComponent 				m_WorldValidationComponent;													// component added to world's gamemode for verification
-	protected ref CE_ItemDataConfig					m_Config;																	// config containing item data (typically in server profile folder)
-	protected CE_ELootTier							m_currentSpawnTier;															// current spawn tier that items are spawning at
+	//protected CE_ELootTier							m_currentSpawnTier;															// current spawn tier that items are spawning at
 	protected ref RandomGenerator 					m_randomGen 					= new RandomGenerator();							// vanilla random generator
 
 	protected bool 									m_bWorldProcessed			= false;											// has the world been processed?
 	
 	protected float 									m_fTimer						= 0;												// timer for check interval
 	
-	protected int									m_iCheckInterval				= 0; 											// how often the item spawning system will run (in seconds)
-	protected int 									m_iSpawningCount 			= 0;												// count for spawning limit
-	protected int 									m_iSpawningLimit 			= 30; 											// process only up to this amount of spawning at a time (helps performance)
-	protected int 									m_iItemSpawnCount 			= 0; 											// count for item limit
-	protected int 									m_iItemSpawnLimit 			= 20; 											// process only up to this amount of items at a time (helps performance)
+	protected float									m_fCheckInterval				= 0; 											// how often the item spawning system will run (in seconds)
+	protected int									m_iSpawnedItemCount			= 0;												// count for spawned items, used to track when check interval changes
 	
 	
 	//------------------------------------------------------------------------------------------------
+	//! Calls for DelayedInit and sets m_fCheckInterval is 
 	override void OnInit()
 	{
 		if (m_aComponents.IsEmpty())
 			Enable(false);
 		
-		m_iCheckInterval = 60;
-		
-		//SetCurrentSpawnTier(CE_ELootTier.TIER1);
+		m_fCheckInterval = 0.1;
 		
 		DelayedInit();
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Tick method, currently set to start spawning process of an item every 0.1 seconds, then adjust to 2 seconds once all spawner components have been cycled
 	override event protected void OnUpdate(ESystemPoint point)
 	{
 		float timeSlice = GetWorld().GetFixedTimeSlice();
 
 		m_fTimer += timeSlice;
-
-		if (m_fTimer < 0.1)
+		
+		if (m_fTimer < m_fCheckInterval)
 			return;
-
+		
 		m_fTimer = 0;
 		
 		if (m_bWorldProcessed)
 		{
-			SetNextSpawnTier();
+			if (m_aComponentsWithoutItem.IsEmpty())
+				m_aComponentsWithoutItem.Copy(m_aComponents);
 			
-			TryToSpawnItems();
+			SelectSpawnerAndItem();
+			
+			Print("Spawned Item Count: " + m_iSpawnedItemCount);
+			Print("Components Without Item Count: " + m_aComponentsWithoutItem.Count());
+			
+			if (m_iSpawnedItemCount >= m_aComponents.Count())
+			{
+				Print("Check interval set to 2 seconds!");
+				
+				m_fCheckInterval = 2.0;
+				
+				m_aComponentsWithoutItem.Clear();
+				//m_aComponentsWithoutItem.Copy(m_aComponents);
+			}
 		}
 		else
 			GetGame().GetCallqueue().CallLater(DelayedInit, 100, false);
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Delayed initialization, sets the m_WorldValidationComponent, sets m_WorldProcessed as true if found, and starts the process of spawning
 	protected void DelayedInit()
 	{
 		if(GetGame().InPlayMode())
@@ -69,74 +81,39 @@ class CE_ItemSpawningSystem : GameSystem
 			{	
 				m_bWorldProcessed = true;
 				
-				SetNextSpawnTier();
-				
-				TryToSpawnItems();
-				
-				//Print("Spawner Count: " + m_aComponents.Count());
+				SelectSpawnerAndItem();
 			}
+		}
+		
+		m_aComponentsWithoutItem.Clear();
+		m_aComponentsWithoutItem.Copy(m_aComponents);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Selects a randomized spawner component to try to spawn an item at, and requests the randomized item to be spawned
+	protected void SelectSpawnerAndItem()
+	{
+		int random = m_randomGen.RandInt(0, m_aComponentsWithoutItem.Count());
+		
+		if (m_aComponentsWithoutItem && !m_aComponentsWithoutItem[random].HasItemSpawned())
+		{
+			CE_ItemData item = m_aComponentsWithoutItem[random].RequestItemToSpawn();
+			
+			if (item)
+				TryToSpawnItem(m_aComponentsWithoutItem[random], item);
 		}
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	protected void TryToSpawnItems()
+	//! requests to item to be spawned via the spawner component
+	protected void TryToSpawnItem(CE_ItemSpawningComponent comp, CE_ItemData item)
 	{
-		m_iItemSpawnCount = 0;
-		
-		if (m_WorldValidationComponent)
-		{
-			m_iSpawningLimit = m_WorldValidationComponent.m_iSpawningLimit;
-			m_iItemSpawnLimit = m_WorldValidationComponent.m_iItemSpawnLimit;
-		}
-		else
-		{
-			// Default values
-			m_iSpawningLimit = 600;
-			m_iItemSpawnLimit = 1;
-		}
-		
-		foreach (CE_ItemSpawningComponent comp : m_aComponents)
-		{
-			if (m_iItemSpawnCount >= m_iItemSpawnLimit)
-			{
-				/*
- 				if (m_iSpawningCount <= m_iSpawningLimit)
-				{
-					GetGame().GetCallqueue().CallLater(TryToSpawnItems, 100);
-					m_iSpawningCount++;
-				}
-				else
-				{
-					Print("SPAWNING LIMIT REACHED");
-					m_iSpawningCount = 0;
-				}
-				*/
-				
-				//Print("ITEM LIMIT REACHED");
-				break;
-			}
-			
-			if (comp.HasItemSpawned())
-			{		
-				continue;
-			}
-			else/* if (comp.GetSpawnerTier() == GetCurrentSpawnTier())*/
-			{
-				//Print("RequestingItem");
-				
-				comp.RequestItemToSpawn();
-				
-				m_iItemSpawnCount++;
-			}
-			/*
-			else
-				continue;
-			*/
-		}
+		comp.TryToSpawnItem(item);
 	}
 	
 	// GameSystem stuff
 	//------------------------------------------------------------------------------------------------
+	//! Gets the system instance
 	static CE_ItemSpawningSystem GetInstance()
 	{
 		World world = GetGame().GetWorld();
@@ -148,6 +125,7 @@ class CE_ItemSpawningSystem : GameSystem
 	}
 
 	//------------------------------------------------------------------------------------------------
+	//! Registers component
 	void Register(notnull CE_ItemSpawningComponent component)
 	{
 		if (!IsEnabled())
@@ -158,6 +136,7 @@ class CE_ItemSpawningSystem : GameSystem
 	}
 
 	//------------------------------------------------------------------------------------------------
+	//! Unregisters component
 	void Unregister(notnull CE_ItemSpawningComponent component)
 	{
 		m_aComponents.RemoveItem(component);
@@ -166,57 +145,24 @@ class CE_ItemSpawningSystem : GameSystem
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	CE_ItemData GetItem(CE_ItemDataConfig config, CE_ELootTier tier, CE_ELootUsage usage, CE_ELootCategory category)
+	//! Calls to generate items and calls to get a selected item
+	CE_ItemData GetItem(array<ref CE_ItemData> itemDataArray, CE_ELootTier tier, CE_ELootUsage usage, CE_ELootCategory category)
 	{
-		CE_ItemData itemChosen;
-		
-		if (!config || !config.m_ItemData || config.m_ItemData.IsEmpty())
+		if (itemDataArray.IsEmpty())
+		{
 			return null;
+		}
 		
-		array<ref CE_Item> items = GenerateItems(config.m_ItemData, tier, usage, category);
+		array<ref CE_Item> items = GenerateItems(itemDataArray, tier, usage, category);
 		
 		if (items.IsEmpty())
-			itemChosen = null;
-		else
-			itemChosen = SelectItem(items);
-		
-		/*
-		if (itemChosen)
-			Print("ItemChosen: " + itemChosen.m_sName);
-		*/
-		
-		return itemChosen;
-	}
-	
-	/*
-	//------------------------------------------------------------------------------------------------
-	protected array<CE_ItemData> ValidateItemData(array<ref CE_ItemData> items)
-	{
-		array<CE_ItemData> itemData = {};
-		
-		if (!items || items && items.IsEmpty())
-		{
-			//GetGame().GetCallqueue().CallLater(ValidateItemData, 100, false, items); // pointless..?
 			return null;
-		}
-		
-		foreach(CE_ItemData item: items)
-		{
-			// basically, if missing any variable besides rotation or quantity min and max
-			if(!item.m_sName || !item.m_sPrefab || !item.m_iNominal || !item.m_iMinimum || !item.m_iLifetime || !item.m_iRestock || !item.m_ItemCategory || !item.m_ItemUsages || !item.m_ItemTiers)
-			{
-				Print("[CentralEconomy] " + item.m_sName + " is missing information!", LogLevel.ERROR);
-				continue;
-			}
-			else
-				itemData.Insert(item);
-		}
-		
-		return itemData;
+		else
+			return SelectItem(items);
 	}
-	*/
 	
 	//------------------------------------------------------------------------------------------------
+	//! Generates items and separates item data that has necessary information and corresponds to spawner component attributes
 	protected array<ref CE_Item> GenerateItems(array<ref CE_ItemData> items, CE_ELootTier tier, CE_ELootUsage usage, CE_ELootCategory category)
 	{
 		array<ref CE_Item> itemsToSpawn = {};
@@ -265,6 +211,7 @@ class CE_ItemSpawningSystem : GameSystem
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Determines the item count of based of nominal, minimum, already spawned items, and those not restock ready
 	protected int DetermineItemTargetCount(CE_ItemData item, int minimum, int nominal)
 	{
 		map<ref CE_ItemData, string> itemsNotRestockReady = GetItemsNotRestockReady();
@@ -302,6 +249,7 @@ class CE_ItemSpawningSystem : GameSystem
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Selects item from itemArray, chooses it based on probability algorithm
 	protected CE_ItemData SelectItem(array<ref CE_Item> itemArray)
 	{
 		if(itemArray.IsEmpty())
@@ -344,6 +292,7 @@ class CE_ItemSpawningSystem : GameSystem
     }
 	
 	//------------------------------------------------------------------------------------------------
+	//! Chooses a randomized number between 0 and the probabilityTotal to the select and item it it's value is greater than said randomized number
 	protected bool Probability(float probability, float probabilityTotal)
 	{
 		//Print("Probability: " + probability);
@@ -354,6 +303,7 @@ class CE_ItemSpawningSystem : GameSystem
 	}
 	
 	// Getters, Setters
+	/*
 	//------------------------------------------------------------------------------------------------
 	CE_ELootTier GetCurrentSpawnTier()
 	{
@@ -365,6 +315,7 @@ class CE_ItemSpawningSystem : GameSystem
 	{
 		m_currentSpawnTier = tier;
 	}
+	
 	
 	//------------------------------------------------------------------------------------------------
 	protected void SetNextSpawnTier()
@@ -394,27 +345,47 @@ class CE_ItemSpawningSystem : GameSystem
 					m_iCheckInterval = 90;
 				else if (m_iCheckInterval == 90)
 					m_iCheckInterval = 120;
-			*/
+			*//*
 				break;
 		}
 	}
+	*/
 	
 	//------------------------------------------------------------------------------------------------
+	//! Gets spawned item array
 	array<ref CE_ItemData> GetSpawnedItems()
 	{
 		return m_aSpawnedItems;
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Gets spawner array, but only of spawners without an item
+	array<CE_ItemSpawningComponent> GetComponentsWithoutItem()
+	{
+		return m_aComponentsWithoutItem;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets the array for items that are NOT restock ready
 	map<ref CE_ItemData, string> GetItemsNotRestockReady()
 	{
 		return m_aItemsNotRestockReady;
 	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets the spawn item count
+	int GetSpawnedItemCount()
+	{
+		return m_iSpawnedItemCount;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Sets the spawn item count
+	void SetSpawnedItemCount(int count)
+	{
+		m_iSpawnedItemCount = count;
+	}
 }
-
-
-
-
 
 class CE_Item
 {
@@ -433,6 +404,7 @@ class CE_Item
 	}
 }
 
+/*
 class CE_Spawn
 {
 	CE_ItemSpawningComponent Spawn;
@@ -451,3 +423,4 @@ class CE_Spawn
 		Items = new array<CE_Item>;
 	}
 }
+*/
