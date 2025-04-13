@@ -28,8 +28,8 @@ The spawn parameters of each item are configured through a config in the server'
      - **Minimum** - Minimum item count across the entire map.
      - **Lifetime** - Length of time (in seconds) item can stay on the ground before despawning.
      - **Restock** - Length of time (in seconds) for item count to be added back to spawn queue.
-     - **QuantityMax** - If applicable to item, the maximum quantity of internal stored item to be considered (Ex. ammo in a magazine, or jerrycan fuel amount).
-     - **QuantityMin** - If applicable to item, the minimum quantity of internal stored item to be considered (Ex. ammo in a magazine, or jerrycan fuel amount).
+     - **QuantityMax** - If applicable to item, the maximum quantity (as a percentage) of internal stored item to be considered (Ex. ammo in a magazine, or jerrycan fuel amount).
+     - **QuantityMin** - If applicable to item, the minimum quantity (as a percentage) of internal stored item to be considered (Ex. ammo in a magazine, or jerrycan fuel amount).
      - **Category** - Category the item falls into, can only choose one. Currently includes:
        - CLOTHING
        - FOOD
