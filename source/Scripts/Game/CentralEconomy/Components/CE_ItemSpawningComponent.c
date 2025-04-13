@@ -29,7 +29,6 @@ class CE_ItemSpawningComponent : ScriptComponent
 	
 	protected ref array<ref CE_ItemData>					m_aItemData								= new array<ref CE_ItemData>;			// CE_ItemData array, item data gets inserted from config item data
 	
-	protected CE_ItemData 								m_ItemChosen;																// item chosen to spawn
 	protected CE_ItemData 								m_ItemSpawned;																// item that has spawned on the spawner
 	
 	protected CE_ItemDataConfig							m_Config;																	// the set config for spawner, can be unique config or universal config
@@ -37,9 +36,10 @@ class CE_ItemSpawningComponent : ScriptComponent
 	protected CE_ItemSpawningSystem 						m_SpawningSystem;															// the spawning game system used to control spawning
 
 	//------------------------------------------------------------------------------------------------
+	//! Constructor method, calls ConnectToItemSpawningSystem(), and sets default attributes if not set by trigger entities
 	void CE_ItemSpawningComponent(IEntityComponentSource src, IEntity ent, IEntity parent)
 	{
-		ConnectToLootSpawningSystem();
+		ConnectToItemSpawningSystem();
 		
 		// Defaults for if no info gets set
 		if (!m_Tier)
@@ -54,7 +54,8 @@ class CE_ItemSpawningComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	protected void ConnectToLootSpawningSystem()
+	//! Connects to item spawning system and registers this component
+	protected void ConnectToItemSpawningSystem()
 	{
 		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
 		if (!m_SpawningSystem)
@@ -65,6 +66,8 @@ class CE_ItemSpawningComponent : ScriptComponent
 		GetGame().GetCallqueue().CallLater(LoadConfig, 100);
 	}
 	
+	//------------------------------------------------------------------------------------------------
+	//! Loads CE_ItemData config containing items, deciding if it's one attached to the component or the universal config
 	protected void LoadConfig()
 	{
 		if (m_ItemDataConfig)
@@ -87,7 +90,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 				
 				if (m_WorldValidationComponent)
 				{
-					if(m_WorldValidationComponent.GetWorldProcessed())
+					if(m_WorldValidationComponent.HasWorldProcessed())
 					{	
 						m_Config = m_WorldValidationComponent.GetItemDataConfig();
 						
@@ -120,7 +123,8 @@ class CE_ItemSpawningComponent : ScriptComponent
 	}
 
 	//------------------------------------------------------------------------------------------------
-	protected void DisconnectFromLootSpawningSystem()
+	//! Disonnects from item spawning system and unregisters this component
+	protected void DisconnectFromItemSpawningSystem()
 	{
 		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
 		if (!m_SpawningSystem)
@@ -130,13 +134,15 @@ class CE_ItemSpawningComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Requests item for spawning (gets called from spawning system)
 	CE_ItemData RequestItemToSpawn()
 	{
 		return GetItemToSpawn(m_aItemData);
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	CE_ItemData GetItemToSpawn(array<ref CE_ItemData> itemDataArray)
+	//! Calls to item spawning system to request item from itemDataArray use the attributes from this component
+	protected CE_ItemData GetItemToSpawn(array<ref CE_ItemData> itemDataArray)
 	{
 		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
 		if (!m_SpawningSystem)
@@ -146,6 +152,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Tries to spawn the item (gets called from item spawning system)
 	void TryToSpawnItem(CE_ItemData item)
 	{
 		if (!Replication.IsServer())
@@ -183,8 +190,11 @@ class CE_ItemSpawningComponent : ScriptComponent
 			if (m_SpawningSystem)
 			{
 				if (!m_SpawningSystem.GetSpawnedItems().Contains(item))
+				{
 					m_SpawningSystem.GetSpawnedItems().Insert(item);
+				}
 				
+				m_SpawningSystem.ResetStallTimer();
 				m_SpawningSystem.SetSpawnedItemCount(m_SpawningSystem.GetSpawnedItemCount() + 1);
 				m_SpawningSystem.GetComponentsWithoutItem().RemoveItem(this);
 			}
@@ -251,30 +261,35 @@ class CE_ItemSpawningComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Called when child (spawned item) is attached to spawning entity, calls OnItemSpawned()
 	override void OnChildAdded(IEntity parent, IEntity child)
 	{
 		OnItemSpawned(child);
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Called when child (spawned item) is detached from spawning entity, calls OnItemTaken()
 	override void OnChildRemoved(IEntity parent, IEntity child)
 	{
 		OnItemTaken(child);
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! When spawned vehicle compartment is entered by player, adds DeferredVehicleRespawnCheck() to call queue and delays it by 10 seconds
 	protected void OnVehicleActivated(IEntity vehicle, BaseCompartmentManagerComponent mgr, IEntity occupant, int managerId, int slotID)
 	{
 		GetGame().GetCallqueue().CallLater(DeferredVehicleRespawnCheck, 10000, false, vehicle);
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! When spawned vehicle compartment is left by player, removes DeferredVehicleRespawnCheck() from call queue
 	protected void OnVehicleDeactivated(IEntity vehicle, BaseCompartmentManagerComponent mgr, IEntity occupant, int managerId, int slotID)
 	{
 		GetGame().GetCallqueue().Remove(DeferredVehicleRespawnCheck);
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Checks if vehicle has travelled far enough from original spawn point to be considered "taken" from spawner
 	protected void DeferredVehicleRespawnCheck(IEntity vehicle)
 	{
 		const float VEHICLE_RESPAWN_DISTANCE_THRESHOLD = 2000.0;
@@ -297,6 +312,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Called when the item spawns or is attached as a child to the spawner entity, set various checks and balances
 	protected void OnItemSpawned(IEntity item)
 	{
 		SetHasItemSpawned(true);
@@ -311,6 +327,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Called when the item is taken or is detached as a child to the spawner entity, set various checks and balances
 	protected void OnItemTaken(IEntity item)
 	{
 		SetHasItemBeenTaken(true);
@@ -330,6 +347,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Despawns item, typically called after the lifetime of an item has depleted
 	void DespawnItem(IEntity item)
 	{
 		if (item && !WasItemDespawned() && !HasItemBeenTaken())
@@ -343,19 +361,38 @@ class CE_ItemSpawningComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Resets certain checks of the spawner
 	protected void SpawnerReset()
 	{
+		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
+		
 		if (WasItemDespawned())
 		{
 			SetHasItemSpawned(false);
+			
+			ComponentArrayReset();
 		}
 		else
 		{
 			GetGame().GetCallqueue().CallLater(SetHasItemSpawned, m_iSpawnerResetTime, false, false);
+			GetGame().GetCallqueue().CallLater(ComponentArrayReset, m_iSpawnerResetTime, false);
 		}
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Gets m_aComponentsWithoutItem array from item spawning system and inserts this component, as well subtracts 1 from the m_iSpawnedItemCount of the item spawning system
+	protected void ComponentArrayReset()
+	{
+		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
+		if (m_SpawningSystem)
+		{
+			m_SpawningSystem.GetComponentsWithoutItem().Insert(this);
+			m_SpawningSystem.SetSpawnedItemCount(m_SpawningSystem.GetSpawnedItemCount() - 1);
+		}
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Resets restock of item and removes it from m_aItemsNotRestockReady array of the item spawning system
 	protected void RestockReset(CE_ItemData item)
 	{
 		SetHasItemRestockEnded(true);
@@ -365,112 +402,131 @@ class CE_ItemSpawningComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Removes item spawned from item spawning system
 	protected void RemoveItemSpawnedFromSystem(notnull CE_ItemData item)
 	{
 		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
 		if (m_SpawningSystem)
 		{
-			int index = m_SpawningSystem.GetSpawnedItems().Find(item);
+			//int index = m_SpawningSystem.GetSpawnedItems().Find(item);
 			
-			m_SpawningSystem.GetSpawnedItems().RemoveOrdered(index);
+			//m_SpawningSystem.GetSpawnedItems().RemoveOrdered(index);
+			
+			m_SpawningSystem.GetSpawnedItems().RemoveItemOrdered(item);
 		}
 	}
 	
 	// Component Stuff
 	//------------------------------------------------------------------------------------------------
+	//! Destructor method, calls for disconnect from item spawning system
 	void ~CE_ItemSpawningComponent(IEntityComponentSource src, IEntity ent, IEntity parent)
 	{
-		DisconnectFromLootSpawningSystem();
+		DisconnectFromItemSpawningSystem();
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Calls for disconnect from item spawning system on deletion of component
 	override void OnDelete(IEntity owner)
 	{
-		DisconnectFromLootSpawningSystem();
+		DisconnectFromItemSpawningSystem();
 
 		super.OnDelete(owner);
 	}
 	
 	// Getters/Setters
 	//------------------------------------------------------------------------------------------------
+	//! Does the spawner have a item spawned on it?
 	bool HasItemSpawned()
 	{
 		return m_bHasItemSpawned;
 	}
 		
 	//------------------------------------------------------------------------------------------------
+	//! Sets if the spawner has a item spawned on it
 	void SetHasItemSpawned(bool spawned)
 	{
 		m_bHasItemSpawned = spawned;
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Has the restock timer ended for the item?
 	bool HasItemRestockEnded()
 	{
 		return m_bHasItemRestockEnded;
 	}
 		
 	//------------------------------------------------------------------------------------------------
+	//! Sets if the restock timer has ended for the item
 	void SetHasItemRestockEnded(bool ended)
 	{
 		m_bHasItemRestockEnded = ended;
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Was the item despawned from spawner? NOT TAKEN
 	bool WasItemDespawned()
 	{
 		return m_bWasItemDespawned;
 	}
 		
 	//------------------------------------------------------------------------------------------------
+	//! Sets if the item was despawned from the spawner
 	void SetWasItemDespawned(bool despawned)
 	{
 		m_bWasItemDespawned = despawned;
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Has item been taken from the spawner? NOT DESPAWNED
 	bool HasItemBeenTaken()
 	{
 		return m_bHasItemBeenTaken;
 	}
 		
 	//------------------------------------------------------------------------------------------------
+	//! Sets if the item has been taken from the spawner
 	void SetHasItemBeenTaken(bool taken)
 	{
 		m_bHasItemBeenTaken = taken;
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Gets item spawned on the spawning component
 	CE_ItemData GetItemSpawned()
 	{
 		return m_ItemSpawned;
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Sets the item spawned on the spawning component
 	void SetItemSpawned(notnull CE_ItemData item)
 	{
 		m_ItemSpawned = item;
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Gets the tier of the spawning component
 	CE_ELootTier GetSpawnerTier()
 	{
 		return m_Tier;
 	}
 		
 	//------------------------------------------------------------------------------------------------
+	//! Sets the tier of the spawning component
 	void SetSpawnerTier(CE_ELootTier tier)
 	{
 		m_Tier = tier;
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Gets the usage of the spawning component
 	CE_ELootUsage GetSpawnerUsage()
 	{
 		return m_Usage;
 	}
 		
 	//------------------------------------------------------------------------------------------------
+	//! Sets the usage of the spawning component
 	void SetSpawnerUsage(CE_ELootUsage usage)
 	{
 		m_Usage = usage;

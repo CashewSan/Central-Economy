@@ -5,7 +5,7 @@ class CE_WorldValidationComponentClass: SCR_BaseGameModeComponentClass
 
 class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 {
-	protected bool 											m_Processed 				= false;							// has world been processed?
+	protected bool 											m_bProcessed 			= false;							// has world been processed?
 	
 	protected ref CE_ItemDataConfig 							m_ItemDataConfig;										// universal config from server profile folder
 	
@@ -13,7 +13,7 @@ class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 	protected const string 									DB_NAME_CONF 			= "CE_ItemData.conf";				// config file name in the server profile folder
 	
 	//------------------------------------------------------------------------------------------------
-	//!
+	//! Called on post process of the world, sets to find universal config or create it if it doesn't exist
 	override void OnWorldPostProcess(World world)
 	{
 		super.OnWorldPostProcess(world);
@@ -49,6 +49,7 @@ class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Gets the instance of the CE_WorldValidationComponent
 	static CE_WorldValidationComponent GetInstance()
 	{
 		if (GetGame().GetGameMode())
@@ -58,24 +59,28 @@ class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	bool GetWorldProcessed()
+	//! Has world been processed?
+	bool HasWorldProcessed()
 	{
-		return m_Processed;
+		return m_bProcessed;
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	void SetWorldProcessed(bool meow)
+	//! Sets if the world has been processed
+	void SetWorldProcessed(bool processed)
 	{
-		m_Processed = meow;
+		m_bProcessed = processed;
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Gets item data config
 	CE_ItemDataConfig GetItemDataConfig()
 	{
 		return m_ItemDataConfig;
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Creates item data config in server profile folder
 	protected void CreateConfig()
 	{
 		if (Replication.IsServer()) // only create the config or load config if you're the server

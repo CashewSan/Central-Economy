@@ -13,18 +13,26 @@ class CE_ItemSpawningSystem : GameSystem
 
 	protected bool 									m_bWorldProcessed			= false;											// has the world been processed?
 	
-	protected float 									m_fTimer						= 0;												// timer for check interval
-	
+	protected float 									m_fTimer						= 0;												// timer for spawning check interval
+	protected float 									m_fStallTimer				= 0;												// timer for stall check interval
 	protected float									m_fCheckInterval				= 0; 											// how often the item spawning system will run (in seconds)
+	protected const float								m_fStallCheckTime			= 10; 											// how long the system can stall before lowering the check interval before conditions are met in OnUpdate() (Set to 10 seconds)
+	
 	protected int									m_iSpawnedItemCount			= 0;												// count for spawned items, used to track when check interval changes
 	
 	
 	//------------------------------------------------------------------------------------------------
-	//! Calls for DelayedInit and sets m_fCheckInterval is 
+	//! Copies m_aComponents array to m_aComponentsWithoutItem, sets m_fCheckInterval, and calls DelayedInit()
 	override void OnInit()
 	{
 		if (m_aComponents.IsEmpty())
+		{
 			Enable(false);
+		}
+		else if (m_aComponentsWithoutItem.IsEmpty())
+		{
+			m_aComponentsWithoutItem.Copy(m_aComponents);
+		}
 		
 		m_fCheckInterval = 0.1;
 		
@@ -38,34 +46,35 @@ class CE_ItemSpawningSystem : GameSystem
 		float timeSlice = GetWorld().GetFixedTimeSlice();
 
 		m_fTimer += timeSlice;
+		m_fStallTimer += timeSlice;
 		
-		if (m_fTimer < m_fCheckInterval)
-			return;
-		
-		m_fTimer = 0;
-		
-		if (m_bWorldProcessed)
+		if (m_fTimer >= m_fCheckInterval)
 		{
-			if (m_aComponentsWithoutItem.IsEmpty())
-				m_aComponentsWithoutItem.Copy(m_aComponents);
+			m_fTimer = 0;
 			
-			SelectSpawnerAndItem();
-			
-			Print("Spawned Item Count: " + m_iSpawnedItemCount);
-			Print("Components Without Item Count: " + m_aComponentsWithoutItem.Count());
-			
-			if (m_iSpawnedItemCount >= m_aComponents.Count())
+			if (m_bWorldProcessed)
 			{
-				Print("Check interval set to 2 seconds!");
+				SelectSpawnerAndItem();
 				
-				m_fCheckInterval = 2.0;
+				//Print("Spawned Item Count: " + m_iSpawnedItemCount);
+				//Print("Components Without Item Count: " + (m_aComponentsWithoutItem.Count() - 1));
 				
-				m_aComponentsWithoutItem.Clear();
-				//m_aComponentsWithoutItem.Copy(m_aComponents);
+				if (m_iSpawnedItemCount >= m_aComponents.Count() && m_fCheckInterval != 1.0)
+				{
+					//Print("Check interval set to 1 second!");
+					
+					m_fCheckInterval = 1;
+				}
 			}
+			else
+				GetGame().GetCallqueue().CallLater(DelayedInit, 100, false);
 		}
-		else
-			GetGame().GetCallqueue().CallLater(DelayedInit, 100, false);
+		
+		if (m_fStallTimer >= m_fStallCheckTime && m_fCheckInterval != 1.0)
+		{
+			m_fCheckInterval = 1;
+			ResetStallTimer();
+		}
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -77,7 +86,7 @@ class CE_ItemSpawningSystem : GameSystem
 		
 		if(m_WorldValidationComponent)
 		{
-			if(m_WorldValidationComponent.GetWorldProcessed())
+			if(m_WorldValidationComponent.HasWorldProcessed())
 			{	
 				m_bWorldProcessed = true;
 				
@@ -93,14 +102,19 @@ class CE_ItemSpawningSystem : GameSystem
 	//! Selects a randomized spawner component to try to spawn an item at, and requests the randomized item to be spawned
 	protected void SelectSpawnerAndItem()
 	{
-		int random = m_randomGen.RandInt(0, m_aComponentsWithoutItem.Count());
+		int index;
 		
-		if (m_aComponentsWithoutItem && !m_aComponentsWithoutItem[random].HasItemSpawned())
+		if (m_aComponentsWithoutItem.Count() > 1)
+			index = m_randomGen.RandInt(0, m_aComponentsWithoutItem.Count());
+		else
+			index = 0;
+		
+		if (m_aComponentsWithoutItem && !m_aComponentsWithoutItem[index].HasItemSpawned())
 		{
-			CE_ItemData item = m_aComponentsWithoutItem[random].RequestItemToSpawn();
+			CE_ItemData item = m_aComponentsWithoutItem[index].RequestItemToSpawn();
 			
 			if (item)
-				TryToSpawnItem(m_aComponentsWithoutItem[random], item);
+				TryToSpawnItem(m_aComponentsWithoutItem[index], item);
 		}
 	}
 	
@@ -109,39 +123,6 @@ class CE_ItemSpawningSystem : GameSystem
 	protected void TryToSpawnItem(CE_ItemSpawningComponent comp, CE_ItemData item)
 	{
 		comp.TryToSpawnItem(item);
-	}
-	
-	// GameSystem stuff
-	//------------------------------------------------------------------------------------------------
-	//! Gets the system instance
-	static CE_ItemSpawningSystem GetInstance()
-	{
-		World world = GetGame().GetWorld();
-
-		if (!world)
-			return null;
-
-		return CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
-	}
-
-	//------------------------------------------------------------------------------------------------
-	//! Registers component
-	void Register(notnull CE_ItemSpawningComponent component)
-	{
-		if (!IsEnabled())
-			Enable(true);
-		
-		if (!m_aComponents.Contains(component))
-			m_aComponents.Insert(component);
-	}
-
-	//------------------------------------------------------------------------------------------------
-	//! Unregisters component
-	void Unregister(notnull CE_ItemSpawningComponent component)
-	{
-		m_aComponents.RemoveItem(component);
-		
-		Enable(false);
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -302,55 +283,40 @@ class CE_ItemSpawningSystem : GameSystem
 		return probability >= random;
 	}
 	
-	// Getters, Setters
-	/*
+	// GameSystem stuff
 	//------------------------------------------------------------------------------------------------
-	CE_ELootTier GetCurrentSpawnTier()
+	//! Gets the system instance
+	static CE_ItemSpawningSystem GetInstance()
 	{
-		return m_currentSpawnTier;
+		World world = GetGame().GetWorld();
+
+		if (!world)
+			return null;
+
+		return CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
 	}
-	
+
 	//------------------------------------------------------------------------------------------------
-	void SetCurrentSpawnTier(CE_ELootTier tier)
+	//! Registers component
+	void Register(notnull CE_ItemSpawningComponent component)
 	{
-		m_currentSpawnTier = tier;
-	}
-	
-	
-	//------------------------------------------------------------------------------------------------
-	protected void SetNextSpawnTier()
-	{	
-		switch (GetCurrentSpawnTier())
-		{
-			case null:
-				SetCurrentSpawnTier(CE_ELootTier.TIER1);
-				break;
+		if (!IsEnabled())
+			Enable(true);
 		
-			case CE_ELootTier.TIER1:
-				SetCurrentSpawnTier(CE_ELootTier.TIER2);
-				break;
-			
-			case CE_ELootTier.TIER2:
-				SetCurrentSpawnTier(CE_ELootTier.TIER3);
-				break;
-			
-			case CE_ELootTier.TIER3:
-				SetCurrentSpawnTier(CE_ELootTier.TIER4);
-				break;
-			
-			case CE_ELootTier.TIER4:
-				SetCurrentSpawnTier(CE_ELootTier.TIER1);
-			/*
-				if (m_iCheckInterval == 60)
-					m_iCheckInterval = 90;
-				else if (m_iCheckInterval == 90)
-					m_iCheckInterval = 120;
-			*//*
-				break;
-		}
+		if (!m_aComponents.Contains(component))
+			m_aComponents.Insert(component);
 	}
-	*/
+
+	//------------------------------------------------------------------------------------------------
+	//! Unregisters component
+	void Unregister(notnull CE_ItemSpawningComponent component)
+	{
+		m_aComponents.RemoveItem(component);
+		
+		Enable(false);
+	}
 	
+	// Getters, Setters
 	//------------------------------------------------------------------------------------------------
 	//! Gets spawned item array
 	array<ref CE_ItemData> GetSpawnedItems()
@@ -384,6 +350,13 @@ class CE_ItemSpawningSystem : GameSystem
 	void SetSpawnedItemCount(int count)
 	{
 		m_iSpawnedItemCount = count;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Resets stall timer
+	void ResetStallTimer()
+	{
+		m_fStallTimer = 0;
 	}
 }
 
