@@ -26,6 +26,9 @@ class CE_ItemSpawningComponent : ScriptComponent
 	protected bool 										m_bWasItemDespawned 						= false;								// was the item despawned by the system?
 	protected bool 										m_bHasItemBeenTaken 						= false;								// has item been taken from spawner?
 	protected bool										m_bHasItemRestockEnded					= false;								// has item restock timer ended?
+	protected bool										m_bHasSpawnerReset						= true;								// has the spawner reset?
+	
+	protected int										m_iCurrentSpawnerResetTime				= 0;									// current spawner reset time
 	
 	protected string 									m_sSpawnedEntityUID;															// UID of the spawned entity
 	
@@ -46,6 +49,8 @@ class CE_ItemSpawningComponent : ScriptComponent
 	void CE_ItemSpawningComponent(IEntityComponentSource src, IEntity ent, IEntity parent)
 	{
 		ConnectToItemSpawningSystem();
+		
+		//GetGame().GetCallqueue().CallLater(ConnectToItemSpawningSystem, 1000);
 		
 		// Defaults for if no info gets set
 		if (!m_Tier)
@@ -172,7 +177,11 @@ class CE_ItemSpawningComponent : ScriptComponent
 		{
 			//Print("Asking To Spawn");
 			
+			SetItemSpawned(item);
+			
 			IEntity spawnEntity = GetOwner();
+			if (!spawnEntity)
+				return;
 		
 			vector m_WorldTransform[4];
 			spawnEntity.GetWorldTransform(m_WorldTransform);
@@ -182,15 +191,17 @@ class CE_ItemSpawningComponent : ScriptComponent
 			params.Transform = m_WorldTransform;
 			
 			Resource m_Resource = Resource.Load(item.m_sPrefab);
-		
+			if (!m_Resource)
+				return;
+			
 			IEntity newEnt = GetGame().SpawnEntityPrefab(m_Resource, GetGame().GetWorld(), params);
+			if (!newEnt)
+				return;
 			
 			newEnt.SetYawPitchRoll(item.m_vItemRotation + spawnEntity.GetYawPitchRoll());
 			SCR_EntityHelper.SnapToGround(newEnt);
 			
 			SetItemQuantity(newEnt, item.m_iQuantityMinimum, item.m_iQuantityMaximum);
-			
-			SetItemSpawned(item);
 			
 			m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
 			if (m_SpawningSystem)
@@ -317,25 +328,27 @@ class CE_ItemSpawningComponent : ScriptComponent
 	//! Called when the item spawns or is attached as a child to the spawner entity, set various checks and balances
 	void OnItemSpawned(IEntity item)
 	{
+		SetCurrentSpawnerResetTime(m_iSpawnerResetTime);
 		SetEntitySpawned(item);
 		SetSpawnedEntityUID(GetUIDFromSpawnedEntity(item));
 		SetHasItemSpawned(true);
 		SetWasItemDespawned(false);
-		SetHasItemRestockEnded(false);
 		SetHasItemBeenTaken(false);
+		SetHasSpawnerReset(false);
 		
 		CE_ItemSpawnableComponent itemSpawnable = CE_ItemSpawnableComponent.Cast(item.FindComponent(CE_ItemSpawnableComponent));
 		if (itemSpawnable)
 		{
 			itemSpawnable.SetItemUID(m_UIDGen.Generate());
+			itemSpawnable.SetSpawningComponent(this);
+			itemSpawnable.SetItemData(GetItemSpawned());
+			itemSpawnable.SetRestockTime(GetItemSpawned().m_iRestock);
+			itemSpawnable.SetCurrentRestockTime(GetItemSpawned().m_iRestock);
+			itemSpawnable.SetLifetime(GetItemSpawned().m_iLifetime);
+			itemSpawnable.SetCurrentLifetime(GetItemSpawned().m_iLifetime);
 		}
 		else
-			Print("[CentralEconomy] THIS ENTITY HAS NO CE_ITEMSPAWNABLECOMPONENT!: " + item, LogLevel.ERROR);
-		
-		if (!GetItemSpawned() || !GetItemSpawned().m_iLifetime)
-			GetGame().GetCallqueue().CallLater(DespawnItem, 14400 * 1000, false, item);
-		else
-			GetGame().GetCallqueue().CallLater(DespawnItem, GetItemSpawned().m_iLifetime * 1000, false, item);
+			Print("[CentralEconomy] THIS ENTITY HAS NO CE_ITEMSPAWNABLECOMPONENT!: " + GetItemSpawned().m_sName, LogLevel.ERROR);
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -345,52 +358,26 @@ class CE_ItemSpawningComponent : ScriptComponent
 		SetHasItemBeenTaken(true);
 		SetEntitySpawned(null);
 		SetSpawnedEntityUID(string.Empty);
+		//SetCurrentSpawnerResetTime(m_iSpawnerResetTime);
 		
-		GetGame().GetCallqueue().CallLater(SpawnerReset, 100, false);
 		GetGame().GetCallqueue().CallLater(RemoveItemSpawnedFromSystem, 100, false, GetItemSpawned());
 		
-		if (!GetItemSpawned() || !GetItemSpawned().m_iRestock)
-			GetGame().GetCallqueue().CallLater(RestockReset, 3600 * 1000, false, GetItemSpawned()); // default restock
+		CE_ItemSpawnableComponent itemSpawnable = CE_ItemSpawnableComponent.Cast(item.FindComponent(CE_ItemSpawnableComponent));
+		if (itemSpawnable)
+		{
+			itemSpawnable.SetWasItemTaken(true);
+			itemSpawnable.SetLifetime(0);
+			
+			if (GetItemSpawned().m_iRestock)
+				itemSpawnable.SetCurrentRestockTime(GetItemSpawned().m_iRestock);
+			else
+				itemSpawnable.SetCurrentRestockTime(3600); // default timer
+		}
 		else
-			GetGame().GetCallqueue().CallLater(RestockReset, GetItemSpawned().m_iRestock * 1000, false, GetItemSpawned());
-		
-		GetGame().GetCallqueue().Remove(DespawnItem);
+			Print("[CentralEconomy] THIS ENTITY HAS NO CE_ITEMSPAWNABLECOMPONENT!: " + GetItemSpawned().m_sName, LogLevel.ERROR);
 		
 		if (m_SpawningSystem)
 			m_SpawningSystem.GetItemsNotRestockReady().Insert(GetItemSpawned(), GetItemSpawned().m_sName);
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Despawns item, typically called after the lifetime of an item has depleted
-	void DespawnItem(IEntity item)
-	{
-		if (item && !WasItemDespawned() && !HasItemBeenTaken())
-		{
-			SCR_EntityHelper.DeleteEntityAndChildren(item);
-		
-			SetWasItemDespawned(true);
-			
-			GetGame().GetCallqueue().CallLater(RemoveItemSpawnedFromSystem, 100, false, GetItemSpawned());
-		}
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Resets certain checks of the spawner
-	protected void SpawnerReset()
-	{
-		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
-		
-		if (WasItemDespawned())
-		{
-			SetHasItemSpawned(false);
-			
-			ComponentArrayReset();
-		}
-		else
-		{
-			GetGame().GetCallqueue().CallLater(SetHasItemSpawned, m_iSpawnerResetTime, false, false);
-			GetGame().GetCallqueue().CallLater(ComponentArrayReset, m_iSpawnerResetTime, false);
-		}
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -406,28 +393,25 @@ class CE_ItemSpawningComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Resets restock of item and removes it from m_aItemsNotRestockReady array of the item spawning system
-	protected void RestockReset(CE_ItemData item)
-	{
-		SetHasItemRestockEnded(true);
-		
-		if (m_SpawningSystem)
-			m_SpawningSystem.GetItemsNotRestockReady().Remove(item);
-	}
-	
-	//------------------------------------------------------------------------------------------------
 	//! Removes item spawned from item spawning system
 	protected void RemoveItemSpawnedFromSystem(CE_ItemData item)
 	{
 		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
 		if (m_SpawningSystem)
 		{
-			//int index = m_SpawningSystem.GetSpawnedItems().Find(item);
-			
-			//m_SpawningSystem.GetSpawnedItems().RemoveOrdered(index);
-			
 			m_SpawningSystem.GetSpawnedItems().RemoveItemOrdered(item);
 		}
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Called when spawner resets
+	void OnSpawnerReset()
+	{
+		Print("Spawner Reset");
+		
+		SetHasItemSpawned(false);
+			
+		ComponentArrayReset();
 	}
 	
 	// Component Stuff
@@ -467,13 +451,6 @@ class CE_ItemSpawningComponent : ScriptComponent
 	bool HasItemRestockEnded()
 	{
 		return m_bHasItemRestockEnded;
-	}
-		
-	//------------------------------------------------------------------------------------------------
-	//! Sets if the restock timer has ended for the item
-	void SetHasItemRestockEnded(bool ended)
-	{
-		m_bHasItemRestockEnded = ended;
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -585,5 +562,40 @@ class CE_ItemSpawningComponent : ScriptComponent
 	void SetSpawnedEntityUID(string uid)
 	{
 		m_sSpawnedEntityUID = uid;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets the current spawner reset time
+	int GetCurrentSpawnerResetTime()
+	{
+		return m_iCurrentSpawnerResetTime;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Sets the current spawner reset time
+	void SetCurrentSpawnerResetTime(int time)
+	{
+		m_iCurrentSpawnerResetTime = time;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets the spawner reset time
+	int GetSpawnerResetTime()
+	{
+		return m_iSpawnerResetTime;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Has the spawner reset?
+	bool HasSpawnerReset()
+	{
+		return m_bHasSpawnerReset;
+	}
+		
+	//------------------------------------------------------------------------------------------------
+	//! Sets if the spawner has been reset
+	void SetHasSpawnerReset(bool reset)
+	{
+		m_bHasSpawnerReset = reset;
 	}
 }
