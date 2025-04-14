@@ -1,0 +1,7 @@
+GenericEntity {
+ ID "CFBAA4B725411E45"
+ components {
+  CE_ItemSpawnableComponent "{651C03BEA98405A8}" {
+  }
+ }
+}

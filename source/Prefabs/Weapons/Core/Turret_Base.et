@@ -1,0 +1,7 @@
+Turret {
+ ID "51ACD0965653D003"
+ components {
+  CE_ItemSpawnableComponent "{651C03BEB7E27CD8}" {
+  }
+ }
+}

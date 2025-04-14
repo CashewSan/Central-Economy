@@ -1,0 +1,7 @@
+Projectile {
+ ID "DA5C6308000CDEF2"
+ components {
+  CE_ItemSpawnableComponent "{651C03BEF90EF2BE}" {
+  }
+ }
+}

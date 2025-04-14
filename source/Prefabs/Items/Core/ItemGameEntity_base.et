@@ -1,0 +1,7 @@
+GameEntity {
+ ID "56A4B11C0BE428DA"
+ components {
+  CE_ItemSpawnableComponent "{651C03BE3118863A}" {
+  }
+ }
+}

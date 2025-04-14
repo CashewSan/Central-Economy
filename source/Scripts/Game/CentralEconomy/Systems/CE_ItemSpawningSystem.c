@@ -166,8 +166,7 @@ class CE_ItemSpawningSystem : GameSystem
 			}
 			else if (itemData.m_ItemTiers & tier 
 			&& itemData.m_ItemUsages & usage 
-			&& itemData.m_ItemCategory & category
-			/*&& itemData.m_ItemTiers & GetCurrentSpawnTier()*/) // matches tier, usage, and category of spawner component, as well as current tier being processed
+			&& itemData.m_ItemCategory & category) // has matching tier, usage, and category with spawner component
 			{
 				int itemTargetCount = DetermineItemTargetCount(itemData, itemData.m_iMinimum, itemData.m_iNominal);
 				
@@ -212,7 +211,7 @@ class CE_ItemSpawningSystem : GameSystem
 			}
 		}
 		
-		int targetCount = Math.ClampInt(nominal - itemCount, 0, nominal);
+		int targetCount = Math.ClampInt(m_randomGen.RandIntInclusive(minimum, nominal) - itemCount, 0, nominal);
 		
 		for (int i = 0; i <= itemsNotRestockReady.Count(); i++)
 		{

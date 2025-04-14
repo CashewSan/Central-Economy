@@ -1,6 +1,6 @@
 // Big thanks to Wyqydsyq for help with handling the vehicle features <3
 
-[ComponentEditorProps(category: "CentralEconomy/Components", description: "")]
+[ComponentEditorProps(category: "CentralEconomy/Components", description: "Component to be added to spawner entities to handle item spawning")]
 class CE_ItemSpawningComponentClass : ScriptComponentClass
 {
 }
@@ -27,13 +27,19 @@ class CE_ItemSpawningComponent : ScriptComponent
 	protected bool 										m_bHasItemBeenTaken 						= false;								// has item been taken from spawner?
 	protected bool										m_bHasItemRestockEnded					= false;								// has item restock timer ended?
 	
+	protected string 									m_sSpawnedEntityUID;															// UID of the spawned entity
+	
 	protected ref array<ref CE_ItemData>					m_aItemData								= new array<ref CE_ItemData>;			// CE_ItemData array, item data gets inserted from config item data
 	
 	protected CE_ItemData 								m_ItemSpawned;																// item that has spawned on the spawner
 	
+	protected IEntity 									m_EntitySpawned;																// entity that has spawned on the spawner
+	
 	protected CE_ItemDataConfig							m_Config;																	// the set config for spawner, can be unique config or universal config
 	
 	protected CE_ItemSpawningSystem 						m_SpawningSystem;															// the spawning game system used to control spawning
+	
+	protected ref CE_UIDGenerator 						m_UIDGen 								= new CE_UIDGenerator();				// Central Economy unique identifier generator
 
 	//------------------------------------------------------------------------------------------------
 	//! Constructor method, calls ConnectToItemSpawningSystem(), and sets default attributes if not set by trigger entities
@@ -189,11 +195,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 			m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
 			if (m_SpawningSystem)
 			{
-				if (!m_SpawningSystem.GetSpawnedItems().Contains(item))
-				{
-					m_SpawningSystem.GetSpawnedItems().Insert(item);
-				}
-				
+				m_SpawningSystem.GetSpawnedItems().Insert(item);
 				m_SpawningSystem.ResetStallTimer();
 				m_SpawningSystem.SetSpawnedItemCount(m_SpawningSystem.GetSpawnedItemCount() + 1);
 				m_SpawningSystem.GetComponentsWithoutItem().RemoveItem(this);
@@ -313,12 +315,22 @@ class CE_ItemSpawningComponent : ScriptComponent
 	
 	//------------------------------------------------------------------------------------------------
 	//! Called when the item spawns or is attached as a child to the spawner entity, set various checks and balances
-	protected void OnItemSpawned(IEntity item)
+	void OnItemSpawned(IEntity item)
 	{
+		SetEntitySpawned(item);
+		SetSpawnedEntityUID(GetUIDFromSpawnedEntity(item));
 		SetHasItemSpawned(true);
 		SetWasItemDespawned(false);
 		SetHasItemRestockEnded(false);
 		SetHasItemBeenTaken(false);
+		
+		CE_ItemSpawnableComponent itemSpawnable = CE_ItemSpawnableComponent.Cast(item.FindComponent(CE_ItemSpawnableComponent));
+		if (itemSpawnable)
+		{
+			itemSpawnable.SetItemUID(m_UIDGen.Generate());
+		}
+		else
+			Print("[CentralEconomy] THIS ENTITY HAS NO CE_ITEMSPAWNABLECOMPONENT!: " + item, LogLevel.ERROR);
 		
 		if (!GetItemSpawned() || !GetItemSpawned().m_iLifetime)
 			GetGame().GetCallqueue().CallLater(DespawnItem, 14400 * 1000, false, item);
@@ -328,9 +340,11 @@ class CE_ItemSpawningComponent : ScriptComponent
 	
 	//------------------------------------------------------------------------------------------------
 	//! Called when the item is taken or is detached as a child to the spawner entity, set various checks and balances
-	protected void OnItemTaken(IEntity item)
+	void OnItemTaken(IEntity item)
 	{
 		SetHasItemBeenTaken(true);
+		SetEntitySpawned(null);
+		SetSpawnedEntityUID(string.Empty);
 		
 		GetGame().GetCallqueue().CallLater(SpawnerReset, 100, false);
 		GetGame().GetCallqueue().CallLater(RemoveItemSpawnedFromSystem, 100, false, GetItemSpawned());
@@ -403,7 +417,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	
 	//------------------------------------------------------------------------------------------------
 	//! Removes item spawned from item spawning system
-	protected void RemoveItemSpawnedFromSystem(notnull CE_ItemData item)
+	protected void RemoveItemSpawnedFromSystem(CE_ItemData item)
 	{
 		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
 		if (m_SpawningSystem)
@@ -499,9 +513,23 @@ class CE_ItemSpawningComponent : ScriptComponent
 	
 	//------------------------------------------------------------------------------------------------
 	//! Sets the item spawned on the spawning component
-	void SetItemSpawned(notnull CE_ItemData item)
+	void SetItemSpawned(CE_ItemData item)
 	{
 		m_ItemSpawned = item;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets entity spawned on the spawning component (different from GetItemSpawned())
+	IEntity GetEntitySpawned()
+	{
+		return m_EntitySpawned;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Sets the entity spawned on the spawning component (different from SetItemSpawned())
+	void SetEntitySpawned(IEntity ent)
+	{
+		m_EntitySpawned = ent;
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -530,5 +558,32 @@ class CE_ItemSpawningComponent : ScriptComponent
 	void SetSpawnerUsage(CE_ELootUsage usage)
 	{
 		m_Usage = usage;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets the spawned entity's unique identifier
+	string GetUIDFromSpawnedEntity(IEntity item)
+	{
+		CE_ItemSpawnableComponent itemSpawnable = CE_ItemSpawnableComponent.Cast(item.FindComponent(CE_ItemSpawnableComponent));
+		if (itemSpawnable)
+		{
+			return itemSpawnable.GetItemUID();
+		}
+		else
+			return string.Empty;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets the spawned entity's unique identifier stored in the spawner component
+	string GetSpawnedEntityUID()
+	{
+		return m_sSpawnedEntityUID;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Sets the spawned entity's unique identifier stored in the spawner component
+	void SetSpawnedEntityUID(string uid)
+	{
+		m_sSpawnedEntityUID = uid;
 	}
 }
