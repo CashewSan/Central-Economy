@@ -72,5 +72,6 @@ The spawn parameters of each item are configured through a config in the server'
 - Some items that spawn may be invisible to the player (it's actually just clipping into the structure, will fix as it's reported).
 - Some spawns won't spawn items (this is due to the lack of diversity in the CE_ItemData.conf, not many vanilla items in the game tbh).
 - Some items are very commonly spawning (this is also due to the lack of diversity in the CE_ItemData.conf, not many vanilla items in the game tbh. But also, double-check your nominal and minimum numbers in comparison to comparable items).
+- Logs post "RESOURCES (E): Wrong GUID/name for resource @"{0000000000000000}$profile:/CentralEconomy/CE_ItemData.conf" in property "m_sDb"" (It's safe to ignore)
 
 **IF YOU EXPERIENCE ANY BUGS OR ISSUES, PLEASE REPORT THEM IN [ISSUES](https://github.com/CashewSan/Central-Economy/issues) HERE ON GITHUB OR DIRECTLY TO ME IN THE [ARMA DISCORD](https://discord.com/channels/105462288051380224/1301291009635909664) @CASHEWSAN**
