@@ -8,7 +8,6 @@ class CE_ItemSpawningSystem : GameSystem
 	protected ref map<ref CE_ItemData, string>			m_aItemsNotRestockReady 		= new map<ref CE_ItemData, string>;				// items whose restocking timer has not ended
 	
 	protected CE_WorldValidationComponent 				m_WorldValidationComponent;													// component added to world's gamemode for verification
-	//protected CE_ELootTier							m_currentSpawnTier;															// current spawn tier that items are spawning at
 	protected ref RandomGenerator 					m_randomGen 					= new RandomGenerator();							// vanilla random generator
 
 	protected bool 									m_bWorldProcessed			= false;											// has the world been processed?
@@ -36,8 +35,6 @@ class CE_ItemSpawningSystem : GameSystem
 			m_aComponentsWithoutItem.Copy(m_aComponents);
 		}
 		
-		m_fCheckInterval = 0.1;
-		
 		DelayedInit();
 	}
 	
@@ -45,8 +42,11 @@ class CE_ItemSpawningSystem : GameSystem
 	//! Tick method, currently set to start spawning process of an item every 0.1 seconds, then adjust to 2 seconds once all spawner components have been cycled
 	override event protected void OnUpdate(ESystemPoint point)
 	{
+		if (m_fCheckInterval == 0)
+			return;
+		
 		float timeSlice = GetWorld().GetFixedTimeSlice();
-
+		
 		m_fTimer += timeSlice;
 		m_fStallTimer += timeSlice;
 		m_fSpawnerResetTimer += timeSlice;
@@ -62,12 +62,14 @@ class CE_ItemSpawningSystem : GameSystem
 				//Print("Spawned Item Count: " + m_iSpawnedItemCount);
 				//Print("Components Without Item Count: " + (m_aComponentsWithoutItem.Count() - 1));
 				
+				/*
 				if (m_iSpawnedItemCount >= m_aComponents.Count() && m_fCheckInterval != 1)
 				{
 					//Print("Check interval set to 1 second!");
 					
 					m_fCheckInterval = 1;
 				}
+				*/
 			}
 			else
 				GetGame().GetCallqueue().CallLater(DelayedInit, 100, false);
@@ -85,24 +87,7 @@ class CE_ItemSpawningSystem : GameSystem
 			
 			foreach (CE_ItemSpawningComponent comp : m_aComponents)
 			{
-				if (comp.WasItemDespawned())
-				{
-					comp.SetHasSpawnerReset(true);
-						
-					comp.OnSpawnerReset();
-				}
-				else if (comp.HasItemBeenTaken())
-				{
-					comp.SetCurrentSpawnerResetTime(Math.ClampInt(comp.GetCurrentSpawnerResetTime() - m_fSpawnerResetCheckInterval, 0, comp.GetSpawnerResetTime()));
-					if (comp.GetCurrentSpawnerResetTime() == 0 && !comp.HasSpawnerReset())
-					{
-						comp.SetHasSpawnerReset(true);
-						
-						comp.OnSpawnerReset();
-					}
-					
-					Print("Spawner Reset: " + comp.GetCurrentSpawnerResetTime());
-				}
+				comp.Update(m_fSpawnerResetCheckInterval);
 			}
 		}
 	}
@@ -118,9 +103,14 @@ class CE_ItemSpawningSystem : GameSystem
 		{
 			if(m_WorldValidationComponent.HasWorldProcessed() && !m_aComponents.IsEmpty())
 			{	
+				Print("World processed!");
+				
 				m_bWorldProcessed = true;
 				
-				SelectSpawnerAndItem();
+				if (m_WorldValidationComponent.m_iItemSpawningRate)
+					m_fCheckInterval = m_WorldValidationComponent.m_iItemSpawningRate;
+				else
+					m_fCheckInterval = 0.5;
 			}
 		}
 	}

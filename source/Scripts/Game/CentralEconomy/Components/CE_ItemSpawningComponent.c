@@ -25,7 +25,6 @@ class CE_ItemSpawningComponent : ScriptComponent
 	protected bool 										m_bHasItemSpawned 						= false;								// has item spawned on the spawner?
 	protected bool 										m_bWasItemDespawned 						= false;								// was the item despawned by the system?
 	protected bool 										m_bHasItemBeenTaken 						= false;								// has item been taken from spawner?
-	protected bool										m_bHasItemRestockEnded					= false;								// has item restock timer ended?
 	protected bool										m_bHasSpawnerReset						= true;								// has the spawner reset?
 	
 	protected int										m_iCurrentSpawnerResetTime				= 0;									// current spawner reset time
@@ -62,6 +61,28 @@ class CE_ItemSpawningComponent : ScriptComponent
 		}
 		else if (!m_Usage)
 			m_Usage = CE_ELootUsage.TOWN;
+	}
+	
+	void Update(int checkInterval)
+	{
+		if (WasItemDespawned())
+		{
+			SetHasSpawnerReset(true);
+				
+			OnSpawnerReset();
+		}
+		else if (HasItemBeenTaken())
+		{
+			SetCurrentSpawnerResetTime(Math.ClampInt(GetCurrentSpawnerResetTime() - checkInterval, 0, GetSpawnerResetTime()));
+			if (GetCurrentSpawnerResetTime() == 0 && !HasSpawnerReset())
+			{
+				SetHasSpawnerReset(true);
+				
+				OnSpawnerReset();
+			}
+			
+			//Print("Spawner Reset: " + GetCurrentSpawnerResetTime());
+		}
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -340,6 +361,9 @@ class CE_ItemSpawningComponent : ScriptComponent
 		if (itemSpawnable)
 		{
 			itemSpawnable.SetItemUID(m_UIDGen.Generate());
+			
+			Print(itemSpawnable.GetItemUID());
+			
 			itemSpawnable.SetSpawningComponent(this);
 			itemSpawnable.SetItemData(GetItemSpawned());
 			itemSpawnable.SetRestockTime(GetItemSpawned().m_iRestock);
@@ -444,13 +468,6 @@ class CE_ItemSpawningComponent : ScriptComponent
 	void SetHasItemSpawned(bool spawned)
 	{
 		m_bHasItemSpawned = spawned;
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Has the restock timer ended for the item?
-	bool HasItemRestockEnded()
-	{
-		return m_bHasItemRestockEnded;
 	}
 	
 	//------------------------------------------------------------------------------------------------

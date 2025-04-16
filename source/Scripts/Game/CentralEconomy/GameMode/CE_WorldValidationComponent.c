@@ -5,6 +5,9 @@ class CE_WorldValidationComponentClass: SCR_BaseGameModeComponentClass
 
 class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 {
+	[Attribute("0.5", UIWidgets.EditBox, desc: "Frequency (in seconds) that an item will spawn, LOWER TAKES MORE PERFORMANCE (E.G. If set to 0.5, an item will spawn every 0.5 seconds)", category: "Item Spawning System")] // default set to 0.5 seconds
+	float m_iItemSpawningRate;
+	
 	protected bool 											m_bProcessed 			= false;							// has world been processed?
 	
 	protected ref CE_ItemDataConfig 							m_ItemDataConfig;										// universal config from server profile folder

@@ -38,6 +38,11 @@ SCR_BaseGameMode GameModeSF : "{ECEEDB2D3737204B}Prefabs/Systems/ScenarioFramewo
  components {
   CE_WorldValidationComponent "{629F0149901D11AC}" {
   }
+  EPF_PersistenceManagerComponent "{65201ABF4A0DD3B6}" {
+   m_pConnectionInfo EDF_JsonFileDbConnectionInfo "{65201ABF49AF8179}" {
+    m_sDatabaseName "Meow"
+   }
+  }
  }
  coords 114.399 1 107.482
 }

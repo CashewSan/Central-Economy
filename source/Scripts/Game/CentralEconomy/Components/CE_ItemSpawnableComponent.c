@@ -22,11 +22,40 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	
 	//------------------------------------------------------------------------------------------------
 	//! Constructor method, calls ConnectToItemSpawnableSystem()
-	void CE_ItemSpawnableComponent(IEntityComponentSource src, IEntity ent, IEntity parent)
+	protected void CE_ItemSpawnableComponent(IEntityComponentSource src, IEntity ent, IEntity parent)
 	{
 		ConnectToItemSpawnableSystem();
 		
 		//GetGame().GetCallqueue().CallLater(ConnectToItemSpawnableSystem, 1000);
+	}
+	
+	void Update(int checkInterval)
+	{
+		if (GetLifetime() && GetLifetime() != 0)
+		{
+			SetCurrentLifetime(Math.ClampInt(GetCurrentLifetime() - checkInterval, 0, GetLifetime()));
+			if (GetCurrentLifetime() == 0 && !HasLifetimeEnded() && !WasItemTaken())
+			{
+				SetHasLifetimeEnded(true);
+				
+				OnLifetimeEnded();
+			}
+			
+			//Print("Lifetime: " + comp.GetCurrentLifetime());
+		}
+		
+		if (GetRestockTime() && GetRestockTime() != 0)
+		{
+			SetCurrentRestockTime(Math.ClampInt(GetCurrentRestockTime() - checkInterval, 0, GetRestockTime()));
+			if (GetCurrentRestockTime() == 0 && !HasRestockEnded())
+			{
+				SetHasRestockEnded(true);
+				
+				OnRestockEnded();
+			}
+			
+			//Print("Restock: " + comp.GetCurrentRestockTime());
+		}
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -53,7 +82,7 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	
 	//------------------------------------------------------------------------------------------------
 	//! Deconstructor method, calls DisconnectFromItemSpawnableSystem()
-	void ~CE_ItemSpawnableComponent(IEntityComponentSource src, IEntity ent, IEntity parent)
+	protected void ~CE_ItemSpawnableComponent(IEntityComponentSource src, IEntity ent, IEntity parent)
 	{
 		DisconnectFromItemSpawnableSystem();
 	}

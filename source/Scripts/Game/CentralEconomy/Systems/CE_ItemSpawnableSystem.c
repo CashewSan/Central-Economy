@@ -15,7 +15,7 @@ class CE_ItemSpawnableSystem : GameSystem
 		if (m_aComponents.IsEmpty())
 			Enable(false);
 		
-		m_fCheckInterval = 1;
+		m_fCheckInterval = 5;
 		
 		//DelayedInit();
 	}
@@ -25,6 +25,7 @@ class CE_ItemSpawnableSystem : GameSystem
 	override event protected void OnUpdate(ESystemPoint point)
 	{
 		float timeSlice = GetWorld().GetFixedTimeSlice();
+		bool nullValuePresent;
 
 		m_fTimer += timeSlice;
 		
@@ -34,7 +35,17 @@ class CE_ItemSpawnableSystem : GameSystem
 			
 			foreach (CE_ItemSpawnableComponent comp : m_aComponents)
 			{
-				if (comp.GetLifetime() != 0)
+				if (!comp)
+				{
+					nullValuePresent = true;
+					continue;
+				}
+				
+				comp.Update(m_fCheckInterval);
+					
+				
+			/*
+				if (comp.GetLifetime() && comp.GetLifetime() != 0)
 				{
 					comp.SetCurrentLifetime(Math.ClampInt(comp.GetCurrentLifetime() - m_fCheckInterval, 0, comp.GetLifetime()));
 					if (comp.GetCurrentLifetime() == 0 && !comp.HasLifetimeEnded() && !comp.WasItemTaken())
@@ -47,7 +58,7 @@ class CE_ItemSpawnableSystem : GameSystem
 					//Print("Lifetime: " + comp.GetCurrentLifetime());
 				}
 				
-				if (comp.GetRestockTime() != 0)
+				if (comp.GetRestockTime() && comp.GetRestockTime() != 0)
 				{
 					comp.SetCurrentRestockTime(Math.ClampInt(comp.GetCurrentRestockTime() - m_fCheckInterval, 0, comp.GetRestockTime()));
 					if (comp.GetCurrentRestockTime() == 0 && !comp.HasRestockEnded())
@@ -59,37 +70,19 @@ class CE_ItemSpawnableSystem : GameSystem
 					
 					//Print("Restock: " + comp.GetCurrentRestockTime());
 				}
-			}
-			
-			/*
-			if (m_bWorldProcessed)
-			{
-				
-			}
-			
-			else
-				GetGame().GetCallqueue().CallLater(DelayedInit, 100, false);
 			*/
-		}
-	}
-	
-	/*
-	//------------------------------------------------------------------------------------------------
-	//! Delayed initialization, sets the m_WorldValidationComponent, sets m_WorldProcessed as true if found, and starts the process of spawning
-	protected void DelayedInit()
-	{
-		if(GetGame().InPlayMode())
-			m_WorldValidationComponent = CE_WorldValidationComponent.GetInstance();
-		
-		if(m_WorldValidationComponent)
-		{
-			if(m_WorldValidationComponent.HasWorldProcessed())
-			{	
-				m_bWorldProcessed = true;
+			}
+			
+			if (nullValuePresent)
+			{
+				for (int i = m_aComponents.Count() - 1; i >= 0; i--)
+				{
+					if (!m_aComponents[i])
+						m_aComponents.Remove(i);
+				}
 			}
 		}
 	}
-	*/
 	
 	// GameSystem stuff
 	
