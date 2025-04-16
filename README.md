@@ -19,7 +19,7 @@ The spawn parameters of each item are configured through a config in the server'
 3. Load the **Everon-CentralEconomy.ent** world provided in CentralEconomy, create gamemode, and add the **CE_WorldValidationComponent** to your world's gamemode (very important).
   - If you have an existing world you want to add this mod to, you'll have to copy the tier zones from the Everon-CentralEconomy.ent world, or create your own tier zones. Either way, **CE_WorldValidationComponent** must exist in the gamemode!
 4. Run the server ONCE to generate the CE_ItemData.conf file (file can be found in your server profile folder, and goes $profile/CentralEconomy/CE_ItemData.conf).
-5. Configure your config file to your liking or copy & paste the [default file](CE_ItemData.conf), that I provided, into it and adjust where needed. **ADJUSTMENTS MUST BE MADE WITHIN WORKBENCH** (To do so, add the file to your Workbench profile folder, and open any mod in Workbench to edit it)
+5. Configure your config file to your liking or copy & paste the [default file](CE_ItemData.conf), that I provided, into it and adjust where needed. **ADJUSTMENTS MUST BE MADE WITHIN WORKBENCH** (To do so, add the file to your Workbench profile folder, and open Central Economy in Workbench to edit it)
    - Parameters go as followed:
      - **Name** - Should match the item prefab name (Ex. the prefab "Smoke_M18_Yellow" should have the name "Smoke_M18_Yellow"). **MUST BE UNIQUE!!**
      - **Prefab** - Defines the prefab that should spawn.
