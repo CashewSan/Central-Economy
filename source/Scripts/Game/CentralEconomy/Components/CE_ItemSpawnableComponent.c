@@ -21,6 +21,7 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	protected bool										m_bWasItemTaken								= false;						// was item taken and NOT despawned?
 	protected bool										m_bWasSpawnedBySystem							= false;						// was item spawned by CE Item Spawning system?
 	
+	/*
 	//------------------------------------------------------------------------------------------------
 	//! Constructor method, calls ConnectToItemSpawnableSystem()
 	protected void CE_ItemSpawnableComponent(IEntityComponentSource src, IEntity ent, IEntity parent)
@@ -29,12 +30,20 @@ class CE_ItemSpawnableComponent : ScriptComponent
 		
 		GetGame().GetCallqueue().CallLater(DelayedInit, 1000);
 	}
+	*/
+	
+	//------------------------------------------------------------------------------------------------
+	//! Calls ConnectToItemSpawnableSystem()
+	protected override void OnPostInit(IEntity owner)
+	{
+		GetGame().GetCallqueue().CallLater(DelayedInit, 1000);
+	}
 	
 	//------------------------------------------------------------------------------------------------
 	//! Delayed initialization call after component creation
 	protected void DelayedInit()
 	{
-		if (WasSpawnedBySystem())
+		if (WasSpawnedBySystem() && !HasRestockEnded())
 			ConnectToItemSpawnableSystem();
 	}
 	
@@ -92,23 +101,10 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Deconstructor method, calls DisconnectFromItemSpawnableSystem()
-	protected void ~CE_ItemSpawnableComponent(IEntityComponentSource src, IEntity ent, IEntity parent)
-	{
-		DisconnectFromItemSpawnableSystem();
-	}
-	
-	//------------------------------------------------------------------------------------------------
 	//! Calls for disconnect from item spawnable system on deletion of component
 	override void OnDelete(IEntity owner)
 	{
 		DisconnectFromItemSpawnableSystem();
-		
-		m_SpawnableSystem = CE_ItemSpawnableSystem.GetInstance();
-		if (!m_SpawnableSystem)
-			return;
-
-		m_SpawnableSystem.UnregisterCopy(this);
 
 		super.OnDelete(owner);
 	}
@@ -126,7 +122,8 @@ class CE_ItemSpawnableComponent : ScriptComponent
 				if (item)
 					m_SpawningSystem.GetItemsNotRestockReady().Remove(item);
 			}
-				
+			
+			DisconnectFromItemSpawnableSystem();
 		}
 	}
 	

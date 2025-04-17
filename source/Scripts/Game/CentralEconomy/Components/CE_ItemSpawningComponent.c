@@ -40,12 +40,12 @@ class CE_ItemSpawningComponent : ScriptComponent
 	protected ref CE_UIDGenerator 						m_UIDGen 								= new CE_UIDGenerator();				// Central Economy unique identifier generator
 
 	//------------------------------------------------------------------------------------------------
-	//! Constructor method, calls ConnectToItemSpawningSystem(), and sets default attributes if not set by trigger entities
-	void CE_ItemSpawningComponent(IEntityComponentSource src, IEntity ent, IEntity parent)
+	//! Calls ConnectToItemSpawningSystem(), and sets default attributes if not set by trigger entities
+	protected override void OnPostInit(IEntity owner)
 	{
-		ConnectToItemSpawningSystem();
+		//ConnectToItemSpawningSystem();
 		
-		//GetGame().GetCallqueue().CallLater(ConnectToItemSpawningSystem, 1000);
+		GetGame().GetCallqueue().CallLater(ConnectToItemSpawningSystem, 500);
 		
 		// Defaults for if no info gets set
 		if (!m_Tier)
@@ -469,12 +469,6 @@ class CE_ItemSpawningComponent : ScriptComponent
 	}
 	
 	// Component Stuff
-	//------------------------------------------------------------------------------------------------
-	//! Destructor method, calls for disconnect from item spawning system
-	void ~CE_ItemSpawningComponent(IEntityComponentSource src, IEntity ent, IEntity parent)
-	{
-		DisconnectFromItemSpawningSystem();
-	}
 	
 	//------------------------------------------------------------------------------------------------
 	//! Calls for disconnect from item spawning system on deletion of component

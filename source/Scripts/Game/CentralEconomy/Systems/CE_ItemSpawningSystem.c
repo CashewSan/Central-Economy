@@ -30,10 +30,6 @@ class CE_ItemSpawningSystem : GameSystem
 		{
 			Enable(false);
 		}
-		else if (m_aComponentsWithoutItem.IsEmpty())
-		{
-			m_aComponentsWithoutItem.Copy(m_aComponents);
-		}
 		
 		DelayedInit();
 	}
@@ -55,7 +51,7 @@ class CE_ItemSpawningSystem : GameSystem
 		{
 			m_fTimer = 0;
 			
-			if (m_bWorldProcessed && !m_aComponents.IsEmpty())
+			if (m_bWorldProcessed)
 			{
 				SelectSpawnerAndItem();
 			}
@@ -63,9 +59,8 @@ class CE_ItemSpawningSystem : GameSystem
 				GetGame().GetCallqueue().CallLater(DelayedInit, 100, false);
 		}
 		
-		if (m_fStallTimer >= m_fStallCheckTime && m_fCheckInterval != 1.0)
+		if (m_fStallTimer >= m_fStallCheckTime)
 		{
-			m_fCheckInterval = 1;
 			ResetStallTimer();
 		}
 		
@@ -89,7 +84,7 @@ class CE_ItemSpawningSystem : GameSystem
 		
 		if(m_WorldValidationComponent)
 		{
-			if(m_WorldValidationComponent.HasWorldProcessed() && !m_aComponents.IsEmpty())
+			if(m_WorldValidationComponent.HasWorldProcessed())
 			{	
 				Print("World processed!");
 				
@@ -421,7 +416,13 @@ class CE_ItemSpawningSystem : GameSystem
 			Enable(true);
 		
 		if (!m_aComponents.Contains(component))
+		{
 			m_aComponents.Insert(component);
+			
+			if (!component.HasItemSpawned())
+				m_aComponentsWithoutItem.Insert(component);
+		}
+			
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -430,7 +431,8 @@ class CE_ItemSpawningSystem : GameSystem
 	{
 		m_aComponents.RemoveItem(component);
 		
-		Enable(false);
+		if (m_aComponents.IsEmpty())
+			Enable(false);
 	}
 	
 	// Getters, Setters
