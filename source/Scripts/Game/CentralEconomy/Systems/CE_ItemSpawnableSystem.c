@@ -1,12 +1,10 @@
 class CE_ItemSpawnableSystem : GameSystem
 {
-	protected ref array<CE_ItemSpawnableComponent> 		m_aComponents 				= new array<CE_ItemSpawnableComponent>; 			// initial pull of ALL item spawnable components in the world
-	//protected CE_WorldValidationComponent 					m_WorldValidationComponent;													// component added to world's gamemode for verification
+	protected ref array<CE_ItemSpawnableComponent> 		m_aComponents 				= {}; 			// initial pull of ALL item spawnable components in the world
+	protected ref array<CE_ItemSpawnableComponent> 		m_aComponentsCopy 			= {};			// workaround array because index out of bounds bullshit
 	
-	protected float 										m_fTimer						= 0;												// timer for spawning check interval
-	protected float										m_fCheckInterval				= 0; 											// how often the item spawning system will run (in seconds)
-	
-	//protected bool 										m_bWorldProcessed			= false;											// has the world been processed?
+	protected float 										m_fTimer						= 0;				// timer for spawning check interval
+	protected float										m_fCheckInterval				= 1; 			// how often the item spawning system will run (in seconds)
 	
 	//------------------------------------------------------------------------------------------------
 	//! Sets m_fCheckInterval
@@ -14,10 +12,6 @@ class CE_ItemSpawnableSystem : GameSystem
 	{
 		if (m_aComponents.IsEmpty())
 			Enable(false);
-		
-		m_fCheckInterval = 5;
-		
-		//DelayedInit();
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -29,57 +23,30 @@ class CE_ItemSpawnableSystem : GameSystem
 
 		m_fTimer += timeSlice;
 		
-		if (m_fTimer >= m_fCheckInterval)
+		if (m_fTimer < m_fCheckInterval)
+			return;
+		
+		m_fTimer = 0;
+		
+		foreach (CE_ItemSpawnableComponent comp : m_aComponentsCopy)
 		{
-			m_fTimer = 0;
-			
-			foreach (CE_ItemSpawnableComponent comp : m_aComponents)
+			if (!comp)
 			{
-				if (!comp)
-				{
-					nullValuePresent = true;
-					continue;
-				}
-				
-				comp.Update(m_fCheckInterval);
-					
-				
-			/*
-				if (comp.GetLifetime() && comp.GetLifetime() != 0)
-				{
-					comp.SetCurrentLifetime(Math.ClampInt(comp.GetCurrentLifetime() - m_fCheckInterval, 0, comp.GetLifetime()));
-					if (comp.GetCurrentLifetime() == 0 && !comp.HasLifetimeEnded() && !comp.WasItemTaken())
-					{
-						comp.SetHasLifetimeEnded(true);
-						
-						comp.OnLifetimeEnded();
-					}
-					
-					//Print("Lifetime: " + comp.GetCurrentLifetime());
-				}
-				
-				if (comp.GetRestockTime() && comp.GetRestockTime() != 0)
-				{
-					comp.SetCurrentRestockTime(Math.ClampInt(comp.GetCurrentRestockTime() - m_fCheckInterval, 0, comp.GetRestockTime()));
-					if (comp.GetCurrentRestockTime() == 0 && !comp.HasRestockEnded())
-					{
-						comp.SetHasRestockEnded(true);
-						
-						comp.OnRestockEnded();
-					}
-					
-					//Print("Restock: " + comp.GetCurrentRestockTime());
-				}
-			*/
+				nullValuePresent = true;
+				continue;
 			}
 			
-			if (nullValuePresent)
+			comp.Update(m_fCheckInterval);
+		}
+		
+		//Print(m_aComponentsCopy.Count());
+		
+		if (nullValuePresent)
+		{
+			for (int i = m_aComponents.Count() - 1; i >= 0; i--)
 			{
-				for (int i = m_aComponents.Count() - 1; i >= 0; i--)
-				{
-					if (!m_aComponents[i])
-						m_aComponents.Remove(i);
-				}
+				if (!m_aComponents[i])
+					m_aComponents.Remove(i);
 			}
 		}
 	}
@@ -102,11 +69,17 @@ class CE_ItemSpawnableSystem : GameSystem
 	//! Registers component
 	void Register(notnull CE_ItemSpawnableComponent component)
 	{
+		if (!component)
+			return;
+		
 		if (!IsEnabled())
 			Enable(true);
 		
 		if (!m_aComponents.Contains(component))
 			m_aComponents.Insert(component);
+		
+		if (!m_aComponentsCopy.Contains(component))
+			m_aComponentsCopy.Insert(component);
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -115,6 +88,14 @@ class CE_ItemSpawnableSystem : GameSystem
 	{
 		m_aComponents.RemoveItem(component);
 		
-		Enable(false);
+		if (m_aComponents.IsEmpty())
+			Enable(false);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Unregisters component
+	void UnregisterCopy(notnull CE_ItemSpawnableComponent component)
+	{
+		m_aComponentsCopy.RemoveItem(component);
 	}
 }

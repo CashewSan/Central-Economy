@@ -16,7 +16,7 @@ class CE_ItemSpawningSystem : GameSystem
 	protected float 									m_fSpawnerResetTimer			= 0;												// timer for spawner reset
 	protected float 									m_fStallTimer				= 0;												// timer for stall check interval
 	protected float									m_fCheckInterval				= 0; 											// how often the item spawning system will run (in seconds)
-	protected const float								m_fSpawnerResetCheckInterval	= 5;												// how often the system will check for spawner reset
+	protected const float								m_fSpawnerResetCheckInterval	= 1;												// how often the system will check for spawner reset
 	protected const float								m_fStallCheckTime			= 10; 											// how long the system can stall before lowering the check interval before conditions are met in OnUpdate() (Set to 10 seconds)
 	
 	protected int									m_iSpawnedItemCount			= 0;												// count for spawned items, used to track when check interval changes
@@ -39,7 +39,7 @@ class CE_ItemSpawningSystem : GameSystem
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Tick method, currently set to start spawning process of an item every 0.1 seconds, then adjust to 2 seconds once all spawner components have been cycled
+	//! Tick method, currently set to start spawning process of an item every n seconds
 	override event protected void OnUpdate(ESystemPoint point)
 	{
 		if (m_fCheckInterval == 0)
@@ -58,18 +58,6 @@ class CE_ItemSpawningSystem : GameSystem
 			if (m_bWorldProcessed && !m_aComponents.IsEmpty())
 			{
 				SelectSpawnerAndItem();
-				
-				//Print("Spawned Item Count: " + m_iSpawnedItemCount);
-				//Print("Components Without Item Count: " + (m_aComponentsWithoutItem.Count() - 1));
-				
-				/*
-				if (m_iSpawnedItemCount >= m_aComponents.Count() && m_fCheckInterval != 1)
-				{
-					//Print("Check interval set to 1 second!");
-					
-					m_fCheckInterval = 1;
-				}
-				*/
 			}
 			else
 				GetGame().GetCallqueue().CallLater(DelayedInit, 100, false);
@@ -139,11 +127,120 @@ class CE_ItemSpawningSystem : GameSystem
 		}
 	}
 	
+	/*
 	//------------------------------------------------------------------------------------------------
 	//! requests to item to be spawned via the spawner component
 	protected void TryToSpawnItem(CE_ItemSpawningComponent comp, CE_ItemData item)
 	{
 		comp.TryToSpawnItem(item);
+	}
+	*/
+	
+	//------------------------------------------------------------------------------------------------
+	//! Tries to spawn the item
+	void TryToSpawnItem(CE_ItemSpawningComponent spawner, CE_ItemData item)
+	{
+		if (!Replication.IsServer())
+			return;
+		
+		if (spawner.HasItemSpawned())
+		{		
+			return;
+		}
+		else if (item)
+		{
+			spawner.SetItemSpawned(item);
+			
+			IEntity spawnEntity = spawner.GetOwner();
+			if (!spawnEntity)
+				return;
+		
+			vector m_WorldTransform[4];
+			spawnEntity.GetWorldTransform(m_WorldTransform);
+			
+			EntitySpawnParams params();
+			m_WorldTransform[3][1] = m_WorldTransform[3][1] + 0.200;
+			params.Transform = m_WorldTransform;
+			
+			Resource m_Resource = Resource.Load(item.m_sPrefab);
+			if (!m_Resource)
+				return;
+			
+			IEntity newEnt = GetGame().SpawnEntityPrefab(m_Resource, GetGame().GetWorld(), params);
+			if (!newEnt)
+				return;
+			
+			newEnt.SetYawPitchRoll(item.m_vItemRotation + spawnEntity.GetYawPitchRoll());
+			SCR_EntityHelper.SnapToGround(newEnt);
+			
+			spawner.SetIsNewSpawn(true);
+			
+			SetItemQuantity(newEnt, item.m_iQuantityMinimum, item.m_iQuantityMaximum);
+			
+			GetSpawnedItems().Insert(item);
+			ResetStallTimer();
+			SetSpawnedItemCount(GetSpawnedItemCount() + 1);
+			GetComponentsWithoutItem().RemoveItem(spawner);
+			
+			// if item is a vehicle, or at least categorized as one (vehicles don't have a hierarchy component, so adding as child doesn't work)
+			if (item.m_ItemCategory == CE_ELootCategory.VEHICLES
+			|| item.m_ItemCategory == CE_ELootCategory.VEHICLES_SEA
+			|| item.m_ItemCategory == CE_ELootCategory.VEHICLES_AIR)
+			{
+				// Vehicle enter/leave event
+		        EventHandlerManagerComponent eventHandler = EventHandlerManagerComponent.Cast(newEnt.FindComponent(EventHandlerManagerComponent));
+		        if (eventHandler)
+		        {
+		           	eventHandler.RegisterScriptHandler("OnCompartmentEntered", this, spawner.OnVehicleActivated, true, false);
+					eventHandler.RegisterScriptHandler("OnCompartmentLeft", this, spawner.OnVehicleDeactivated, true, false);
+					spawner.OnItemSpawned(newEnt);
+		        }
+			}
+			else
+			{
+				spawnEntity.AddChild(newEnt, -1, EAddChildFlags.NONE);
+			}
+		}
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Performs checks on the new entity to see if it has quantity min and max set above 0, then determines which item type it is to then set quantity of the item (I.E. ammo count in a magazine)
+	protected void SetItemQuantity(IEntity ent, int quantMin, int quantMax)
+	{
+		float quantity;
+		
+		if (quantMin > 0 && quantMax > 0)
+		{
+			float randomFloat = Math.RandomIntInclusive(quantMin, quantMax) / 100; // convert it to a decimal to multiplied later on
+			
+			quantity = Math.Round(randomFloat * 10) / 10;
+		}
+		else
+			return;
+		
+		ResourceName prefabName = ent.GetPrefabData().GetPrefabName();
+		
+		if (prefabName.Contains("Magazine_") || prefabName.Contains("Box_"))
+		{
+			MagazineComponent magComp = MagazineComponent.Cast(ent.FindComponent(MagazineComponent));
+			
+			magComp.SetAmmoCount(magComp.GetMaxAmmoCount() * quantity);
+		}
+		else if (prefabName.Contains("Jerrycan_"))
+		{
+			FuelManagerComponent fuelManager = FuelManagerComponent.Cast(ent.FindComponent(FuelManagerComponent));
+			
+			array<BaseFuelNode> outNodes = {};
+			
+			fuelManager.GetFuelNodesList(outNodes);
+			
+			foreach (BaseFuelNode fuelNode : outNodes)
+			{
+				fuelNode.SetFuel(fuelNode.GetMaxFuel() * quantity);
+			}
+		}
+		else
+			return;
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -377,6 +474,13 @@ class CE_ItemSpawningSystem : GameSystem
 	void ResetStallTimer()
 	{
 		m_fStallTimer = 0;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets all components registered to system
+	array<CE_ItemSpawningComponent> GetComponents()
+	{
+		return m_aComponents;
 	}
 }
 

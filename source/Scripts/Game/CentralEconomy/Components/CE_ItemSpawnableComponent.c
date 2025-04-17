@@ -6,8 +6,8 @@ class CE_ItemSpawnableComponentClass : ScriptComponentClass
 class CE_ItemSpawnableComponent : ScriptComponent
 {
 	protected CE_ItemSpawnableSystem 						m_SpawnableSystem;														// the spawnable item game system
-	protected CE_ItemData									m_ItemData;																// CE_ItemData that corresponds to this component's parent entity
-	protected CE_ItemSpawningComponent					m_SpawningComponent;														// CE_ItemSpawningComponent that corresponds to this component's parent entity
+	protected CE_ELootCategory							m_ItemDataCategory;														// CE_ItemData category that corresponds to this component's parent entity
+	protected string										m_ItemDataName;															// CE_ItemData name that corresponds to this component's parent entity
 	
 	protected string 									m_sItemUID;																// the unique identifier for this component's parent entity
 	
@@ -19,16 +19,27 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	protected bool										m_bHasRestockEnded							= false;						// has restock ended?
 	protected bool										m_bHasLifetimeEnded							= false;						// has lifetime ended?
 	protected bool										m_bWasItemTaken								= false;						// was item taken and NOT despawned?
+	protected bool										m_bWasSpawnedBySystem							= false;						// was item spawned by CE Item Spawning system?
 	
 	//------------------------------------------------------------------------------------------------
 	//! Constructor method, calls ConnectToItemSpawnableSystem()
 	protected void CE_ItemSpawnableComponent(IEntityComponentSource src, IEntity ent, IEntity parent)
 	{
-		ConnectToItemSpawnableSystem();
+		//ConnectToItemSpawnableSystem();
 		
-		//GetGame().GetCallqueue().CallLater(ConnectToItemSpawnableSystem, 1000);
+		GetGame().GetCallqueue().CallLater(DelayedInit, 1000);
 	}
 	
+	//------------------------------------------------------------------------------------------------
+	//! Delayed initialization call after component creation
+	protected void DelayedInit()
+	{
+		if (WasSpawnedBySystem())
+			ConnectToItemSpawnableSystem();
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Tick method
 	void Update(int checkInterval)
 	{
 		if (GetLifetime() && GetLifetime() != 0)
@@ -41,11 +52,11 @@ class CE_ItemSpawnableComponent : ScriptComponent
 				OnLifetimeEnded();
 			}
 			
-			//Print("Lifetime: " + comp.GetCurrentLifetime());
+			Print("Lifetime: " + GetCurrentLifetime());
 		}
 		
-		if (GetRestockTime() && GetRestockTime() != 0)
-		{
+		if (GetRestockTime() && GetRestockTime() != 0 && WasItemTaken())
+		{ 
 			SetCurrentRestockTime(Math.ClampInt(GetCurrentRestockTime() - checkInterval, 0, GetRestockTime()));
 			if (GetCurrentRestockTime() == 0 && !HasRestockEnded())
 			{
@@ -54,7 +65,7 @@ class CE_ItemSpawnableComponent : ScriptComponent
 				OnRestockEnded();
 			}
 			
-			//Print("Restock: " + comp.GetCurrentRestockTime());
+			Print("Restock: " + GetCurrentRestockTime());
 		}
 	}
 	
@@ -92,31 +103,42 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	override void OnDelete(IEntity owner)
 	{
 		DisconnectFromItemSpawnableSystem();
+		
+		m_SpawnableSystem = CE_ItemSpawnableSystem.GetInstance();
+		if (!m_SpawnableSystem)
+			return;
+
+		m_SpawnableSystem.UnregisterCopy(this);
 
 		super.OnDelete(owner);
 	}
 	
 	//------------------------------------------------------------------------------------------------
 	//! Called when restock timer has ended
-	void OnRestockEnded()
+	protected void OnRestockEnded()
 	{
 		if (HasRestockEnded())
 		{
 			CE_ItemSpawningSystem m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
 			if (m_SpawningSystem)
-				m_SpawningSystem.GetItemsNotRestockReady().Remove(GetItemData());
+			{
+				CE_ItemData item = m_SpawningSystem.GetItemsNotRestockReady().GetKeyByValue(GetItemDataName());
+				if (item)
+					m_SpawningSystem.GetItemsNotRestockReady().Remove(item);
+			}
+				
 		}
 	}
 	
 	//------------------------------------------------------------------------------------------------
 	//! Called when lifetime timer has ended
-	void OnLifetimeEnded()
+	protected void OnLifetimeEnded()
 	{
 		if (HasLifetimeEnded() && !WasItemTaken())
 		{
-			GetSpawningComponent().SetWasItemDespawned(true);
+			Print("Disconnecting");
 			
-			SCR_EntityHelper.DeleteEntityAndChildren(GetOwner());
+			DisconnectFromItemSpawnableSystem();
 		}
 	}
 	
@@ -234,30 +256,44 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Gets corresponding Central Economy item data
-	CE_ItemData GetItemData()
+	//! Gets corresponding Central Economy item data name
+	string GetItemDataName()
 	{
-		return m_ItemData;
+		return m_ItemDataName;
 	}
 		
 	//------------------------------------------------------------------------------------------------
-	//! Sets corresponding Central Economy item data
-	void SetItemData(CE_ItemData itemData)
+	//! Sets corresponding Central Economy item data name
+	void SetItemDataName(string itemDataName)
 	{
-		m_ItemData = itemData;
+		m_ItemDataName = itemDataName;
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Gets corresponding Central Economy spawning component
-	CE_ItemSpawningComponent GetSpawningComponent()
+	//! Gets corresponding Central Economy item data category
+	CE_ELootCategory GetItemDataCategory()
 	{
-		return m_SpawningComponent;
+		return m_ItemDataCategory;
 	}
 		
 	//------------------------------------------------------------------------------------------------
-	//! Sets corresponding Central Economy spawning component
-	void SetSpawningComponent(CE_ItemSpawningComponent spawner)
+	//! Sets corresponding Central Economy item data category
+	void SetItemDataCategory(CE_ELootCategory category)
 	{
-		m_SpawningComponent = spawner;
+		m_ItemDataCategory = category;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Was item spawned by the CE Item Spawning System?
+	bool WasSpawnedBySystem()
+	{
+		return m_bWasSpawnedBySystem;
+	}
+		
+	//------------------------------------------------------------------------------------------------
+	//! Sets if the item was spawned by the CE Item Spawning System
+	void SetWasSpawnedBySystem(bool spawned)
+	{
+		m_bWasSpawnedBySystem = spawned;
 	}
 }

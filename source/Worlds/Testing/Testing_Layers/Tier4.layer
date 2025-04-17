@@ -119,35 +119,6 @@ $grp GenericEntity : "{85C71F17C37D274C}Prefabs/Structures/BuildingParts/Entry/E
   coords 163.359 1.454 111.648
  }
 }
-$grp GenericEntity : "{E99195907C7200AD}Prefabs/Spawners/LootSpawner_Weapons.et" {
- LootSpawner_Weapons_645F760283418BD2 {
-  coords 159.229 1.454 106.131
- }
- LootSpawner_Weapons_645F760283418BD3 {
-  coords 159.199 1.454 107.798
- }
- LootSpawner_Weapons_645F760283418BD4 {
-  coords 157.952 1.454 106.165
- }
- LootSpawner_Weapons_645F760283418BD5 {
-  coords 157.922 1.454 107.832
- }
- LootSpawner_Weapons_645F760283418BD6 {
-  coords 156.844 1.454 106.145
- }
- LootSpawner_Weapons_645F760283418BD7 {
-  coords 156.814 1.454 107.812
- }
- LootSpawner_Weapons_645F760283418BD8 {
-  coords 155.715 1.454 106.115
- }
- LootSpawner_Weapons_645F760283418BD9 {
-  coords 155.685 1.454 107.782
- }
- LootSpawner_Weapons_645F760283418BD10 {
-  coords 154.448 1.454 106.115
- }
- LootSpawner_Weapons_645F760283418BD11 {
-  coords 154.418 1.454 107.782
- }
+GenericEntity LootSpawner_Weapons_645F760283418BD2 : "{E99195907C7200AD}Prefabs/Spawners/LootSpawner_Weapons.et" {
+ coords 159.229 1.454 106.131
 }
