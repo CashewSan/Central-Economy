@@ -23,7 +23,7 @@ class CE_ItemSpawningSystem : GameSystem
 	
 	
 	//------------------------------------------------------------------------------------------------
-	//! Copies m_aComponents array to m_aComponentsWithoutItem, sets m_fCheckInterval, and calls DelayedInit()
+	//! Calls DelayedInit()
 	override void OnInit()
 	{
 		if (m_aComponents.IsEmpty())
