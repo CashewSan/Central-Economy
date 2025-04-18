@@ -53,14 +53,13 @@ The spawn parameters of each item are configured through a config in the server'
        - TIER3
        - TIER4
 6. Save CE_ItemData.conf file
-7. Launch server, and item spawns should populate!
+7. Launch server, and item spawns should populate over time!
 
 ### Things to Keep in Mind
 - On Everon, there are roughly 4600 spawn points. This means for a good item spawning experience, you'll want more than that (~4600) total combined of the item nominals, preferably way more so the spawners have more variety to choose from. So keep that in mind with the second note here below.
 - I **HIGHLY** recommend adjusting the nominal and minimum values for each item in the CE_ItemData.conf, otherwise it'll be a poor experience as everything by default has an equal chance of spawning in their respective locations.
-- The spawning system is currently set to spawn one item every 0.1 seconds starting on server start, then once every spawner has been cycled, it gets upped to spawning 1 item every second.
-- If the system stalls on trying to spawn an item, it'll automatically move to checking for items every second too prevent performance usage for no reason.
 - While the spawning system is performing, you shouldn't really see *too* terribly much of a performance hit (from my testing), but if you do experience too much performance degradation, please report it!
+- If spawning is too slow, you can lower the spawn rate interval in your world's **CE_WorldValidationComponent**. By default, it's set to spawn an item every 0.5 seconds, lowering it will result in items spawning faster, but at a cost of performance!
 
 ## PLANNED FEATURES
 - Add default Arland map tiers.
@@ -73,5 +72,6 @@ The spawn parameters of each item are configured through a config in the server'
 - Some spawns won't spawn items (this is due to the lack of diversity in the CE_ItemData.conf, not many vanilla items in the game tbh).
 - Some items are very commonly spawning (this is also due to the lack of diversity in the CE_ItemData.conf, not many vanilla items in the game tbh. But also, double-check your nominal and minimum numbers in comparison to comparable items).
 - Logs post "RESOURCES (E): Wrong GUID/name for resource @"{0000000000000000}$profile:/CentralEconomy/CE_ItemData.conf" in property "m_sDb"" (It's safe to ignore)
+- Configs made before the major rewrite show blank (Open it in a text editor, like Notepad, and change CE_LootWhatever on the first line to **CE_ItemDataConfig**, save the file, then reload it into workbench)
 
 **IF YOU EXPERIENCE ANY BUGS OR ISSUES, PLEASE REPORT THEM IN [ISSUES](https://github.com/CashewSan/Central-Economy/issues) HERE ON GITHUB OR DIRECTLY TO ME IN THE [ARMA DISCORD](https://discord.com/channels/105462288051380224/1301291009635909664) @CASHEWSAN**
