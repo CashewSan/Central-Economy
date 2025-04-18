@@ -155,8 +155,11 @@ class CE_ItemSpawningSystem : GameSystem
 			vector m_WorldTransform[4];
 			spawnEntity.GetWorldTransform(m_WorldTransform);
 			
+			if (item.m_vItemRotation != vector.Zero)
+				Math3D.AnglesToMatrix(item.m_vItemRotation, m_WorldTransform);
+			
 			EntitySpawnParams params();
-			m_WorldTransform[3][1] = m_WorldTransform[3][1] + 0.200;
+			m_WorldTransform[3][1] = m_WorldTransform[3][1] + 0.025; // to not make item be in the ground
 			params.Transform = m_WorldTransform;
 			
 			Resource m_Resource = Resource.Load(item.m_sPrefab);
@@ -167,10 +170,9 @@ class CE_ItemSpawningSystem : GameSystem
 			if (!newEnt)
 				return;
 			
-			newEnt.SetYawPitchRoll(item.m_vItemRotation + spawnEntity.GetYawPitchRoll());
-			SCR_EntityHelper.SnapToGround(newEnt);
 			
-			newEnt.Update();
+			//newEnt.SetYawPitchRoll(item.m_vItemRotation + spawnEntity.GetYawPitchRoll()); // broken as of 1.3
+			//SCR_EntityHelper.SnapToGround(newEnt); // puts item halfway into ground
 			
 			spawner.SetIsNewSpawn(true);
 			
