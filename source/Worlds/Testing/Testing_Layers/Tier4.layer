@@ -119,6 +119,11 @@ $grp GenericEntity : "{85C71F17C37D274C}Prefabs/Structures/BuildingParts/Entry/E
   coords 163.359 1.454 111.648
  }
 }
-GenericEntity LootSpawner_Weapons_645F760283418BD2 : "{E99195907C7200AD}Prefabs/Spawners/LootSpawner_Weapons.et" {
- coords 159.229 1.454 106.131
+$grp GenericEntity : "{E99195907C7200AD}Prefabs/Spawners/LootSpawner_Weapons.et" {
+ LootSpawner_Weapons_645F760283418BD2 {
+  coords 159.229 1.454 106.131
+ }
+ LootSpawner_Weapons_645F760283418BD3 {
+  coords 159.237 1.454 107.648
+ }
 }

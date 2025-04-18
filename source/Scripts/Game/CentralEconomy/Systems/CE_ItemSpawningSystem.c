@@ -26,10 +26,12 @@ class CE_ItemSpawningSystem : GameSystem
 	//! Calls DelayedInit()
 	override void OnInit()
 	{
+		/*
 		if (m_aComponents.IsEmpty())
 		{
 			Enable(false);
 		}
+		*/
 		
 		DelayedInit();
 	}
