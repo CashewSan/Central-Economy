@@ -365,12 +365,15 @@ class CE_ItemSpawningComponent : ScriptComponent
 	//! Called when the item spawns or is attached as a child to the spawner entity, set various checks and balances
 	void OnItemSpawned(IEntity item)
 	{
+		string itemUID = m_UIDGen.Generate();
+		
 		CE_ItemSpawnableComponent itemSpawnable = CE_ItemSpawnableComponent.Cast(item.FindComponent(CE_ItemSpawnableComponent));
 		if (itemSpawnable)
 		{
 			if (IsNewSpawn())
 			{
-				itemSpawnable.SetItemUID(m_UIDGen.Generate());
+				
+				itemSpawnable.SetItemUID(itemUID);
 				itemSpawnable.SetWasSpawnedBySystem(true);
 				
 				if (GetItemSpawned())
@@ -390,7 +393,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 		
 		SetCurrentSpawnerResetTime(m_iSpawnerResetTime);
 		SetEntitySpawned(item);
-		SetSpawnedEntityUID(GetUIDFromSpawnedEntity(item));
+		SetSpawnedEntityUID(itemUID);
 		SetHasItemSpawned(true);
 		SetWasItemDespawned(false);
 		SetHasItemBeenTaken(false);
@@ -402,8 +405,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	void OnItemTaken(IEntity item)
 	{
 		SetHasItemBeenTaken(true);
-		SetEntitySpawned(null);
-		SetSpawnedEntityUID(string.Empty);
+		//SetSpawnedEntityUID(string.Empty);
 		//SetCurrentSpawnerResetTime(m_iSpawnerResetTime);
 		
 		GetGame().GetCallqueue().CallLater(RemoveItemSpawnedFromSystem, 100, false, GetItemSpawned());
@@ -461,8 +463,10 @@ class CE_ItemSpawningComponent : ScriptComponent
 	//! Called when spawner resets
 	void OnSpawnerReset()
 	{
-		Print("Spawner Reset");
+		//Print("Spawner Reset");
 		
+		SetSpawnedEntityUID(string.Empty);
+		SetEntitySpawned(null);
 		SetHasItemSpawned(false);
 			
 		ComponentArrayReset();

@@ -61,7 +61,7 @@ class CE_ItemSpawnableComponent : ScriptComponent
 				OnLifetimeEnded();
 			}
 			
-			Print("Lifetime: " + GetCurrentLifetime());
+			//Print("Lifetime: " + GetCurrentLifetime());
 		}
 		
 		if (GetRestockTime() && GetRestockTime() != 0 && WasItemTaken())
@@ -74,7 +74,7 @@ class CE_ItemSpawnableComponent : ScriptComponent
 				OnRestockEnded();
 			}
 			
-			Print("Restock: " + GetCurrentRestockTime());
+			//Print("Restock: " + GetCurrentRestockTime());
 		}
 	}
 	
@@ -120,7 +120,11 @@ class CE_ItemSpawnableComponent : ScriptComponent
 			{
 				CE_ItemData item = m_SpawningSystem.GetItemsNotRestockReady().GetKeyByValue(GetItemDataName());
 				if (item)
+				{
+					//Print("Restock removal");
 					m_SpawningSystem.GetItemsNotRestockReady().Remove(item);
+				}
+					
 			}
 			
 			DisconnectFromItemSpawnableSystem();
@@ -133,7 +137,7 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	{
 		if (HasLifetimeEnded() && !WasItemTaken())
 		{
-			Print("Disconnecting");
+			//Print("Disconnecting");
 			
 			DisconnectFromItemSpawnableSystem();
 		}

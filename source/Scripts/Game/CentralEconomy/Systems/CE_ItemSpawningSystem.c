@@ -14,10 +14,10 @@ class CE_ItemSpawningSystem : GameSystem
 	
 	protected float 									m_fTimer						= 0;												// timer for spawning check interval
 	protected float 									m_fSpawnerResetTimer			= 0;												// timer for spawner reset
-	protected float 									m_fStallTimer				= 0;												// timer for stall check interval
+	//protected float 									m_fStallTimer				= 0;												// timer for stall check interval
 	protected float									m_fCheckInterval				= 0; 											// how often the item spawning system will run (in seconds)
 	protected const float								m_fSpawnerResetCheckInterval	= 1;												// how often the system will check for spawner reset
-	protected const float								m_fStallCheckTime			= 10; 											// how long the system can stall before lowering the check interval before conditions are met in OnUpdate() (Set to 10 seconds)
+	//protected const float								m_fStallCheckTime			= 10; 											// how long the system can stall before lowering the check interval before conditions are met in OnUpdate() (Set to 10 seconds)
 	
 	protected int									m_iSpawnedItemCount			= 0;												// count for spawned items, used to track when check interval changes
 	
@@ -44,7 +44,7 @@ class CE_ItemSpawningSystem : GameSystem
 		float timeSlice = GetWorld().GetFixedTimeSlice();
 		
 		m_fTimer += timeSlice;
-		m_fStallTimer += timeSlice;
+		//m_fStallTimer += timeSlice;
 		m_fSpawnerResetTimer += timeSlice;
 		
 		if (m_fTimer >= m_fCheckInterval)
@@ -59,10 +59,12 @@ class CE_ItemSpawningSystem : GameSystem
 				GetGame().GetCallqueue().CallLater(DelayedInit, 100, false);
 		}
 		
+		/*
 		if (m_fStallTimer >= m_fStallCheckTime)
 		{
 			ResetStallTimer();
 		}
+		*/
 		
 		if (m_fSpawnerResetTimer >= m_fSpawnerResetCheckInterval)
 		{
@@ -86,7 +88,7 @@ class CE_ItemSpawningSystem : GameSystem
 		{
 			if(m_WorldValidationComponent.HasWorldProcessed())
 			{	
-				Print("World processed!");
+				//Print("World processed!");
 				
 				m_bWorldProcessed = true;
 				
@@ -168,12 +170,14 @@ class CE_ItemSpawningSystem : GameSystem
 			newEnt.SetYawPitchRoll(item.m_vItemRotation + spawnEntity.GetYawPitchRoll());
 			SCR_EntityHelper.SnapToGround(newEnt);
 			
+			newEnt.Update();
+			
 			spawner.SetIsNewSpawn(true);
 			
 			SetItemQuantity(newEnt, item.m_iQuantityMinimum, item.m_iQuantityMaximum);
 			
 			GetSpawnedItems().Insert(item);
-			ResetStallTimer();
+			//ResetStallTimer();
 			SetSpawnedItemCount(GetSpawnedItemCount() + 1);
 			GetComponentsWithoutItem().RemoveItem(spawner);
 			
@@ -471,12 +475,14 @@ class CE_ItemSpawningSystem : GameSystem
 		m_iSpawnedItemCount = count;
 	}
 	
+	/*
 	//------------------------------------------------------------------------------------------------
 	//! Resets stall timer
 	void ResetStallTimer()
 	{
 		m_fStallTimer = 0;
 	}
+	*/
 	
 	//------------------------------------------------------------------------------------------------
 	//! Gets all components registered to system
