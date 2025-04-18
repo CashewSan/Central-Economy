@@ -3,5 +3,6 @@ CE_UsageTriggerArea : "{543394677EC58B92}Prefabs/Areas/Usages/UsageArea_Base.et"
  TriggerShapeType "Oriented Bounding Box"
  BoxMins -23 -3 -16
  BoxMaxs 23 15 15
+ DrawShape 0
  m_Usage MILITARY
 }

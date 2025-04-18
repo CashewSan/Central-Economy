@@ -1,0 +1,7 @@
+Vehicle {
+ ID "BBCBA43A9778AE21"
+ components {
+  CE_ItemSpawnableComponent "{651C03BE2A9F68AA}" {
+  }
+ }
+}

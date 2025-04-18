@@ -5,14 +5,18 @@ class CE_WorldValidationComponentClass: SCR_BaseGameModeComponentClass
 
 class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 {
-	protected bool 											m_Processed 			= false;
+	[Attribute("0.5", UIWidgets.EditBox, desc: "Frequency (in seconds) that an item will spawn, LOWER TAKES MORE PERFORMANCE (E.G. If set to 0.5, an item will spawn every 0.5 seconds)", category: "Item Spawning System")] // default set to 0.5 seconds
+	float m_iItemSpawningRate;
 	
-	protected ref CE_ItemDataConfig 							m_ItemDataConfig;
+	protected bool 											m_bProcessed 			= false;							// has world been processed?
 	
-	protected const string 									DB_DIR 					= "$profile:/CentralEconomy";
-	protected const string 									DB_NAME_CONF 			= "CE_ItemData.conf";
+	protected ref CE_ItemDataConfig 							m_ItemDataConfig;										// universal config from server profile folder
+	
+	protected const string 									DB_DIR 					= "$profile:/CentralEconomy";		// directory name in the server profile folder
+	protected const string 									DB_NAME_CONF 			= "CE_ItemData.conf";				// config file name in the server profile folder
 	
 	//------------------------------------------------------------------------------------------------
+	//! Called on post process of the world, sets to find universal config or create it if it doesn't exist
 	override void OnWorldPostProcess(World world)
 	{
 		super.OnWorldPostProcess(world);
@@ -48,6 +52,7 @@ class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Gets the instance of the CE_WorldValidationComponent
 	static CE_WorldValidationComponent GetInstance()
 	{
 		if (GetGame().GetGameMode())
@@ -57,40 +62,47 @@ class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	bool GetWorldProcessed()
+	//! Has world been processed?
+	bool HasWorldProcessed()
 	{
-		return m_Processed;
+		return m_bProcessed;
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	void SetWorldProcessed(bool meow)
+	//! Sets if the world has been processed
+	void SetWorldProcessed(bool processed)
 	{
-		m_Processed = meow;
+		m_bProcessed = processed;
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Gets item data config
 	CE_ItemDataConfig GetItemDataConfig()
 	{
 		return m_ItemDataConfig;
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Creates item data config in server profile folder
 	protected void CreateConfig()
 	{
-		if (!FileIO.FileExists(DB_DIR))
+		if (Replication.IsServer()) // only create the config or load config if you're the server
 		{
-			FileIO.MakeDirectory(DB_DIR);
+			if (!FileIO.FileExists(DB_DIR))
+			{
+				FileIO.MakeDirectory(DB_DIR);
+			}
+			
+			ResourceName m_sDb = string.Format("%1/%2", DB_DIR, DB_NAME_CONF);
+			
+			CE_ItemDataConfig obj = new CE_ItemDataConfig();
+			
+			Resource holder = BaseContainerTools.CreateContainerFromInstance(obj);
+			
+			BaseContainerTools.SaveContainer(holder.GetResource().ToBaseContainer(), m_sDb);
+			
+			Print("[CentralEconomy] CE_ItemData.conf created! Please add items to config and then restart server!");
 		}
-		
-		ResourceName m_sDb = string.Format("%1/%2", DB_DIR, DB_NAME_CONF);
-		
-		CE_ItemDataConfig obj = new CE_ItemDataConfig();
-		
-		Resource holder = BaseContainerTools.CreateContainerFromInstance(obj);
-		
-		BaseContainerTools.SaveContainer(holder.GetResource().ToBaseContainer(), m_sDb);
-		
-		Print("[CentralEconomy] CE_ItemData.conf created! Please add items to config and then restart server!");
 	}
 	
 	// Old stuff that I'm keeping for reference
