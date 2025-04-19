@@ -16,7 +16,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	[Attribute(ResourceName.Empty, UIWidgets.Flags, desc: "Category of loot spawn", enums: ParamEnumArray.FromEnum(CE_ELootCategory), category: "Item Data")]
 	CE_ELootCategory m_Categories;
 	
-	[Attribute("1800000", UIWidgets.EditBox, desc: "Time (in seconds) it takes for the spawner to reset after spawned item was taken from it. Helps prevent loot camping.", category: "Item Data")] // default set to 1800000 seconds (30 minutes)
+	[Attribute("1800", UIWidgets.EditBox, desc: "Time (in seconds) it takes for the spawner to reset after spawned item was taken from it. Helps prevent loot camping.", category: "Item Data")] // default set to 1800 seconds (30 minutes) 
 	int m_iSpawnerResetTime;
 	
 	protected CE_ELootUsage 								m_Usage; 																	// gets set by the Usage Trigger Area Entity
