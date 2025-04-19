@@ -73,5 +73,6 @@ The spawn parameters of each item are configured through a config in the server'
 - Some items are very commonly spawning (this is also due to the lack of diversity in the CE_ItemData.conf, not many vanilla items in the game tbh. But also, double-check your nominal and minimum numbers in comparison to comparable items).
 - Logs post "RESOURCES (E): Wrong GUID/name for resource @"{0000000000000000}$profile:/CentralEconomy/CE_ItemData.conf" in property "m_sDb"" (It's safe to ignore)
 - Configs made before the major rewrite show blank (Open it in a text editor, like Notepad, and change CE_LootWhatever on the first line to **CE_ItemDataConfig**, save the file, then reload it into workbench)
+- Logs spam "ENTITY    (E): Duplicate entity of type 'GenericEntity' name 'LootSpawner_Randomized_65254C350948D199'" or something like that (Cause not known at the moment, can't entirely replicate issue consistently, but should be safe to ignore for now)
 
 **IF YOU EXPERIENCE ANY BUGS OR ISSUES, PLEASE REPORT THEM IN [ISSUES](https://github.com/CashewSan/Central-Economy/issues) HERE ON GITHUB OR DIRECTLY TO ME IN THE [ARMA DISCORD](https://discord.com/channels/105462288051380224/1301291009635909664) @CASHEWSAN**
