@@ -115,7 +115,7 @@ class CE_ItemSpawningSystem : GameSystem
 		else
 			return;
 		
-		if (m_aComponentsWithoutItem.IsEmpty() || m_aComponentsWithoutItem[index].HasItemSpawned())
+		if (m_aComponentsWithoutItem.IsEmpty() || m_aComponentsWithoutItem[index] && m_aComponentsWithoutItem[index].HasItemSpawned())
 			return;
 		else
 		{
@@ -183,7 +183,9 @@ class CE_ItemSpawningSystem : GameSystem
 			GetSpawnedItems().Insert(item);
 			//ResetStallTimer();
 			SetSpawnedItemCount(GetSpawnedItemCount() + 1);
-			GetComponentsWithoutItem().RemoveItem(spawner);
+			
+			if (GetComponentsWithoutItem().Contains(spawner))
+				GetComponentsWithoutItem().RemoveItem(spawner);
 			
 			// if item is a vehicle, or at least categorized as one (vehicles don't have a hierarchy component, so adding as child doesn't work)
 			if (item.m_ItemCategory == CE_ELootCategory.VEHICLES
