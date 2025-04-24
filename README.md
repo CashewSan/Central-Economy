@@ -56,7 +56,7 @@ The spawn parameters of each item are configured through a config in the server'
 7. Launch server, and item spawns should populate over time!
 
 ### Things to Keep in Mind
-- On Everon, there are roughly 4600 spawn points. This means for a good item spawning experience, you'll want more than that (~4600) total combined of the item nominals, preferably way more so the spawners have more variety to choose from. So keep that in mind with the second note here below.
+- On Everon, there are roughly 4750 spawn points. This means for a good item spawning experience, you'll want more than that (~4750) total combined of the item nominals, preferably way more so the spawners have more variety to choose from. So keep that in mind with the second note here below.
 - I **HIGHLY** recommend adjusting the nominal and minimum values for each item in the CE_ItemData.conf, otherwise it'll be a poor experience as everything by default has an equal chance of spawning in their respective locations.
 - While the spawning system is performing, you shouldn't really see *too* terribly much of a performance hit (from my testing), but if you do experience too much performance degradation, please report it!
 - If spawning is too slow, you can lower the spawn rate interval in your world's **CE_WorldValidationComponent**. By default, it's set to spawn an item every 0.5 seconds, lowering it will result in items spawning faster, but at a cost of performance!
