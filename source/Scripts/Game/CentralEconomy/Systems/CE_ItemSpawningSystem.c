@@ -1,25 +1,32 @@
 class CE_ItemSpawningSystem : GameSystem
 {
 	// To preface, this is a mess, but I'll try my best to keep comments for those reading lol
+	// some method descriptions are NOT updated, will update them when I can
 	
+	protected ref array<ref CE_ItemData>				m_aItemData					= new array<ref CE_ItemData>;						// CE_ItemData array, item data gets inserted from config item data
 	protected ref array<ref CE_ItemData>				m_aSpawnedItems 				= new array<ref CE_ItemData>; 					// items that have spawned in the world
 	protected ref array<CE_ItemSpawningComponent> 		m_aComponents 				= new array<CE_ItemSpawningComponent>; 			// initial pull of ALL item spawning components in the world
-	protected ref array<CE_ItemSpawningComponent> 		m_aComponentsWithoutItem 		= new array<CE_ItemSpawningComponent>; 			// copy of m_aComponents, with components removed over time when they have items spawned
+	protected ref array<CE_ItemSpawningComponent> 		m_aComponentsWithoutItem 		= new array<CE_ItemSpawningComponent>; 			// Spawner components WITHOUT an item spawned
+	protected ref array<CE_ItemSpawningComponent> 		m_aComponentsWithItem 		= new array<CE_ItemSpawningComponent>; 			// Spawner components WITH an item spawned
 	protected ref map<ref CE_ItemData, string>			m_aItemsNotRestockReady 		= new map<ref CE_ItemData, string>;				// items whose restocking timer has not ended
+	protected ref array<ref CE_Item>					m_aItems						= new array<ref CE_Item>;							// CE_Item array, gets filled after item validation
 	
 	protected CE_WorldValidationComponent 				m_WorldValidationComponent;													// component added to world's gamemode for verification
+	protected CE_ItemDataConfig						m_Config;
 	protected ref RandomGenerator 					m_randomGen 					= new RandomGenerator();							// vanilla random generator
 
 	protected bool 									m_bWorldProcessed			= false;											// has the world been processed?
+	protected bool 									m_bSortCountHit				= false;											// has the sorted item count limit been hit?
 	
 	protected float 									m_fTimer						= 0;												// timer for spawning check interval
 	protected float 									m_fSpawnerResetTimer			= 0;												// timer for spawner reset
 	//protected float 									m_fStallTimer				= 0;												// timer for stall check interval
 	protected float									m_fCheckInterval				= 0; 											// how often the item spawning system will run (in seconds)
-	protected const float								m_fSpawnerResetCheckInterval	= 1;												// how often the system will check for spawner reset
+	protected const float								m_fSpawnerResetCheckInterval	= 10;												// how often the system will check for spawner reset
 	//protected const float								m_fStallCheckTime			= 10; 											// how long the system can stall before lowering the check interval before conditions are met in OnUpdate() (Set to 10 seconds)
 	
 	protected int									m_iSpawnedItemCount			= 0;												// count for spawned items, used to track when check interval changes
+	protected int									m_iSortedItemsLimit			= 2000;											// sorted items count limit (basically, how many items can a spawner potentially sort and choose from to spawn)
 	
 	
 	//------------------------------------------------------------------------------------------------
@@ -53,7 +60,7 @@ class CE_ItemSpawningSystem : GameSystem
 		{
 			m_fTimer = 0;
 			
-			if (m_bWorldProcessed)
+			if (m_bWorldProcessed && m_Config)
 			{
 				SelectSpawnerAndItem();
 			}
@@ -72,8 +79,14 @@ class CE_ItemSpawningSystem : GameSystem
 		{
 			m_fSpawnerResetTimer = 0;
 			
-			foreach (CE_ItemSpawningComponent comp : m_aComponents)
+			// Loop backwards to avoid index issues if the array is modified during iteration
+			for (int i = m_aComponentsWithItem.Count() - 1; i >= 0; i--)
 			{
+				CE_ItemSpawningComponent comp = m_aComponentsWithItem[i];
+			
+				if (!comp)
+					continue;
+				
 				comp.Update(m_fSpawnerResetCheckInterval);
 			}
 		}
@@ -97,9 +110,40 @@ class CE_ItemSpawningSystem : GameSystem
 				if (m_WorldValidationComponent.m_iItemSpawningRate)
 					m_fCheckInterval = m_WorldValidationComponent.m_iItemSpawningRate;
 				else
-					m_fCheckInterval = 0.5;
+					m_fCheckInterval = 1.0;
+				
+				m_Config = m_WorldValidationComponent.GetItemDataConfig();
+						
+				if (m_Config)
+				{
+					m_aItemData.Clear();
+					
+					foreach (CE_ItemData itemData : m_Config.m_ItemData)
+					{
+						m_aItemData.Insert(itemData);
+					}
+					
+					GetGame().GetCallqueue().CallLater(SetItemsArray, 200);
+				}
+			}
+			else
+			{
+				Print("[CentralEconomy] CE_WorldValidationComponent HAS NOT BEEN PROCESSED!", LogLevel.ERROR);
+				return;
 			}
 		}
+		else
+		{
+			Print("[CentralEconomy] YOU'RE MISSING CE_WorldValidationComponent IN YOUR GAMEMODE!", LogLevel.ERROR);
+			return;
+		}
+	}
+	
+	protected void SetItemsArray()
+	{
+		m_aItems = GenerateItemsFromUniversalConfig();
+		
+		Print("Item Count: " + m_aItems.Count());
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -115,14 +159,20 @@ class CE_ItemSpawningSystem : GameSystem
 		else
 			return;
 		
-		if (m_aComponentsWithoutItem.IsEmpty() || m_aComponentsWithoutItem[index] && m_aComponentsWithoutItem[index].HasItemSpawned())
+		if (m_aComponentsWithoutItem.IsEmpty() || !m_aComponentsWithoutItem[index] || m_aComponentsWithoutItem[index] && m_aComponentsWithoutItem[index].HasItemSpawned())
 			return;
 		else
 		{
-			CE_ItemData item = m_aComponentsWithoutItem[index].RequestItemToSpawn();
+			CE_ItemData item;
+			
+			if (m_aComponentsWithoutItem[index].HasSpawnerConfig())
+				item = m_aComponentsWithoutItem[index].RequestItemToSpawnFromSpawnerConfig();
+			else
+				item = m_aComponentsWithoutItem[index].GetItemToSpawnFromUniversalConfig();
 			
 			if (item)
 				TryToSpawnItem(m_aComponentsWithoutItem[index], item);
+				//GetGame().GetCallqueue().CallLater(TryToSpawnItem, 1000, false, m_aComponentsWithoutItem[index], item);
 		}
 	}
 	
@@ -184,8 +234,8 @@ class CE_ItemSpawningSystem : GameSystem
 			//ResetStallTimer();
 			SetSpawnedItemCount(GetSpawnedItemCount() + 1);
 			
-			if (GetComponentsWithoutItem().Contains(spawner))
-				GetComponentsWithoutItem().RemoveItem(spawner);
+			GetComponentsWithItem().Insert(spawner);
+			GetComponentsWithoutItem().RemoveItem(spawner);
 			
 			// if item is a vehicle, or at least categorized as one (vehicles don't have a hierarchy component, so adding as child doesn't work)
 			if (item.m_ItemCategory == CE_ELootCategory.VEHICLES
@@ -205,6 +255,8 @@ class CE_ItemSpawningSystem : GameSystem
 			{
 				spawnEntity.AddChild(newEnt, -1, EAddChildFlags.NONE);
 			}
+			
+			//Print("Item spawned!");
 		}
 	}
 	
@@ -250,24 +302,122 @@ class CE_ItemSpawningSystem : GameSystem
 	
 	//------------------------------------------------------------------------------------------------
 	//! Calls to generate items and calls to get a selected item
-	CE_ItemData GetItem(array<ref CE_ItemData> itemDataArray, CE_ELootTier tier, CE_ELootUsage usage, CE_ELootCategory category)
+	CE_ItemData GetItemFromSpawnerConfig(array<ref CE_ItemData> itemDataArray, CE_ELootTier tier, CE_ELootUsage usage, CE_ELootCategory category)
 	{
 		if (itemDataArray.IsEmpty())
 		{
 			return null;
 		}
 		
-		array<ref CE_Item> items = GenerateItems(itemDataArray, tier, usage, category);
+		array<ref CE_Item> items = GenerateItemsFromSpawnerConfig(itemDataArray, tier, usage, category);
 		
 		if (items.IsEmpty())
 			return null;
 		else
-			return SelectItem(items);
+			return SelectItemFromSpawnerConfig(items);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Calls to generate items and calls to get a selected item
+	CE_ItemData GetItemFromUniversalConfig(CE_ELootTier tier, CE_ELootUsage usage, CE_ELootCategory category)
+	{
+		array<ref CE_Item> sortedItems = {};
+		
+		int m_iSortedItemsCount = 0;
+		
+		bool isLimitReached = false;
+		
+		foreach (CE_Item item : m_aItems)
+		{
+			int index;
+			
+			if (m_aItems.Count() > 1)
+				index = m_randomGen.RandInt(0, m_aItems.Count());
+			else if (m_aItems.Count() == 1)
+				index = 0;
+			else
+				continue;
+			
+			if (!m_aItems[index] || m_aItems[index] && !m_aItems[index].Tiers || m_aItems[index] && !m_aItems[index].Usages || m_aItems[index] && !m_aItems[index].Category)
+				continue;
+			
+			if (m_aItems[index].Tiers & tier 
+			&& m_aItems[index].Usages & usage 
+			&& m_aItems[index].Category & category)
+			{
+				int itemTargetCount = DetermineItemTargetCountFromItem(m_aItems[index]);
+				
+				//Print("Item: " + m_aItems[index].Item.m_sName + ", TargetCount: " + itemTargetCount);
+				
+				if (itemTargetCount > 0)
+				{
+					for (int e = 0; e < itemTargetCount; e++)
+					{
+						sortedItems.Insert(m_aItems[index]);
+						
+						m_iSortedItemsCount = m_iSortedItemsCount + 1;
+						
+						if (m_iSortedItemsCount >= m_iSortedItemsLimit)
+						{
+							//Print("Breaking");
+							m_iSortedItemsCount = 0;
+							isLimitReached = true;
+							break;
+						}
+					}
+					
+				}
+			}
+			//Print("meow");
+			if (isLimitReached)
+				break;
+		}
+		
+		//Print("Sorted Items Count: " + sortedItems.Count());
+		
+		/*
+		int m_iSortedItemsCount = 0;
+		
+		foreach (CE_Item item : m_aItems)
+		{
+			if (m_iSortedItemsCount >= m_iSortedItemsLimit)
+			{
+				Print("Breaking loop");
+				m_iSortedItemsCount = 0;
+				
+				break;
+			}
+				
+			if (item.Tiers & tier 
+			&& item.Usages & usage 
+			&& item.Category & category)
+			{
+				int itemTargetCount = DetermineItemTargetCountFromItem(item);
+				
+				//Print("Item: " + itemData.m_sName + ", TargetCount: " + itemTargetCount);
+				
+				if (itemTargetCount > 0)
+				{
+					for (int i = 0; i < itemTargetCount; i++)
+					{
+						sortedItems.Insert(item);
+						
+						m_iSortedItemsCount = m_iSortedItemsCount + 1;
+					}
+				}
+			}
+		}
+		*/
+		
+		if (sortedItems.IsEmpty())
+			return null;
+		else
+			return SelectItemFromUniversalConfig(sortedItems);
 	}
 	
 	//------------------------------------------------------------------------------------------------
 	//! Generates items and separates item data that has necessary information and corresponds to spawner component attributes
-	protected array<ref CE_Item> GenerateItems(array<ref CE_ItemData> items, CE_ELootTier tier, CE_ELootUsage usage, CE_ELootCategory category)
+	protected array<ref CE_Item> GenerateItemsFromSpawnerConfig(array<ref CE_ItemData> items, CE_ELootTier tier, CE_ELootUsage usage, CE_ELootCategory category)
 	{
 		array<ref CE_Item> itemsToSpawn = {};
 		
@@ -291,7 +441,7 @@ class CE_ItemSpawningSystem : GameSystem
 			&& itemData.m_ItemUsages & usage 
 			&& itemData.m_ItemCategory & category) // has matching tier, usage, and category with spawner component
 			{
-				int itemTargetCount = DetermineItemTargetCount(itemData, itemData.m_iMinimum, itemData.m_iNominal);
+				int itemTargetCount = DetermineItemTargetCountFromItemData(itemData, itemData.m_iMinimum, itemData.m_iNominal);
 				
 				//Print("Item: " + itemData.m_sName + ", TargetCount: " + itemTargetCount);
 				
@@ -314,8 +464,63 @@ class CE_ItemSpawningSystem : GameSystem
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Generates items and separates item data that has necessary information and corresponds to spawner component attributes
+	protected array<ref CE_Item> GenerateItemsFromUniversalConfig()
+	{
+		array<ref CE_Item> itemsToSpawn = {};
+		
+		foreach (CE_ItemData itemData : m_aItemData)
+		{
+			// basically, if missing any variable besides rotation or quantity min and max
+			if(!itemData.m_sName 
+			|| !itemData.m_sPrefab 
+			|| !itemData.m_iNominal 
+			|| !itemData.m_iMinimum 
+			|| !itemData.m_iLifetime 
+			|| !itemData.m_iRestock 
+			|| !itemData.m_ItemCategory 
+			|| !itemData.m_ItemUsages 
+			|| !itemData.m_ItemTiers)
+			{
+				Print("[CentralEconomy] " + itemData.m_sName + " is missing information!", LogLevel.ERROR);
+				continue;
+			}
+			else
+			{
+				/*
+				int itemTargetCount = DetermineItemTargetCount(itemData, itemData.m_iMinimum, itemData.m_iNominal);
+				
+				//Print("Item: " + itemData.m_sName + ", TargetCount: " + itemTargetCount);
+				
+				if (itemTargetCount != 0)
+				{
+					CE_Item item = new CE_Item(itemData, itemData.m_ItemTiers, itemData.m_ItemUsages, itemData.m_ItemCategory);
+					
+					if (!itemsToSpawn.Contains(item))
+					{
+						for (int i = 0; i < Math.ClampInt(itemTargetCount, 0, itemData.m_iNominal); i++)
+						{
+							itemsToSpawn.Insert(item);
+						}
+					}
+				}
+				*/
+				
+				CE_Item item = new CE_Item(itemData, itemData.m_ItemTiers, itemData.m_ItemUsages, itemData.m_ItemCategory);
+					
+				if (!itemsToSpawn.Contains(item))
+				{
+					itemsToSpawn.Insert(item);
+				}
+			}
+		}
+		
+		return itemsToSpawn;
+	}
+	
+	//------------------------------------------------------------------------------------------------
 	//! Determines the item count of based of nominal, minimum, already spawned items, and those not restock ready
-	protected int DetermineItemTargetCount(CE_ItemData item, int minimum, int nominal)
+	protected int DetermineItemTargetCountFromItemData(CE_ItemData item, int minimum, int nominal)
 	{
 		map<ref CE_ItemData, string> itemsNotRestockReady = GetItemsNotRestockReady();
 		array<ref CE_ItemData> spawnedItems = GetSpawnedItems();
@@ -352,8 +557,48 @@ class CE_ItemSpawningSystem : GameSystem
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Determines the item count of based of nominal, minimum, already spawned items, and those not restock ready
+	protected int DetermineItemTargetCountFromItem(CE_Item item)
+	{
+		map<ref CE_ItemData, string> itemsNotRestockReady = GetItemsNotRestockReady();
+		array<ref CE_ItemData> spawnedItems = GetSpawnedItems();
+		
+		int itemCount = 0;
+		
+		CE_ItemData itemData = item.Item;
+		
+		// for every item spawned in the world
+		foreach (CE_ItemData spawnedItem : spawnedItems)
+		{
+			string name = spawnedItem.m_sName;
+			
+			// increase item count if there is a name match
+			if (name == itemData.m_sName)
+			{
+				itemCount = itemCount + 1;
+			}
+		}
+		
+		int targetCount = Math.ClampInt(m_randomGen.RandIntInclusive(itemData.m_iMinimum, itemData.m_iNominal) - itemCount, 0, itemData.m_iNominal);
+		
+		for (int i = 0; i <= itemsNotRestockReady.Count(); i++)
+		{
+			if (itemsNotRestockReady.GetKeyByValue(itemData.m_sName))
+				targetCount = Math.ClampInt(targetCount - 1, 0, itemData.m_iNominal);
+		}
+		
+		//Print("Item: " + item.m_sName + "MaxTargetCount: " + targetCount);
+		
+		//int minTargetCount = Math.ClampInt(minimum - itemCount, 0, nominal);
+		
+		//Print("Item: " + item.m_sName + ", TargetCount: " + Math.ClampInt(targetCount, 0, nominal));
+		
+		return Math.ClampInt(targetCount, 0, itemData.m_iNominal);
+	}
+	
+	//------------------------------------------------------------------------------------------------
 	//! Selects item from itemArray, chooses it based on probability algorithm
-	protected CE_ItemData SelectItem(array<ref CE_Item> itemArray)
+	protected CE_ItemData SelectItemFromSpawnerConfig(array<ref CE_Item> itemArray)
 	{
 		if(itemArray.IsEmpty())
 			return null;
@@ -379,6 +624,49 @@ class CE_ItemSpawningSystem : GameSystem
 			
 			probabilityTotal += counts.Get(itemArray[i]);
 		}
+		
+		foreach (CE_Item item : itemArray)
+		{
+			if (Probability(counts.Get(item), probabilityTotal))
+			{
+				itemData = item.Item;
+				break;
+			}
+		}
+		
+		//Print("Probability Total: " + probabilityTotal);
+		
+		return itemData;
+    }
+	
+	//------------------------------------------------------------------------------------------------
+	//! Selects item from itemArray, chooses it based on probability algorithm
+	protected CE_ItemData SelectItemFromUniversalConfig(array<ref CE_Item> itemArray)
+	{
+		if(itemArray.IsEmpty())
+			return null;
+
+		//Print("Matching Item Count: " + itemArray.Count());
+		
+		map<CE_Item, int> counts = new map<CE_Item, int>;
+		
+		int probabilityTotal = 0;
+		
+		for (int i = 0; i < itemArray.Count(); i++)
+		{
+			if (itemArray.Contains(itemArray[i]))
+			{
+				counts[itemArray[i]] = counts[itemArray[i]] + 1;
+			}
+			else
+			{	
+				counts[itemArray[i]] = 1;
+			}
+			
+			probabilityTotal += counts.Get(itemArray[i]);
+		}
+		
+		CE_ItemData itemData;
 		
 		foreach (CE_Item item : itemArray)
 		{
@@ -454,10 +742,17 @@ class CE_ItemSpawningSystem : GameSystem
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Gets spawner array, but only of spawners without an item
+	//! Gets spawner array, but only of spawners WITHOUT an item
 	array<CE_ItemSpawningComponent> GetComponentsWithoutItem()
 	{
 		return m_aComponentsWithoutItem;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets spawner array, but only of spawners WITH an item
+	array<CE_ItemSpawningComponent> GetComponentsWithItem()
+	{
+		return m_aComponentsWithItem;
 	}
 	
 	//------------------------------------------------------------------------------------------------

@@ -39,6 +39,7 @@ SCR_BaseGameMode GameModeSF : "{ECEEDB2D3737204B}Prefabs/Systems/ScenarioFramewo
   CE_WorldValidationComponent "{629F0149901D11AC}" {
   }
   EPF_PersistenceManagerComponent "{65201ABF4A0DD3B6}" {
+   Enabled 0
    m_pConnectionInfo EDF_JsonFileDbConnectionInfo "{65201ABF49AF8179}" {
     m_sDatabaseName "Meow"
    }
@@ -54,7 +55,7 @@ SCR_BaseGameMode GameModeSF : "{ECEEDB2D3737204B}Prefabs/Systems/ScenarioFramewo
 ScriptedChatEntity ScriptedChatEntity : "{F69BC912AC8236F9}Prefabs/MP/ScriptedChatEntity.et" {
  coords 114.399 1 114.482
 }
-SCR_BaseTaskManager TaskManager : "{1AC69CD7907FB4F8}Prefabs/Systems/ScenarioFramework/Tasks/TaskManager.et" {
+SCR_BaseTaskManager TaskManager : "{1AC69CD7907FB4F8}Prefabs/ScenarioFramework/Tasks/TaskManager.et" {
  coords 114.399 1 109.482
  {
   CommentEntity {

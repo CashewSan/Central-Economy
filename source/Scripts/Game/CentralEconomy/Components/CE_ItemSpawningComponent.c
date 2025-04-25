@@ -22,6 +22,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	protected CE_ELootUsage 								m_Usage; 																	// gets set by the Usage Trigger Area Entity
 	protected CE_ELootTier 								m_Tier; 																		// gets set by the Tier Trigger Area Entity
 		
+	protected bool 										m_bHasSpawnerConfig 						= false;								// has item spawned on the spawner?
 	protected bool 										m_bHasItemSpawned 						= false;								// has item spawned on the spawner?
 	protected bool 										m_bWasItemDespawned 						= false;								// was the item despawned by the system?
 	protected bool 										m_bHasItemBeenTaken 						= false;								// has item been taken from spawner?
@@ -80,9 +81,9 @@ class CE_ItemSpawningComponent : ScriptComponent
 			//Print("Spawner Reset: " + GetCurrentSpawnerResetTime());
 		}
 		
-		if (m_EntitySpawned)
+		if (GetEntitySpawned())
 		{
-			CE_ItemSpawnableComponent itemSpawnable = CE_ItemSpawnableComponent.Cast(m_EntitySpawned.FindComponent(CE_ItemSpawnableComponent));
+			CE_ItemSpawnableComponent itemSpawnable = CE_ItemSpawnableComponent.Cast(GetEntitySpawned().FindComponent(CE_ItemSpawnableComponent));
 			if (itemSpawnable)
 			{
 				if (itemSpawnable.HasLifetimeEnded())
@@ -109,27 +110,33 @@ class CE_ItemSpawningComponent : ScriptComponent
 		
 		m_SpawningSystem.Register(this);
 		
-		GetGame().GetCallqueue().CallLater(LoadConfig, 100);
+		if (m_ItemDataConfig)
+			GetGame().GetCallqueue().CallLater(LoadConfig, 100); // may not need call queue?
+		// else we're gonna rely on universal config
 	}
 	
 	//------------------------------------------------------------------------------------------------
 	//! Loads CE_ItemData config containing items, deciding if it's one attached to the component or the universal config
 	protected void LoadConfig()
 	{
-		if (m_ItemDataConfig)
+		m_Config = m_ItemDataConfig;
+		
+		if (m_Config)
 		{
-			m_Config = m_ItemDataConfig;
+			SetHasSpawnerConfig(true);
 			
-			if (m_Config)
+			foreach (CE_ItemData itemData : m_Config.m_ItemData)
 			{
-				foreach (CE_ItemData itemData : m_Config.m_ItemData)
-				{
-					m_aItemData.Insert(itemData);
-				}
+				m_aItemData.Insert(itemData);
 			}
 		}
+		
+		/*
 		else
 		{
+			// rely on universal config loaded through spawning system instead of individual loading *each* spawner with a config
+			
+			
 			if(GetGame().InPlayMode())
 			{
 				CE_WorldValidationComponent m_WorldValidationComponent = CE_WorldValidationComponent.GetInstance();
@@ -162,7 +169,9 @@ class CE_ItemSpawningComponent : ScriptComponent
 					return;
 				}
 			}
+			
 		}
+		*/
 		
 		if (!m_Config)
 			Print("[CentralEconomy] NO ITEM DATA CONFIG FOUND!", LogLevel.ERROR);
@@ -181,20 +190,31 @@ class CE_ItemSpawningComponent : ScriptComponent
 	
 	//------------------------------------------------------------------------------------------------
 	//! Requests item for spawning (gets called from spawning system)
-	CE_ItemData RequestItemToSpawn()
+	CE_ItemData RequestItemToSpawnFromSpawnerConfig()
 	{
-		return GetItemToSpawn(m_aItemData);
+		return GetItemToSpawnFromSpawnerConfig(m_aItemData);
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Calls to item spawning system to request item from itemDataArray use the attributes from this component
-	protected CE_ItemData GetItemToSpawn(array<ref CE_ItemData> itemDataArray)
+	//! Calls to item spawning system to request item from itemDataArray and uses the attributes from this component
+	protected CE_ItemData GetItemToSpawnFromSpawnerConfig(array<ref CE_ItemData> itemDataArray)
 	{
 		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
 		if (!m_SpawningSystem)
 			return null;
 
-		return m_SpawningSystem.GetItem(itemDataArray, m_Tier, m_Usage, m_Categories);
+		return m_SpawningSystem.GetItemFromSpawnerConfig(itemDataArray, m_Tier, m_Usage, m_Categories);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Calls to item spawning system to request item from the UNIVERSAL itemData config and uses the attributes from this component
+	CE_ItemData GetItemToSpawnFromUniversalConfig()
+	{
+		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
+		if (!m_SpawningSystem)
+			return null;
+
+		return m_SpawningSystem.GetItemFromUniversalConfig(m_Tier, m_Usage, m_Categories);
 	}
 	
 	/*
@@ -443,6 +463,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
 		if (m_SpawningSystem)
 		{
+			m_SpawningSystem.GetComponentsWithItem().RemoveItem(this);
 			m_SpawningSystem.GetComponentsWithoutItem().Insert(this);
 			m_SpawningSystem.SetSpawnedItemCount(m_SpawningSystem.GetSpawnedItemCount() - 1);
 		}
@@ -656,5 +677,19 @@ class CE_ItemSpawningComponent : ScriptComponent
 	void SetIsNewSpawn(bool spawn)
 	{
 		m_bIsNewSpawn = spawn;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Does this spawner have a config?
+	bool HasSpawnerConfig()
+	{
+		return m_bHasSpawnerConfig;
+	}
+		
+	//------------------------------------------------------------------------------------------------
+	//! Sets if the spawner has a config
+	void SetHasSpawnerConfig(bool config)
+	{
+		m_bHasSpawnerConfig = config;
 	}
 }

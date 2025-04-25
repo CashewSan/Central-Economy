@@ -38,8 +38,8 @@ SCR_BaseGameMode GameModeSF : "{ECEEDB2D3737204B}Prefabs/Systems/ScenarioFramewo
  components {
   CE_WorldValidationComponent "{65174A6200291F4C}" {
   }
-  EPF_PersistenceManagerComponent "{65240C6F3DE3628D}" {
-   m_pConnectionInfo EDF_JsonFileDbConnectionInfo "{65240C6F205DF84C}" {
+  EPF_PersistenceManagerComponent "{65320D6C06EBE951}" {
+   m_pConnectionInfo EDF_JsonFileDbConnectionInfo "{65320D6C098CFE38}" {
     m_sDatabaseName "CE_Test"
    }
   }
@@ -53,17 +53,6 @@ SCR_BaseGameMode GameModeSF : "{ECEEDB2D3737204B}Prefabs/Systems/ScenarioFramewo
 }
 ScriptedChatEntity ScriptedChatEntity : "{F69BC912AC8236F9}Prefabs/MP/ScriptedChatEntity.et" {
  coords 7114.537 102.785 6285.017
-}
-EPF_SpawnPoint {
- components {
-  RplComponent "{65240C6E3D8D3733}" {
-   Streamable Disabled
-  }
-  Hierarchy "{65240C6E28C6288E}" {
-  }
- }
- coords 4569.143 18.13 10736.416
- m_fSpawnRadius 10
 }
 SCR_BaseTaskManager TaskManager : "{1AC69CD7907FB4F8}Prefabs/Systems/ScenarioFramework/Tasks/TaskManager.et" {
  coords 7114.537 103.491 6280.017

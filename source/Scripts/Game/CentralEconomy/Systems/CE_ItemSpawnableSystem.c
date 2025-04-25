@@ -3,7 +3,7 @@ class CE_ItemSpawnableSystem : GameSystem
 	protected ref array<CE_ItemSpawnableComponent> 		m_aComponents 				= {}; 			// initial pull of ALL item spawnable components in the world
 	
 	protected float 										m_fTimer						= 0;				// timer for spawning check interval
-	protected float										m_fCheckInterval				= 1; 			// how often the item spawning system will run (in seconds)
+	protected float										m_fCheckInterval				= 10; 			// how often the item spawning system will run (in seconds)
 	
 	/*
 	//------------------------------------------------------------------------------------------------
@@ -45,6 +45,8 @@ class CE_ItemSpawnableSystem : GameSystem
 			
 			comp.Update(m_fCheckInterval);
 		}
+		
+		//Print("ItemSpawnableCount: " + m_aComponents.Count());
 	}
 	
 	// GameSystem stuff
