@@ -37,16 +37,17 @@ RadioManagerEntity RadioManager : "{B8E09FAB91C4ECCD}Prefabs/Radio/RadioManager.
 SCR_BaseGameMode GameModeSF : "{ECEEDB2D3737204B}Prefabs/Systems/ScenarioFramework/GameModeSF.et" {
  components {
   CE_WorldValidationComponent "{629F0149901D11AC}" {
+   m_bWipePersistenceOnRestart 0
   }
-  EPF_PersistenceManagerComponent "{65201ABF4A0DD3B6}" {
-   Enabled 0
-   m_pConnectionInfo EDF_JsonFileDbConnectionInfo "{65201ABF49AF8179}" {
-    m_sDatabaseName "Meow"
-   }
-  }
-  SCR_RespawnSystemComponent "{56B2B4793051E7C9}" {
+  EPF_BasicRespawnSystemComponent "{56B2B4793051E7C9}" {
    m_SpawnLogic SCR_AutoSpawnLogic "{5D36888CC966608A}" {
     m_sForcedFaction "US"
+   }
+   m_rDefaultPrefab "{2F912ED6E399FF47}Prefabs/Characters/Factions/BLUFOR/US_Army/Character_US_Unarmed.et"
+  }
+  EPF_PersistenceManagerComponent "{65201ABF4A0DD3B6}" {
+   m_pConnectionInfo EDF_JsonFileDbConnectionInfo "{65201ABF49AF8179}" {
+    m_sDatabaseName "Meow"
    }
   }
  }
@@ -55,7 +56,7 @@ SCR_BaseGameMode GameModeSF : "{ECEEDB2D3737204B}Prefabs/Systems/ScenarioFramewo
 ScriptedChatEntity ScriptedChatEntity : "{F69BC912AC8236F9}Prefabs/MP/ScriptedChatEntity.et" {
  coords 114.399 1 114.482
 }
-SCR_BaseTaskManager TaskManager : "{1AC69CD7907FB4F8}Prefabs/ScenarioFramework/Tasks/TaskManager.et" {
+SCR_BaseTaskManager TaskManager : "{1AC69CD7907FB4F8}Prefabs/Systems/ScenarioFramework/Tasks/TaskManager.et" {
  coords 114.399 1 109.482
  {
   CommentEntity {

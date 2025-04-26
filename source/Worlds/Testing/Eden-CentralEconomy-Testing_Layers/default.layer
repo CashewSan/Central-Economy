@@ -54,6 +54,17 @@ SCR_BaseGameMode GameModeSF : "{ECEEDB2D3737204B}Prefabs/Systems/ScenarioFramewo
 ScriptedChatEntity ScriptedChatEntity : "{F69BC912AC8236F9}Prefabs/MP/ScriptedChatEntity.et" {
  coords 7114.537 102.785 6285.017
 }
+EPF_SpawnPoint {
+ components {
+  RplComponent "{653369F182BFA46B}" {
+   Streamable Disabled
+  }
+  Hierarchy "{653369F187D77E73}" {
+  }
+ }
+ coords 4569.255 18.146 10733.144
+ m_fSpawnRadius 10
+}
 SCR_BaseTaskManager TaskManager : "{1AC69CD7907FB4F8}Prefabs/Systems/ScenarioFramework/Tasks/TaskManager.et" {
  coords 7114.537 103.491 6280.017
  {

@@ -143,7 +143,7 @@ class CE_ItemSpawningSystem : GameSystem
 	{
 		m_aItems = GenerateItemsFromUniversalConfig();
 		
-		Print("Item Count: " + m_aItems.Count());
+		//Print("Item Count: " + m_aItems.Count());
 	}
 	
 	//------------------------------------------------------------------------------------------------
