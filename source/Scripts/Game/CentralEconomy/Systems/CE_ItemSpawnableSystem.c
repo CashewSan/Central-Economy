@@ -14,6 +14,8 @@ class CE_ItemSpawnableSystem : GameSystem
 			Enable(false);
 	}
 	*/
+
+	int m_iLastProcessedIndex = 0;
 	
 	//------------------------------------------------------------------------------------------------
 	//! Tick method
@@ -28,25 +30,28 @@ class CE_ItemSpawnableSystem : GameSystem
 		
 		m_fTimer = 0;
 		
-		/*
-		foreach (CE_ItemSpawnableComponent comp : m_aComponents)
+		int componentsCount = m_aComponents.Count();
+		int maxCount = 20;
+		int startPoint = m_iLastProcessedIndex;
+		int maxIndex = Math.ClampInt(startPoint + maxCount, 0, componentsCount - 1);
+		int currentIndex = startPoint;
+		for (; currentIndex <= maxIndex; currentIndex++)
 		{
-			comp.Update(m_fCheckInterval);
-		}
-		*/
-		
-		// Loop backwards to avoid index issues if the array is modified during iteration
-		for (int i = m_aComponents.Count() - 1; i >= 0; i--)
-		{
-			CE_ItemSpawnableComponent comp = m_aComponents[i];
+			CE_ItemSpawnableComponent comp = m_aComponents[currentIndex];
 			
 			if (!comp)
 				continue;
 			
-			comp.Update(m_fCheckInterval);
+			GetGame().GetCallqueue().Call(comp.Update, m_fCheckInterval);
 		}
 		
-		//Print("ItemSpawnableCount: " + m_aComponents.Count());
+		// reset last processed when end is reached
+		if (m_iLastProcessedIndex == componentsCount - 1)
+			m_iLastProcessedIndex = 0;
+		
+		// otherwise set last processed index for next tick to resume on
+		else
+			m_iLastProcessedIndex = currentIndex;
 	}
 	
 	// GameSystem stuff
