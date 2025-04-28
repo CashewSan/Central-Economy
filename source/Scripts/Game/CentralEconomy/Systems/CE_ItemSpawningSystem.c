@@ -28,6 +28,8 @@ class CE_ItemSpawningSystem : GameSystem
 	protected int									m_iSpawnedItemCount			= 0;												// count for spawned items, used to track when check interval changes
 	protected int									m_iSortedItemsLimit			= 2000;											// sorted items count limit (basically, how many items can a spawner potentially sort and choose from to spawn)
 	
+	int m_iLastProcessedIndex = 0;
+	
 	
 	//------------------------------------------------------------------------------------------------
 	//! Calls DelayedInit()
@@ -62,7 +64,7 @@ class CE_ItemSpawningSystem : GameSystem
 			
 			if (m_bWorldProcessed && m_Config)
 			{
-				SelectSpawnerAndItem();
+				GetGame().GetCallqueue().Call(SelectSpawnerAndItem);
 			}
 			else
 				GetGame().GetCallqueue().CallLater(DelayedInit, 100, false);
@@ -78,17 +80,29 @@ class CE_ItemSpawningSystem : GameSystem
 		if (m_fSpawnerResetTimer >= m_fSpawnerResetCheckInterval)
 		{
 			m_fSpawnerResetTimer = 0;
-			
-			// Loop backwards to avoid index issues if the array is modified during iteration
-			for (int i = m_aComponentsWithItem.Count() - 1; i >= 0; i--)
+
+			int componentsCount = m_aComponentsWithItem.Count();
+			int maxCount = 20;
+			int startPoint = m_iLastProcessedIndex;
+			int maxIndex = Math.ClampInt(startPoint + maxCount, 0, componentsCount - 1);
+			int currentIndex = startPoint;
+			for (; currentIndex <= maxIndex; currentIndex++)
 			{
-				CE_ItemSpawningComponent comp = m_aComponentsWithItem[i];
-			
+				CE_ItemSpawningComponent comp = m_aComponentsWithItem[currentIndex];
+				
 				if (!comp)
 					continue;
 				
-				comp.Update(m_fSpawnerResetCheckInterval);
+				GetGame().GetCallqueue().Call(comp.Update, m_fSpawnerResetCheckInterval);
 			}
+			
+			// reset last processed when end is reached
+			if (m_iLastProcessedIndex == componentsCount - 1)
+				m_iLastProcessedIndex = 0;
+			
+			// otherwise set last processed index for next tick to resume on
+			else
+				m_iLastProcessedIndex = currentIndex;
 		}
 	}
 	
