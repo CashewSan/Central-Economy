@@ -31,7 +31,11 @@ class CE_ItemSpawningComponent : ScriptComponent
 	CE_ELootCategory m_Categories;
 	
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	[Attribute("1800000", UIWidgets.EditBox, desc: "Time (in seconds) it takes for the spawner to reset after spawned item was taken from it. Helps prevent loot camping.", category: "Item Data")] // default set to 1800000 seconds (30 minutes)
+=======
+	[Attribute("1800", UIWidgets.EditBox, desc: "Time (in seconds) it takes for the spawner to reset after spawned item was taken from it. Helps prevent loot camping.", params: "10 inf 10", category: "Item Data")] // default set to 1800 seconds (30 minutes) 
+>>>>>>> Stashed changes
 =======
 	[Attribute("1800", UIWidgets.EditBox, desc: "Time (in seconds) it takes for the spawner to reset after spawned item was taken from it. Helps prevent loot camping.", params: "10 inf 10", category: "Item Data")] // default set to 1800 seconds (30 minutes) 
 >>>>>>> Stashed changes
@@ -89,6 +93,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 			if (GetCurrentSpawnerResetTime() == 0 && !HasSpawnerReset())
 			{
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 				SetHasSpawnerReset(true);
 				
 				OnSpawnerReset();
@@ -112,6 +117,9 @@ class CE_ItemSpawningComponent : ScriptComponent
 			else if (GetItemSpawned() && GetItemSpawned().m_sName)
 			{
 				Print("[CentralEconomy] THIS ENTITY HAS NO CE_ITEMSPAWNABLECOMPONENT!: " + GetItemSpawned().m_sName, LogLevel.ERROR);
+=======
+				m_OnSpawnerResetInvoker.Invoke(this);
+>>>>>>> Stashed changes
 =======
 				m_OnSpawnerResetInvoker.Invoke(this);
 >>>>>>> Stashed changes
@@ -153,6 +161,17 @@ class CE_ItemSpawningComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Disonnects from item spawning system and unregisters this component
+	protected void DisconnectFromItemSpawningSystem()
+	{
+		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
+		if (!m_SpawningSystem)
+			return;
+
+		m_SpawningSystem.UnregisterSpawner(this);
+	}
+	
+	//------------------------------------------------------------------------------------------------
 	//! Loads CE_ItemData config containing items, deciding if it's one attached to the component or the universal config
 	protected void LoadConfig()
 	{
@@ -168,6 +187,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 				}
 			}
 		}
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 		else
 		{
@@ -206,6 +226,8 @@ class CE_ItemSpawningComponent : ScriptComponent
 		}
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 		
 		if (!m_Config)
 			Print("[CentralEconomy::CE_ItemSpawningComponent] NO ITEM DATA CONFIG FOUND!", LogLevel.ERROR);
@@ -226,6 +248,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 		if (!m_SpawningSystem)
 			return null;
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 		return m_SpawningSystem.GetItem(itemDataArray, m_Tier, m_Usage, m_Categories);
 	}
@@ -357,6 +380,8 @@ class CE_ItemSpawningComponent : ScriptComponent
 		OnItemTaken(child);
 	}
 =======
+=======
+>>>>>>> Stashed changes
 		return m_SpawningSystem.GetItemFromSpawnerConfig(itemDataArray, m_Tier, m_Usage, m_Categories);
 	}
 	
@@ -370,6 +395,9 @@ class CE_ItemSpawningComponent : ScriptComponent
 
 		return m_SpawningSystem.GetItemFromUniversalConfig(m_Tier, m_Usage, m_Categories);
 	}	
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 	
 	//------------------------------------------------------------------------------------------------
@@ -677,6 +705,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	
 	//------------------------------------------------------------------------------------------------
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	//! Is the item a new spawn?
 	bool IsNewSpawn()
 	{
@@ -689,6 +718,8 @@ class CE_ItemSpawningComponent : ScriptComponent
 	{
 		m_bIsNewSpawn = spawn;
 =======
+=======
+>>>>>>> Stashed changes
 	//! Does this spawner have a config?
 	bool HasSpawnerConfig()
 	{
@@ -728,6 +759,9 @@ class CE_ItemSpawningComponent : ScriptComponent
 	CE_OnVehicleTakenInvoker GetVehicleTakenInvoker()
 	{
 		return m_OnVehicleTakenInvoker;
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 	}
 }

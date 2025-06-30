@@ -5,6 +5,7 @@ class CE_ItemSpawnableSystem : GameSystem
 	protected float 										m_fTimer						= 0;				// timer for spawning check interval
 	protected float										m_fCheckInterval				= 1; 			// how often the item spawning system will run (in seconds)
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	
 	//------------------------------------------------------------------------------------------------
 	//! Sets m_fCheckInterval
@@ -13,6 +14,8 @@ class CE_ItemSpawnableSystem : GameSystem
 		if (m_aComponents.IsEmpty())
 			Enable(false);
 	}
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 	
@@ -30,11 +33,14 @@ class CE_ItemSpawnableSystem : GameSystem
 		m_fTimer = 0;
 		
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 		foreach (CE_ItemSpawnableComponent comp : m_aComponents)
 		{
 			comp.Update(m_fCheckInterval);
 		}
 =======
+=======
+>>>>>>> Stashed changes
 		// Loop backwards to avoid index issues if the array is modified during iteration
 		for (int i = m_aComponents.Count() - 1; i >= 0; i--)
 		{

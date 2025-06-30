@@ -112,9 +112,12 @@ $grp GenericEntity : "{85C71F17C37D274C}Prefabs/Structures/BuildingParts/Entry/E
  }
 }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 GenericEntity LootSpawner_Weapons_645F760283418BD2 : "{E99195907C7200AD}Prefabs/Spawners/LootSpawner_Weapons.et" {
  coords 159.229 1.454 106.131
 =======
+=======
+>>>>>>> Stashed changes
 SCR_DestructibleBuildingEntity : "{8ACC8A8EB87A28FF}Prefabs/Structures/Houses/Village/House_Village_E_1I03/House_Village_E_1I03.et" {
  coords 164.58 0 161.092
  {
@@ -230,5 +233,8 @@ GenericEntity : "{FA2806411E2B8AE7}Prefabs/Props/Furniture/Desk_01_Base.et" {
 }
 GenericEntity : "{FD47FF9699A52E82}Prefabs/Props/Furniture/Wardrobe_01.et" {
  coords 141.882 1 174.688
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 }
