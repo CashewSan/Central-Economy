@@ -1,4 +1,18 @@
-// Big thanks to Wyqydsyq for help with handling the vehicle features <3
+void CE_ItemSpawned(IEntity itemEntity, CE_ItemData itemData);
+typedef func CE_ItemSpawned;
+typedef ScriptInvokerBase<CE_ItemSpawned> CE_OnItemSpawnedInvoker;
+
+void CE_ItemDespawned(IEntity itemEntity, CE_ItemData itemData);
+typedef func CE_ItemDespawned;
+typedef ScriptInvokerBase<CE_ItemDespawned> CE_OnItemDespawnedInvoker;
+
+void CE_VehicleTaken(IEntity vehicleEntity, CE_ItemData itemData);
+typedef func CE_VehicleTaken;
+typedef ScriptInvokerBase<CE_VehicleTaken> CE_OnVehicleTakenInvoker;
+
+void CE_SpawnerReset(CE_ItemSpawningComponent spawner);
+typedef func CE_SpawnerReset;
+typedef ScriptInvokerBase<CE_SpawnerReset> CE_OnSpawnerResetInvoker;
 
 [ComponentEditorProps(category: "CentralEconomy/Components", description: "Component to be added to spawner entities to handle item spawning")]
 class CE_ItemSpawningComponentClass : ScriptComponentClass
@@ -16,7 +30,11 @@ class CE_ItemSpawningComponent : ScriptComponent
 	[Attribute(ResourceName.Empty, UIWidgets.Flags, desc: "Category of loot spawn", enums: ParamEnumArray.FromEnum(CE_ELootCategory), category: "Item Data")]
 	CE_ELootCategory m_Categories;
 	
+<<<<<<< Updated upstream
 	[Attribute("1800000", UIWidgets.EditBox, desc: "Time (in seconds) it takes for the spawner to reset after spawned item was taken from it. Helps prevent loot camping.", category: "Item Data")] // default set to 1800000 seconds (30 minutes)
+=======
+	[Attribute("1800", UIWidgets.EditBox, desc: "Time (in seconds) it takes for the spawner to reset after spawned item was taken from it. Helps prevent loot camping.", params: "10 inf 10", category: "Item Data")] // default set to 1800 seconds (30 minutes) 
+>>>>>>> Stashed changes
 	int m_iSpawnerResetTime;
 	
 	protected CE_ELootUsage 								m_Usage; 																	// gets set by the Usage Trigger Area Entity
@@ -26,24 +44,28 @@ class CE_ItemSpawningComponent : ScriptComponent
 	protected bool 										m_bWasItemDespawned 						= false;								// was the item despawned by the system?
 	protected bool 										m_bHasItemBeenTaken 						= false;								// has item been taken from spawner?
 	protected bool										m_bHasSpawnerReset						= true;								// has the spawner reset?
-	protected bool										m_bIsNewSpawn							= false;								// is the item a new spawn?
 	
 	protected int										m_iCurrentSpawnerResetTime				= 0;									// current spawner reset time
 	
 	protected string 									m_sSpawnedEntityUID;															// UID of the spawned entity
+	
+	protected ref CE_OnItemSpawnedInvoker 					m_OnItemSpawnedInvoker 					= new CE_OnItemSpawnedInvoker();
+	protected ref CE_OnItemDespawnedInvoker 				m_OnItemDespawnedInvoker 					= new CE_OnItemDespawnedInvoker();
+	protected ref CE_OnSpawnerResetInvoker 				m_OnSpawnerResetInvoker 					= new CE_OnSpawnerResetInvoker();
+	protected ref CE_OnVehicleTakenInvoker					m_OnVehicleTakenInvoker					= new CE_OnVehicleTakenInvoker();
 	
 	protected ref array<ref CE_ItemData>					m_aItemData								= new array<ref CE_ItemData>;			// CE_ItemData array, item data gets inserted from config item data
 	protected CE_ItemData 								m_ItemSpawned;																// item that has spawned on the spawner
 	protected IEntity 									m_EntitySpawned;																// entity that has spawned on the spawner
 	protected CE_ItemDataConfig							m_Config;																	// the set config for spawner, can be unique config or universal config
 	protected CE_ItemSpawningSystem 						m_SpawningSystem;															// the spawning game system used to control spawning
-	protected ref CE_UIDGenerator 						m_UIDGen 								= new CE_UIDGenerator();				// Central Economy unique identifier generator
+	protected CE_SpawnerTimingSystem 						m_TimingSystem;																// the timing game system used to control spawner reset
 
 	//------------------------------------------------------------------------------------------------
 	//! Calls ConnectToItemSpawningSystem(), and sets default attributes if not set by trigger entities
 	protected override void OnPostInit(IEntity owner)
 	{
-		//ConnectToItemSpawningSystem();
+		HookEvents();
 		
 		GetGame().GetCallqueue().CallLater(ConnectToItemSpawningSystem, 500);
 		
@@ -61,17 +83,12 @@ class CE_ItemSpawningComponent : ScriptComponent
 	
 	void Update(int checkInterval)
 	{
-		if (WasItemDespawned())
-		{
-			SetHasSpawnerReset(true);
-				
-			OnSpawnerReset();
-		}
-		else if (HasItemBeenTaken())
+		if (HasItemBeenTaken())
 		{
 			SetCurrentSpawnerResetTime(Math.ClampInt(GetCurrentSpawnerResetTime() - checkInterval, 0, GetSpawnerResetTime()));
 			if (GetCurrentSpawnerResetTime() == 0 && !HasSpawnerReset())
 			{
+<<<<<<< Updated upstream
 				SetHasSpawnerReset(true);
 				
 				OnSpawnerReset();
@@ -95,8 +112,20 @@ class CE_ItemSpawningComponent : ScriptComponent
 			else if (GetItemSpawned() && GetItemSpawned().m_sName)
 			{
 				Print("[CentralEconomy] THIS ENTITY HAS NO CE_ITEMSPAWNABLECOMPONENT!: " + GetItemSpawned().m_sName, LogLevel.ERROR);
+=======
+				m_OnSpawnerResetInvoker.Invoke(this);
+>>>>>>> Stashed changes
 			}
 		}
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Initialize necessary callbacks
+	protected void HookEvents()
+	{
+		m_OnItemSpawnedInvoker.Insert(OnItemSpawned);
+		m_OnItemDespawnedInvoker.Insert(OnItemDespawned);
+		m_OnSpawnerResetInvoker.Insert(OnSpawnerReset);
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -107,9 +136,20 @@ class CE_ItemSpawningComponent : ScriptComponent
 		if (!m_SpawningSystem)
 			return;
 		
-		m_SpawningSystem.Register(this);
+		m_SpawningSystem.RegisterSpawner(this);
 		
 		GetGame().GetCallqueue().CallLater(LoadConfig, 100);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Disonnects from item spawning system and unregisters this component
+	protected void DisconnectFromItemSpawningSystem()
+	{
+		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
+		if (!m_SpawningSystem)
+			return;
+
+		m_SpawningSystem.UnregisterSpawner(this);
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -128,6 +168,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 				}
 			}
 		}
+<<<<<<< Updated upstream
 		else
 		{
 			if(GetGame().InPlayMode())
@@ -163,20 +204,11 @@ class CE_ItemSpawningComponent : ScriptComponent
 				}
 			}
 		}
+=======
+>>>>>>> Stashed changes
 		
 		if (!m_Config)
-			Print("[CentralEconomy] NO ITEM DATA CONFIG FOUND!", LogLevel.ERROR);
-	}
-
-	//------------------------------------------------------------------------------------------------
-	//! Disonnects from item spawning system and unregisters this component
-	protected void DisconnectFromItemSpawningSystem()
-	{
-		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
-		if (!m_SpawningSystem)
-			return;
-
-		m_SpawningSystem.Unregister(this);
+			Print("[CentralEconomy::CE_ItemSpawningComponent] NO ITEM DATA CONFIG FOUND!", LogLevel.ERROR);
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -194,6 +226,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 		if (!m_SpawningSystem)
 			return null;
 
+<<<<<<< Updated upstream
 		return m_SpawningSystem.GetItem(itemDataArray, m_Tier, m_Usage, m_Categories);
 	}
 	
@@ -323,6 +356,21 @@ class CE_ItemSpawningComponent : ScriptComponent
 	{
 		OnItemTaken(child);
 	}
+=======
+		return m_SpawningSystem.GetItemFromSpawnerConfig(itemDataArray, m_Tier, m_Usage, m_Categories);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Calls to item spawning system to request item from the UNIVERSAL itemData config and uses the attributes from this component
+	CE_ItemData GetItemToSpawnFromUniversalConfig()
+	{
+		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
+		if (!m_SpawningSystem)
+			return null;
+
+		return m_SpawningSystem.GetItemFromUniversalConfig(m_Tier, m_Usage, m_Categories);
+	}	
+>>>>>>> Stashed changes
 	
 	//------------------------------------------------------------------------------------------------
 	//! When spawned vehicle compartment is entered by player, adds DeferredVehicleRespawnCheck() to call queue and delays it by 10 seconds
@@ -346,13 +394,15 @@ class CE_ItemSpawningComponent : ScriptComponent
 		
 		float distance = vector.DistanceSq(vehicle.GetOrigin(), GetOwner().GetOrigin());
 		
-		//PrintFormat("MO: DeferredVehicleRespawnCheck(%1, %2): Distance from spawn: %3", this, vehicle, distance);
+		//PrintFormat("DeferredVehicleRespawnCheck(%1, %2): Distance from spawn: %3", this, vehicle, distance);
 		if (distance > VEHICLE_RESPAWN_DISTANCE_THRESHOLD)
 		{
 			// vehicle has moved away from spawn so enable respawning it
-			//PrintFormat("MO: DeferredVehicleRespawnCheck(%1, %2): Enabling respawn", this, vehicle);
+			//PrintFormat("DeferredVehicleRespawnCheck(%1, %2): Enabling respawn", this, vehicle);
 			
-			OnItemTaken(vehicle);
+			InventoryItemComponent itemComponent = InventoryItemComponent.Cast(vehicle.FindComponent(InventoryItemComponent));
+			if (itemComponent)
+				itemComponent.m_OnParentSlotChangedInvoker.Invoke(null, null); // slots don't apply with vehicles so not necessary (I think)
 		}
 		else
 		{
@@ -363,88 +413,106 @@ class CE_ItemSpawningComponent : ScriptComponent
 	
 	//------------------------------------------------------------------------------------------------
 	//! Called when the item spawns or is attached as a child to the spawner entity, set various checks and balances
-	void OnItemSpawned(IEntity item)
+	protected void OnItemSpawned(IEntity itemEntity, CE_ItemData itemData)
 	{
-		string itemUID = m_UIDGen.Generate();
+		//string itemUID = m_UIDGen.Generate();
 		
-		CE_ItemSpawnableComponent itemSpawnable = CE_ItemSpawnableComponent.Cast(item.FindComponent(CE_ItemSpawnableComponent));
+		CE_ItemSpawnableComponent itemSpawnable = CE_ItemSpawnableComponent.Cast(itemEntity.FindComponent(CE_ItemSpawnableComponent));
 		if (itemSpawnable)
 		{
-			if (IsNewSpawn())
-			{
-				
-				itemSpawnable.SetItemUID(itemUID);
-				itemSpawnable.SetWasSpawnedBySystem(true);
-				
-				if (GetItemSpawned())
-				{
-					itemSpawnable.SetItemDataName(GetItemSpawned().m_sName);
-					itemSpawnable.SetRestockTime(GetItemSpawned().m_iRestock);
-					itemSpawnable.SetCurrentRestockTime(GetItemSpawned().m_iRestock);
-					itemSpawnable.SetLifetime(GetItemSpawned().m_iLifetime);
-					itemSpawnable.SetCurrentLifetime(GetItemSpawned().m_iLifetime);
-					itemSpawnable.SetItemDataCategory(GetItemSpawned().m_ItemCategory);
-				}
-				// else gets set on load of EPF if active
-			}
+			//itemSpawnable.SetItemUID(itemUID);
+			itemSpawnable.SetWasSpawnedBySystem(true);
+			itemSpawnable.SetItemDataName(itemData.m_sName);
+			itemSpawnable.SetRestockTime(itemData.m_iRestock);
+			itemSpawnable.SetCurrentRestockTime(itemData.m_iRestock);
+			itemSpawnable.SetLifetime(itemData.m_iLifetime);
+			itemSpawnable.SetCurrentLifetime(itemData.m_iLifetime);
+			itemSpawnable.SetItemDataCategory(itemData.m_ItemCategory);
 		}
 		else
-			Print("[CentralEconomy] THIS ENTITY HAS NO CE_ITEMSPAWNABLECOMPONENT!: " + GetItemSpawned().m_sName, LogLevel.ERROR);
+			Print("[CentralEconomy::CE_ItemSpawningComponent] THIS ENTITY HAS NO CE_ITEMSPAWNABLECOMPONENT!: " + itemData.m_sName, LogLevel.ERROR);
 		
+		SetItemSpawned(itemData);
 		SetCurrentSpawnerResetTime(m_iSpawnerResetTime);
-		SetEntitySpawned(item);
-		SetSpawnedEntityUID(itemUID);
+		SetEntitySpawned(itemEntity);
+		//SetSpawnedEntityUID(itemUID);
 		SetHasItemSpawned(true);
 		SetWasItemDespawned(false);
 		SetHasItemBeenTaken(false);
 		SetHasSpawnerReset(false);
+		
+		InventoryItemComponent itemComponent = InventoryItemComponent.Cast(itemEntity.FindComponent(InventoryItemComponent));
+		if (itemComponent)
+			itemComponent.m_OnParentSlotChangedInvoker.Insert(OnItemTaken);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Called when the item despawns
+	protected void OnItemDespawned(IEntity itemEntity, CE_ItemData itemData)
+	{
+		m_OnSpawnerResetInvoker.Invoke(this);
 	}
 	
 	//------------------------------------------------------------------------------------------------
 	//! Called when the item is taken or is detached as a child to the spawner entity, set various checks and balances
-	void OnItemTaken(IEntity item)
+	protected void OnItemTaken(InventoryStorageSlot oldSlot, InventoryStorageSlot newSlot)
 	{
+		Print("Item Taken");
+		
 		SetHasItemBeenTaken(true);
 		//SetSpawnedEntityUID(string.Empty);
 		//SetCurrentSpawnerResetTime(m_iSpawnerResetTime);
 		
 		GetGame().GetCallqueue().CallLater(RemoveItemSpawnedFromSystem, 100, false, GetItemSpawned());
 		
-		CE_ItemSpawnableComponent itemSpawnable = CE_ItemSpawnableComponent.Cast(item.FindComponent(CE_ItemSpawnableComponent));
+		CE_ItemSpawnableComponent itemSpawnable = CE_ItemSpawnableComponent.Cast(GetEntitySpawned().FindComponent(CE_ItemSpawnableComponent));
 		if (itemSpawnable)
 		{
 			itemSpawnable.SetWasItemTaken(true);
 			itemSpawnable.SetLifetime(0);
-			
-			/*
-			if (IsNewSpawn())
-			{
-				if (GetItemSpawned() && GetItemSpawned().m_iRestock)
-					itemSpawnable.SetCurrentRestockTime(GetItemSpawned().m_iRestock);
-				else
-					itemSpawnable.SetCurrentRestockTime(3600); // default restock
-			}
-			*/
 		}
 		else
-			Print("[CentralEconomy] THIS ENTITY HAS NO CE_ITEMSPAWNABLECOMPONENT!: " + GetItemSpawned().m_sName, LogLevel.ERROR);
+			Print("[CentralEconomy::CE_ItemSpawningComponent] THIS ENTITY HAS NO CE_ITEMSPAWNABLECOMPONENT!: " + GetItemSpawned().m_sName, LogLevel.ERROR);
 		
 		if (m_SpawningSystem)
 		{
-			if (IsNewSpawn())
-				m_SpawningSystem.GetItemsNotRestockReady().Insert(GetItemSpawned(), GetItemSpawned().m_sName);
+			m_SpawningSystem.GetItemsNotRestockReady().Insert(GetItemSpawned(), GetItemSpawned().m_sName);
 		}
+		
+		m_TimingSystem = CE_SpawnerTimingSystem.GetInstance();
+		if (m_TimingSystem)
+		{
+			m_TimingSystem.RegisterSpawner(this);
+		}
+		
+		InventoryItemComponent itemComponent = InventoryItemComponent.Cast(GetEntitySpawned().FindComponent(InventoryItemComponent));
+		if (itemComponent)
+			itemComponent.m_OnParentSlotChangedInvoker.Remove(OnItemTaken);
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Gets m_aComponentsWithoutItem array from item spawning system and inserts this component, as well subtracts 1 from the m_iSpawnedItemCount of the item spawning system
-	protected void ComponentArrayReset()
+	//! Called when spawner resets
+	protected void OnSpawnerReset(CE_ItemSpawningComponent spawner)
 	{
+		//Print("Spawner Reset");
+		
+		//SetSpawnedEntityUID(string.Empty);
+		SetEntitySpawned(null);
+		SetHasItemSpawned(false);
+		
+		SetHasSpawnerReset(true);
+			
 		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
 		if (m_SpawningSystem)
 		{
 			m_SpawningSystem.GetComponentsWithoutItem().Insert(this);
 			m_SpawningSystem.SetSpawnedItemCount(m_SpawningSystem.GetSpawnedItemCount() - 1);
+		}
+		
+		m_TimingSystem = CE_SpawnerTimingSystem.GetInstance();
+		if (m_TimingSystem)
+		{
+			m_TimingSystem.UnregisterSpawner(this);
 		}
 	}
 	
@@ -459,19 +527,6 @@ class CE_ItemSpawningComponent : ScriptComponent
 		}
 	}
 	
-	//------------------------------------------------------------------------------------------------
-	//! Called when spawner resets
-	void OnSpawnerReset()
-	{
-		//Print("Spawner Reset");
-		
-		SetSpawnedEntityUID(string.Empty);
-		SetEntitySpawned(null);
-		SetHasItemSpawned(false);
-			
-		ComponentArrayReset();
-	}
-	
 	// Component Stuff
 	
 	//------------------------------------------------------------------------------------------------
@@ -483,7 +538,10 @@ class CE_ItemSpawningComponent : ScriptComponent
 		super.OnDelete(owner);
 	}
 	
-	// Getters/Setters
+	//------------------------------------------------------------------------------------------------
+	// GETTERS/SETTERS
+	//------------------------------------------------------------------------------------------------
+	
 	//------------------------------------------------------------------------------------------------
 	//! Does the spawner have a item spawned on it?
 	bool HasItemSpawned()
@@ -583,33 +641,6 @@ class CE_ItemSpawningComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Gets the spawned entity's unique identifier
-	string GetUIDFromSpawnedEntity(IEntity item)
-	{
-		CE_ItemSpawnableComponent itemSpawnable = CE_ItemSpawnableComponent.Cast(item.FindComponent(CE_ItemSpawnableComponent));
-		if (itemSpawnable)
-		{
-			return itemSpawnable.GetItemUID();
-		}
-		else
-			return string.Empty;
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Gets the spawned entity's unique identifier stored in the spawner component
-	string GetSpawnedEntityUID()
-	{
-		return m_sSpawnedEntityUID;
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Sets the spawned entity's unique identifier stored in the spawner component
-	void SetSpawnedEntityUID(string uid)
-	{
-		m_sSpawnedEntityUID = uid;
-	}
-	
-	//------------------------------------------------------------------------------------------------
 	//! Gets the current spawner reset time
 	int GetCurrentSpawnerResetTime()
 	{
@@ -645,6 +676,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
+<<<<<<< Updated upstream
 	//! Is the item a new spawn?
 	bool IsNewSpawn()
 	{
@@ -656,5 +688,46 @@ class CE_ItemSpawningComponent : ScriptComponent
 	void SetIsNewSpawn(bool spawn)
 	{
 		m_bIsNewSpawn = spawn;
+=======
+	//! Does this spawner have a config?
+	bool HasSpawnerConfig()
+	{
+		return m_bHasSpawnerConfig;
+	}
+		
+	//------------------------------------------------------------------------------------------------
+	//! Sets if the spawner has a config
+	void SetHasSpawnerConfig(bool config)
+	{
+		m_bHasSpawnerConfig = config;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets item spawned script invoker
+	CE_OnItemSpawnedInvoker GetItemSpawnedInvoker()
+	{
+		return m_OnItemSpawnedInvoker;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets item despawned script invoker
+	CE_OnItemDespawnedInvoker GetItemDespawnedInvoker()
+	{
+		return m_OnItemDespawnedInvoker;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets spawner reset script invoker
+	CE_OnSpawnerResetInvoker GetSpawnerResetnvoker()
+	{
+		return m_OnSpawnerResetInvoker;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets vehicle taken script invoker
+	CE_OnVehicleTakenInvoker GetVehicleTakenInvoker()
+	{
+		return m_OnVehicleTakenInvoker;
+>>>>>>> Stashed changes
 	}
 }

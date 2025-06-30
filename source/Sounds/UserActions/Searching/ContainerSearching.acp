@@ -1,0 +1,314 @@
+AudioClass {
+ signals {
+  SignalClass {
+   id 1037
+   name "Signal Spatiality"
+   tl 55.969 -432.143
+   res "{A801B27A708153A6}Sounds/_SharedData/Signals/Character/Character_Spatiality.sig"
+   inputsport {
+    1 3
+   }
+   outputsport {
+    9
+   }
+   inputvalues {
+    0 0
+   }
+   inputvaluesmin {
+    0 0
+   }
+   inputvaluesmax {
+    1 1
+   }
+   path "{A801B27A708153A6}Sounds/_SharedData/Signals/Character/Character_Spatiality.sig"
+  }
+  SignalClass {
+   id 9229
+   name "Signal 87"
+   tl -131.905 -255.297
+   res "{A45B14CDEA2D5DCD}Sounds/_SharedData/Signals/Props/Props_Occlusion.sig"
+   inputsport {
+    1 23 52 56
+   }
+   outputsport {
+    5 37
+   }
+   inputvalues {
+    0 0 0 0
+   }
+   inputvaluesmin {
+    0 0 0 0
+   }
+   inputvaluesmax {
+    1 1 10000 10000
+   }
+   path "{A45B14CDEA2D5DCD}Sounds/_SharedData/Signals/Props/Props_Occlusion.sig"
+  }
+ }
+ sounds {
+  SoundClass {
+   id 4105
+   name "SOUND_ITEM_CENTRALECONOMY_SEARCH"
+   comment "Sounds for searching containers"
+   version 5
+   tl 221.011 13.154
+   ctl 0 -21
+   ins {
+    ConnectionsClass connections {
+     id 64
+     links {
+      ConnectionClass connection {
+       id 7186
+       port 65
+      }
+     }
+    }
+   }
+   transformation Bone
+  }
+  SoundClass {
+   id 13321
+   name "SOUND_ITEM_CENTRALECONOMY_SEARCHMETAL"
+   comment "Sounds for searching metal containers"
+   version 5
+   tl 223.152 185.774
+   ctl 0 -21
+   ins {
+    ConnectionsClass connections {
+     id 64
+     links {
+      ConnectionClass connection {
+       id 15378
+       port 65
+      }
+     }
+    }
+   }
+   outState 2059
+   outStatePort 12295
+   transformation Bone
+  }
+ }
+ mixers {
+  MixerClass {
+   id 2059
+   name "OutputState"
+   version 4
+   tl 601.934 14.092
+   res "{B764D803219C775E}Sounds/FinalMix.afm"
+   ins {
+    ConnectionsClass connections {
+     id 12295
+     links {
+      ConnectionClass connection {
+       id 4105
+       port 65
+      }
+      ConnectionClass connection {
+       id 13321
+       port 65
+      }
+     }
+    }
+   }
+   pi {
+    16 0
+   }
+   path "{B764D803219C775E}Sounds/FinalMix.afm"
+   inputs {
+    "WPN_Handling" "WPN_Shots" "WPN_Explosions" "WNP_BulletHits" "CHAR" "ENV_AMB_2D" "VEH_Animations" "Impacts" "Dialog" "Music" "ENV_Doors" "VEH_Engine" "VEH_Tires" "VON" "SFX" "SFX_Reverb" "VON_Reverb" "Dialog_Reverb" "Impacts_EXT" "ENV_AMB_3D" "WPN_SonicCracks" "CHAR_Gear" "PA" "SFX_Reverb_Exterior" "UI" "ENV_AMB_3D_Reverb_Exterior" "SFX_Direct" "SFX_Reverb_Small" "SFX_Reverb_Medium" "SFX_Reverb_Large" "WPN_Shots_Player" "Dialog_Reverb_Small" "Dialog_Reverb_Medium" "Dialog_Reverb_Large" "WPN_TravelingProjectile" "Dialog_Delay_Exterior" "SFX_Reverb_InCabin"
+   }
+  }
+ }
+ shaders {
+  ShaderClass {
+   id 7186
+   name "Searching Shader"
+   version 5
+   tl 40.969 12.385
+   ins {
+    ConnectionsClass connections {
+     id 0
+     links {
+      ConnectionClass connection {
+       id 5148
+       port 65
+      }
+     }
+    }
+    ConnectionsClass connections {
+     id 1
+     links {
+      ConnectionClass connection {
+       id 8211
+       port 65
+      }
+     }
+    }
+    ConnectionsClass connections {
+     id 2
+     links {
+      ConnectionClass connection {
+       id 10261
+       port 65
+      }
+     }
+    }
+    ConnectionsClass connections {
+     id 64
+     links {
+      ConnectionClass connection {
+       id 12292
+       port 65
+      }
+     }
+    }
+   }
+   pi {
+    7 0
+   }
+  }
+  ShaderClass {
+   id 15378
+   name "Searching Shader"
+   version 5
+   tl 44.432 185.005
+   ins {
+    ConnectionsClass connections {
+     id 0
+     links {
+      ConnectionClass connection {
+       id 5148
+       port 65
+      }
+     }
+    }
+    ConnectionsClass connections {
+     id 1
+     links {
+      ConnectionClass connection {
+       id 8211
+       port 65
+      }
+     }
+    }
+    ConnectionsClass connections {
+     id 2
+     links {
+      ConnectionClass connection {
+       id 10261
+       port 65
+      }
+     }
+    }
+    ConnectionsClass connections {
+     id 64
+     links {
+      ConnectionClass connection {
+       id 14340
+       port 65
+      }
+     }
+    }
+   }
+   pi {
+    7 0
+   }
+  }
+ }
+ amplitudes {
+  AmplitudeClass : "{7BAAAD4DE72D5E71}Sounds/_SharedData/Configs/Amplitude/_SharedData/Amplitude_-65LUFS_to_-60LUFS.conf" {
+   id 8211
+   version 5
+   tl 55.969 -253.312
+   parent "{7BAAAD4DE72D5E71}Sounds/_SharedData/Configs/Amplitude/_SharedData/Amplitude_-65LUFS_to_-60LUFS.conf"
+  }
+ }
+ frequency {
+  FrequencyClass : "{9CEA92EF9F8D78EF}Sounds/_SharedData/Configs/Frequency/Character/Frequency_Character_Foley.conf" {
+   id 10261
+   version 5
+   tl 56.525 -182.793
+   parent "{9CEA92EF9F8D78EF}Sounds/_SharedData/Configs/Frequency/Character/Frequency_Character_Foley.conf"
+   ins {
+    ConnectionsClass connections {
+     id 4
+     links {
+      ConnectionClass connection {
+       id 9229
+       port 37
+      }
+     }
+    }
+   }
+   pi {
+    16 0
+   }
+  }
+ }
+ banks_local {
+  BankLocalClass {
+   id 12292
+   name "0 Searching Container"
+   version 7
+   tl -260.467 12.05
+   Volume -5
+   "Volume variance" 0.5
+   "Pitch variance" 0.4
+   Samples {
+    AudioBankSampleClass Sample {
+     Filename "{873A6EEC9FDE0C4B}Sounds/UserActions/Searching/Samples/Searching1.wav"
+    }
+    AudioBankSampleClass Sample {
+     Filename "{1E24D77582393DDB}Sounds/UserActions/Searching/Samples/Searching2.wav"
+     Index 1
+    }
+   }
+  }
+  BankLocalClass {
+   id 14340
+   name "0 Searching Container"
+   version 7
+   tl -257.004 184.67
+   Volume -5
+   "Volume variance" 0.5
+   "Pitch variance" 0.4
+   Samples {
+    AudioBankSampleClass Sample {
+     Filename "{E9A9EA62FAA0709E}Sounds/Structures/_ShaderData/Doors/Samples/Metalic/Gate2/Gate2_Metal_Open_Finish_1.wav"
+    }
+    AudioBankSampleClass Sample {
+     Filename "{70B753FBE747410E}Sounds/Structures/_ShaderData/Doors/Samples/Metalic/Gate2/Gate2_Metal_Open_Finish_2.wav"
+     Index 1
+    }
+    AudioBankSampleClass Sample {
+     Filename "{7770A9AA81C1FBCD}Sounds/Structures/_ShaderData/Doors/Samples/Metalic/Gate2/Gate2_Metal_Open_Finish_5.wav"
+     Index 2
+    }
+   }
+  }
+ }
+ spatialities {
+  SpatialityClass : "{E7A5A6AD7326FC7B}Sounds/_SharedData/Configs/Spatiality/Spatiality_Signal.conf" {
+   id 5148
+   version 5
+   tl 55.969 -331.551
+   parent "{E7A5A6AD7326FC7B}Sounds/_SharedData/Configs/Spatiality/Spatiality_Signal.conf"
+   ins {
+    ConnectionsClass connections {
+     id 0
+     links {
+      ConnectionClass connection {
+       id 1037
+       port 9
+      }
+     }
+    }
+   }
+   pi + {
+    0
+   }
+  }
+ }
+ version 1
+}

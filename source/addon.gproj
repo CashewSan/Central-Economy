@@ -11,6 +11,67 @@ GameProject {
     VideoUserSettings VideoUserSettings "{B272A67DB18E04F9}" {
     }
    }
+   WidgetManagerSettings WidgetManagerSettings "{AC4BE58770485E02}" {
+    StringTables {
+     StringTableDefinition "{65AF0EA1FDA6983E}" {
+      StringTableSource "{E0D7B893FBC9355D}Language/CentralEconomy_localization.st"
+      Languages {
+       LanguageDefinition "{65AF0EA1E3FD0D73}" {
+        Code "cs_cz"
+        StringTableRuntime "{8EDF93EEB1492189}Language/CentralEconomy_localization.cs_cz.conf"
+       }
+       LanguageDefinition "{65AF0EA1E3FD0EB5}" {
+        Code "de_de"
+        StringTableRuntime "{5BA189DDA2EA30A9}Language/CentralEconomy_localization.de_de.conf"
+       }
+       LanguageDefinition "{65AF0EA1E3FD0E8A}" {
+        Code "en_us"
+        StringTableRuntime "{05510396C81935A8}Language/CentralEconomy_localization.en_us.conf"
+       }
+       LanguageDefinition "{65AF0EA1E3FD0E98}" {
+        Code "es_es"
+        StringTableRuntime "{C01D4E1F261B5EB7}Language/CentralEconomy_localization.es_es.conf"
+       }
+       LanguageDefinition "{65AF0EA1E3FD0EF5}" {
+        Code "fr_fr"
+        StringTableRuntime "{7BB5BB28C098BDB5}Language/CentralEconomy_localization.fr_fr.conf"
+       }
+       LanguageDefinition "{65AF0EA1E3FD0ECC}" {
+        Code "it_it"
+        StringTableRuntime "{FBA9341C6DBA3E4C}Language/CentralEconomy_localization.it_it.conf"
+       }
+       LanguageDefinition "{65AF0EA1E3FD0ED8}" {
+        Code "ja_jp"
+        StringTableRuntime "{EBB2898E53CB0EE7}Language/CentralEconomy_localization.ja_jp.conf"
+       }
+       LanguageDefinition "{65AF0EA1E3FD0E35}" {
+        Code "ko_kr"
+        StringTableRuntime "{4B0CA122C0E60DD8}Language/CentralEconomy_localization.ko_kr.conf"
+       }
+       LanguageDefinition "{65AF0EA1E3FD0E04}" {
+        Code "pl_pl"
+        StringTableRuntime "{177D07D87E0991A4}Language/CentralEconomy_localization.pl_pl.conf"
+       }
+       LanguageDefinition "{65AF0EA1E3FD0E13}" {
+        Code "pt_br"
+        StringTableRuntime "{C20A9D1445F75B1E}Language/CentralEconomy_localization.pt_br.conf"
+       }
+       LanguageDefinition "{65AF0EA1E3FD0E6B}" {
+        Code "ru_ru"
+        StringTableRuntime "{974B89BCD88E3E68}Language/CentralEconomy_localization.ru_ru.conf"
+       }
+       LanguageDefinition "{65AF0EA1E3FD0FB7}" {
+        Code "uk_ua"
+        StringTableRuntime "{1D13DC4AB4A0803D}Language/CentralEconomy_localization.uk_ua.conf"
+       }
+       LanguageDefinition "{65AF0EA1E3FD0F82}" {
+        Code "zh_cn"
+        StringTableRuntime "{C7A3B2778D005020}Language/CentralEconomy_localization.zh_cn.conf"
+       }
+      }
+     }
+    }
+   }
   }
   GameProjectConfig XBOX_ONE {
   }

@@ -11,7 +11,7 @@ class CE_TierTriggerArea : ScriptedGameTriggerEntity
 	ref array<IEntity> m_SpawnLocationsInside = {};
 	
 	//------------------------------------------------------------------------------------------------
-	override void EOnInit(IEntity owner)
+	override void OnInit(IEntity owner)
 	{
 		GatherSpawnLocations();
 	}
@@ -30,9 +30,17 @@ class CE_TierTriggerArea : ScriptedGameTriggerEntity
 		{
 			foreach (IEntity entity : m_SpawnLocationsInside)
 			{
-				CE_ItemSpawningComponent lootComp = CE_ItemSpawningComponent.Cast(entity.FindComponent(CE_ItemSpawningComponent));
+				CE_ItemSpawningComponent spawningComp = CE_ItemSpawningComponent.Cast(entity.FindComponent(CE_ItemSpawningComponent));
+				if (spawningComp)
+				{
+					spawningComp.SetSpawnerTier(m_Tier);
+				}
 				
-				lootComp.SetSpawnerTier(m_Tier);
+				CE_SearchableContainerComponent containerComp = CE_SearchableContainerComponent.Cast(entity.FindComponent(CE_SearchableContainerComponent));
+				if (containerComp)
+				{
+					containerComp.SetContainerTier(m_Tier);
+				}
 			}
 		}
 	}  
@@ -40,11 +48,11 @@ class CE_TierTriggerArea : ScriptedGameTriggerEntity
 	//------------------------------------------------------------------------------------------------
 	override bool ScriptedEntityFilterForQuery(IEntity ent)
 	{
-		if (!ent.FindComponent(CE_ItemSpawningComponent))
+		if (ent.FindComponent(CE_ItemSpawningComponent) || ent.FindComponent(CE_SearchableContainerComponent))
 		{	
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 	
 	//------------------------------------------------------------------------------------------------

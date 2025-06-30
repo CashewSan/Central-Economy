@@ -1,0 +1,71 @@
+GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et" {
+ ID "F0DBA538AC2A0552"
+ components {
+  CE_SearchableContainerComponent "{65AD2318BAD86FC4}" {
+   m_Categories 25
+  }
+  SCR_UniversalInventoryStorageComponent "{65AD2318AC357EED}" {
+   Attributes SCR_ItemAttributeCollection "{65AD231754749D61}" {
+    ItemDisplayName UIInfo "{65AD23175D6A4627}" {
+     Name "#CE-Item_Bookshelf_Name"
+     Description "#CE-Item_Bookshelf_Description"
+    }
+    CustomAttributes {
+     PreviewRenderAttributes "{65AD23174CB4741D}" {
+      CameraDistanceToItem 2.5
+      FOV 60
+      AspectRatio 1
+      LodModel 1
+     }
+    }
+    m_Size SLOT_3x3
+    m_SlotType SLOT_LOOT_STORAGE
+    m_bDraggable 0
+    m_bVisible 0
+    m_bStackable 0
+    m_bRefundable 0
+   }
+   UseCapacityCoefficient 0
+   MaxCumulativeVolume 1000000
+   MaxItemSize 15 15 15
+   m_fMaxWeight 1000000
+  }
+  SCR_InventoryStorageManagerComponent "{65AD23170B349289}" {
+  }
+  ActionsManagerComponent "{65AD23170CB59160}" {
+   ActionContexts {
+    UserActionContext "{65AD231737C6E147}" {
+     ContextName "default"
+     Position PointInfo "{65673B14082308AC}" {
+      Offset -0.71 1 0.5
+     }
+     Height 0
+     Omnidirectional 0
+    }
+   }
+   additionalActions {
+    SCR_OpenStorageAction "{65AD2317C7847C56}" {
+     ParentContextList {
+      "default"
+     }
+     UIInfo SCR_ActionUIInfo "{65673B11F0B2A4F9}" {
+      Name "#AR-Inventory_OpenStorage"
+     }
+    }
+    CE_SearchContainerUserAction "{65AD2317CD312308}" {
+     ParentContextList {
+      "default"
+     }
+     UIInfo SCR_ActionUIInfo "{65673B1E58068524}" {
+      Name "#CE-UserAction_SearchContainer"
+     }
+     Duration 1
+     m_AudioSourceConfig SCR_AudioSourceConfiguration "{65B135323BDCC66E}" {
+      m_sSoundProject "{6FC380E7FA29D74F}Sounds/UserActions/Searching/ContainerSearching.acp"
+      m_sSoundEventName "SOUND_ITEM_CENTRALECONOMY_SEARCH"
+     }
+    }
+   }
+  }
+ }
+}
