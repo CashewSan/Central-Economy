@@ -1,0 +1,74 @@
+GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et" {
+ ID "6093E737EAFCBDF3"
+ components {
+  CE_SearchableContainerComponent "{65AF0EA7F034E022}" {
+   m_Categories 57
+  }
+  SCR_UniversalInventoryStorageComponent "{65AF0EA7E3649C2A}" {
+   Attributes SCR_ItemAttributeCollection "{65AF0EA7E7E897A3}" {
+    ItemDisplayName UIInfo "{65AF0EA7E572D457}" {
+     Name "#CE-Item_Cupboard_Name"
+     Description "#CE-Item_Cupboard_Description"
+    }
+    CustomAttributes {
+     PreviewRenderAttributes "{65AF0EA7ECBC1DE5}" {
+      CameraDistanceToItem 2.5
+      FOV 60
+      AspectRatio 1
+      LodModel 1
+     }
+    }
+    m_Size SLOT_3x3
+    m_SlotType SLOT_LOOT_STORAGE
+    m_bDraggable 0
+    m_bVisible 0
+    m_bStackable 0
+    m_bRefundable 0
+   }
+   UseCapacityCoefficient 0
+   MaxCumulativeVolume 1000000
+   MaxItemSize 15 15 15
+   m_fMaxWeight 1000000
+  }
+  SCR_InventoryStorageManagerComponent "{65AF0EA782F29238}" {
+  }
+  ActionsManagerComponent "{65AF0EA787A02BEE}" {
+   ActionContexts {
+    UserActionContext "{65AF0EA78DFFDA1B}" {
+     ContextName "default"
+     Position PointInfo "{65673B14082308AC}" {
+      Offset -0.75 1 0.7
+     }
+     Height 0
+     Omnidirectional 0
+    }
+   }
+   additionalActions {
+    SCR_OpenStorageAction "{65AF0EA7A565792B}" {
+     ParentContextList {
+      "default"
+     }
+     UIInfo SCR_ActionUIInfo "{65673B11F0B2A4F9}" {
+      Name "#AR-Inventory_OpenStorage"
+     }
+    }
+    CE_SearchContainerUserAction "{65AF0EA654DC7D91}" {
+     ParentContextList {
+      "default"
+     }
+     UIInfo SCR_ActionUIInfo "{65673B1E58068524}" {
+      Name "#CE-UserAction_SearchContainer"
+     }
+     Duration 1
+     m_AudioSourceConfig SCR_AudioSourceConfiguration "{65B135322947294A}" {
+      m_sSoundProject "{6FC380E7FA29D74F}Sounds/UserActions/Searching/ContainerSearching.acp"
+      m_sSoundEventName "SOUND_ITEM_CENTRALECONOMY_SEARCH"
+     }
+    }
+   }
+  }
+  RplComponent "{5624A88DC2D9928D}" {
+   Enabled 1
+  }
+ }
+}

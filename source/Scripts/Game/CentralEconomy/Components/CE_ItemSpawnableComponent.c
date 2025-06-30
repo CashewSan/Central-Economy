@@ -1,3 +1,11 @@
+void CE_ItemLifetimeEnded(CE_ItemSpawnableComponent itemSpawnable);
+typedef func CE_ItemLifetimeEnded;
+typedef ScriptInvokerBase<CE_ItemLifetimeEnded> CE_ItemLifetimeEndedInvoker;
+
+void CE_ItemRestockEnded(CE_ItemSpawnableComponent itemSpawnable);
+typedef func CE_ItemRestockEnded;
+typedef ScriptInvokerBase<CE_ItemRestockEnded> CE_ItemRestockEndedInvoker;
+
 [ComponentEditorProps(category: "CentralEconomy/Components", description: "Component to added to spawnable items (mostly for tracking UID)")]
 class CE_ItemSpawnableComponentClass : ScriptComponentClass
 {
@@ -5,11 +13,14 @@ class CE_ItemSpawnableComponentClass : ScriptComponentClass
 
 class CE_ItemSpawnableComponent : ScriptComponent
 {
+	protected ref CE_ItemLifetimeEndedInvoker 				m_OnItemLifetimeEndedInvoker 					= new CE_ItemLifetimeEndedInvoker();
+	protected ref CE_ItemRestockEndedInvoker 				m_OnItemRestockEndedInvoker 					= new CE_ItemRestockEndedInvoker();
+	
 	protected CE_ItemSpawnableSystem 						m_SpawnableSystem;														// the spawnable item game system
 	protected CE_ELootCategory							m_ItemDataCategory;														// CE_ItemData category that corresponds to this component's parent entity
 	protected string										m_ItemDataName;															// CE_ItemData name that corresponds to this component's parent entity
 	
-	protected string 									m_sItemUID;																// the unique identifier for this component's parent entity
+	//protected string 									m_sItemUID;																// the unique identifier for this component's parent entity
 	
 	protected int										m_iRestockTime								= 0;							// total restock time
 	protected int										m_iCurrentRestockTime							= 0;							// current restock time
@@ -21,21 +32,12 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	protected bool										m_bWasItemTaken								= false;						// was item taken and NOT despawned?
 	protected bool										m_bWasSpawnedBySystem							= false;						// was item spawned by CE Item Spawning system?
 	
-	/*
-	//------------------------------------------------------------------------------------------------
-	//! Constructor method, calls ConnectToItemSpawnableSystem()
-	protected void CE_ItemSpawnableComponent(IEntityComponentSource src, IEntity ent, IEntity parent)
-	{
-		//ConnectToItemSpawnableSystem();
-		
-		GetGame().GetCallqueue().CallLater(DelayedInit, 1000);
-	}
-	*/
-	
 	//------------------------------------------------------------------------------------------------
 	//! Calls ConnectToItemSpawnableSystem()
 	protected override void OnPostInit(IEntity owner)
 	{
+		HookEvents();
+		
 		GetGame().GetCallqueue().CallLater(DelayedInit, 1000);
 	}
 	
@@ -45,6 +47,14 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	{
 		if (WasSpawnedBySystem() && !HasRestockEnded())
 			ConnectToItemSpawnableSystem();
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Initialize necessary callbacks
+	protected void HookEvents()
+	{
+		m_OnItemLifetimeEndedInvoker.Insert(OnLifetimeEnded);
+		m_OnItemRestockEndedInvoker.Insert(OnRestockEnded);
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -58,7 +68,7 @@ class CE_ItemSpawnableComponent : ScriptComponent
 			{
 				SetHasLifetimeEnded(true);
 				
-				OnLifetimeEnded();
+				m_OnItemLifetimeEndedInvoker.Invoke(this);
 			}
 			
 			//Print("Lifetime: " + GetCurrentLifetime());
@@ -71,7 +81,7 @@ class CE_ItemSpawnableComponent : ScriptComponent
 			{
 				SetHasRestockEnded(true);
 				
-				OnRestockEnded();
+				m_OnItemRestockEndedInvoker.Invoke(this);
 			}
 			
 			//Print("Restock: " + GetCurrentRestockTime());
@@ -111,7 +121,7 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	
 	//------------------------------------------------------------------------------------------------
 	//! Called when restock timer has ended
-	protected void OnRestockEnded()
+	protected void OnRestockEnded(CE_ItemSpawnableComponent itemSpawnable)
 	{
 		if (HasRestockEnded())
 		{
@@ -133,30 +143,19 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	
 	//------------------------------------------------------------------------------------------------
 	//! Called when lifetime timer has ended
-	protected void OnLifetimeEnded()
+	protected void OnLifetimeEnded(CE_ItemSpawnableComponent itemSpawnable)
 	{
 		if (HasLifetimeEnded() && !WasItemTaken())
 		{
-			//Print("Disconnecting");
-			
 			DisconnectFromItemSpawnableSystem();
+			
+			SCR_EntityHelper.DeleteEntityAndChildren(GetOwner());
 		}
 	}
 	
-	// Getters/Setters
 	//------------------------------------------------------------------------------------------------
-	//! Gets the item UID of the spawnable component
-	string GetItemUID()
-	{
-		return m_sItemUID;
-	}
-		
+	// GETTERS/SETTERS
 	//------------------------------------------------------------------------------------------------
-	//! Sets the item UID of the spawnable component
-	void SetItemUID(string uid)
-	{
-		m_sItemUID = uid;
-	}
 	
 	//------------------------------------------------------------------------------------------------
 	//! Gets the total restock time

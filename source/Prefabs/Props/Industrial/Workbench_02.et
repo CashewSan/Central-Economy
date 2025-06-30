@@ -1,0 +1,75 @@
+GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et" {
+ ID "F0DBA538AC2A0552"
+ components {
+  CE_SearchableContainerComponent "{65B559E6B76313B3}" {
+   m_Categories TOOLS
+   m_iContainerItemMaximum 2
+  }
+  SCR_UniversalInventoryStorageComponent "{65B559E6BDD6F92D}" {
+   Attributes SCR_ItemAttributeCollection "{65B559E6A0D1F559}" {
+    ItemDisplayName UIInfo "{65AF0EA7E572D457}" {
+     Name "#CE-Item_Workbench_Name"
+     Description "#CE-Item_Workbench_Description"
+    }
+    CustomAttributes {
+     PreviewRenderAttributes "{65AF0EA7ECBC1DE5}" {
+      CameraDistanceToItem 2.5
+      FOV 60
+      AspectRatio 1
+      LodModel 1
+     }
+    }
+    m_Size SLOT_3x3
+    m_SlotType SLOT_LOOT_STORAGE
+    m_bDraggable 0
+    m_bVisible 0
+    m_bStackable 0
+    m_bRefundable 0
+   }
+   UseCapacityCoefficient 0
+   MaxCumulativeVolume 1000000
+   MaxItemSize 25 25 25
+   m_fMaxWeight 1000000
+  }
+  SCR_InventoryStorageManagerComponent "{65B559E75C6970A2}" {
+  }
+  ActionsManagerComponent "{65B559E7437E84CD}" {
+   ActionContexts {
+    UserActionContext "{65B559E746F3E313}" {
+     ContextName "default"
+     Position PointInfo "{65673B14082308AC}" {
+      Offset 0 0.9 0.38
+     }
+     Height 0
+     Omnidirectional 0
+    }
+   }
+   additionalActions {
+    SCR_OpenStorageAction "{65B559E774A6DE48}" {
+     ParentContextList {
+      "default"
+     }
+     UIInfo SCR_ActionUIInfo "{65673B11F0B2A4F9}" {
+      Name "#AR-Inventory_OpenStorage"
+     }
+    }
+    CE_SearchContainerUserAction "{65B559E77EF9DC46}" {
+     ParentContextList {
+      "default"
+     }
+     UIInfo SCR_ActionUIInfo "{65673B1E58068524}" {
+      Name "#CE-UserAction_SearchContainer"
+     }
+     Duration 1
+     m_AudioSourceConfig SCR_AudioSourceConfiguration "{65B135322947294A}" {
+      m_sSoundProject "{6FC380E7FA29D74F}Sounds/UserActions/Searching/ContainerSearching.acp"
+      m_sSoundEventName "SOUND_ITEM_CENTRALECONOMY_SEARCHMETAL"
+     }
+    }
+   }
+  }
+  RplComponent "{5624A88DC2D9928D}" {
+   Enabled 1
+  }
+ }
+}

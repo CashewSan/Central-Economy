@@ -1,0 +1,75 @@
+GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et" {
+ ID "6093E737E789436F"
+ components {
+  CE_SearchableContainerComponent "{65B32153B9D83540}" {
+   m_Categories 57
+  }
+  SCR_UniversalInventoryStorageComponent "{65B3215053A49E62}" {
+   Attributes SCR_ItemAttributeCollection "{65B321505124ED0B}" {
+    ItemDisplayName UIInfo "{65AF0EA7E572D457}" {
+     Name "#CE-Item_Dresser_Name"
+     Description "#CE-Item_Dresser_Description"
+    }
+    CustomAttributes {
+     PreviewRenderAttributes "{65AF0EA7ECBC1DE5}" {
+      CameraDistanceToItem 2.5
+      FOV 60
+      AspectRatio 1
+      LodModel 1
+     }
+    }
+    m_Size SLOT_3x3
+    m_SlotType SLOT_LOOT_STORAGE
+    m_bDraggable 0
+    m_bVisible 0
+    m_bStackable 0
+    m_bRefundable 0
+   }
+   UseCapacityCoefficient 0
+   MaxCumulativeVolume 1000000
+   MaxItemSize 25 25 25
+   m_fMaxWeight 1000000
+  }
+  SCR_InventoryStorageManagerComponent "{65B321500A872B30}" {
+  }
+  ActionsManagerComponent "{65B3215037017138}" {
+   ActionContexts {
+    UserActionContext "{65B321509F020DFC}" {
+     ContextName "default"
+     Position PointInfo "{65673B14082308AC}" {
+      Offset -0.75 0.835 0.75
+     }
+     Height 0
+     Omnidirectional 0
+    }
+   }
+   additionalActions {
+    SCR_OpenStorageAction "{65B321508130F4B2}" {
+     ParentContextList {
+      "default"
+     }
+     UIInfo SCR_ActionUIInfo "{65673B11F0B2A4F9}" {
+      Name "#AR-Inventory_OpenStorage"
+     }
+    }
+    CE_SearchContainerUserAction "{65B32150870363E7}" {
+     ParentContextList {
+      "default"
+     }
+     UIInfo SCR_ActionUIInfo "{65673B1E58068524}" {
+      Name "#CE-UserAction_SearchContainer"
+     }
+     Duration 1
+     m_AudioSourceConfig SCR_AudioSourceConfiguration "{65B135322947294A}" {
+      m_sSoundProject "{6FC380E7FA29D74F}Sounds/UserActions/Searching/ContainerSearching.acp"
+      m_sSoundEventName "SOUND_ITEM_CENTRALECONOMY_SEARCH"
+     }
+    }
+   }
+  }
+  RplComponent "{5624A88DC2D9928D}" {
+   Enabled 1
+  }
+ }
+ coords 1.978 0.476 0.979
+}

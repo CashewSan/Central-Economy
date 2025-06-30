@@ -1,0 +1,76 @@
+GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et" {
+ ID "6093E737EA263CF7"
+ components {
+  CE_SearchableContainerComponent "{65AF0EA0FE60AA8C}" {
+   m_Categories 57
+   m_iContainerItemMaximum 2
+  }
+  SCR_UniversalInventoryStorageComponent "{65AF0EA086C00629}" {
+   Attributes SCR_ItemAttributeCollection "{65AF0EA08D6E62B9}" {
+    ItemDisplayName UIInfo "{65AF0EA0B2A291AE}" {
+     Name "#CE-Item_Cupboard_Name"
+     Description "#CE-Item_Cupboard_Description"
+    }
+    CustomAttributes {
+     PreviewRenderAttributes "{65AF0EA0ABA4EC8C}" {
+      CameraDistanceToItem 2.5
+      FOV 60
+      AspectRatio 1
+      LodModel 1
+     }
+    }
+    m_Size SLOT_3x3
+    m_SlotType SLOT_LOOT_STORAGE
+    m_bDraggable 0
+    m_bVisible 0
+    m_bStackable 0
+    m_bRefundable 0
+   }
+   UseCapacityCoefficient 0
+   MaxCumulativeVolume 1000000
+   MaxItemSize 15 15 15
+   m_fMaxWeight 1000000
+  }
+  SCR_InventoryStorageManagerComponent "{65AF0EA744675F44}" {
+  }
+  ActionsManagerComponent "{65AF0EA748AE06E7}" {
+   ActionContexts {
+    UserActionContext "{65AF0EA74C1C3AB0}" {
+     ContextName "default"
+     Position PointInfo "{65673B14082308AC}" {
+      Offset -0.75 0.56 0.7
+     }
+     Height 0
+     Omnidirectional 0
+    }
+   }
+   additionalActions {
+    SCR_OpenStorageAction "{65AF0EA762EB5B0C}" {
+     ParentContextList {
+      "default"
+     }
+     UIInfo SCR_ActionUIInfo "{65673B11F0B2A4F9}" {
+      Name "#AR-Inventory_OpenStorage"
+     }
+    }
+    CE_SearchContainerUserAction "{65AF0EA76A6CFD8E}" {
+     ParentContextList {
+      "default"
+     }
+     UIInfo SCR_ActionUIInfo "{65673B1E58068524}" {
+      Name "#CE-UserAction_SearchContainer"
+     }
+     Duration 1
+     m_AudioSourceConfig SCR_AudioSourceConfiguration "{65B12D5BEC8E8E7E}" {
+      m_sSoundProject "{6FC380E7FA29D74F}Sounds/UserActions/Searching/ContainerSearching.acp"
+      m_sSoundEventName "SOUND_ITEM_CENTRALECONOMY_SEARCH"
+     }
+    }
+   }
+  }
+  RplComponent "{5624A88DC2D9928D}" {
+   Enabled 1
+  }
+ }
+ coords 1.288 0.549 1.289
+}
