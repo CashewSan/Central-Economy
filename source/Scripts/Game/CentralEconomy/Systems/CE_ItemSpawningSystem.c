@@ -1,3 +1,4 @@
+/*
 class CE_ItemSpawningSystem : GameSystem
 {
 	protected ref array<ref CE_ItemData>					m_aItemData						= new array<ref CE_ItemData>;						// CE_ItemData array, item data gets inserted from config item data

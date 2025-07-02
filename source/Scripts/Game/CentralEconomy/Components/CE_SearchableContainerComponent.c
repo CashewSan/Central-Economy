@@ -83,7 +83,7 @@ class CE_SearchableContainerComponent : ScriptComponent
 	//! Tick method
 	void Update(int checkInterval)
 	{
-		Print("Container Reset Check");
+		//Print("Container Reset Check");
 		
 		SetCurrentContainerResetTime(Math.ClampInt(GetCurrentContainerResetTime() - checkInterval, 0, GetContainerResetTime()));
 		if (GetCurrentContainerResetTime() == 0 && HasBeenSearched())
@@ -91,7 +91,7 @@ class CE_SearchableContainerComponent : ScriptComponent
 			m_OnContainerResetInvoker.Invoke(GetOwner(), this);
 		}
 		
-		Print("Timer: " + GetCurrentContainerResetTime());
+		//Print("Timer: " + GetCurrentContainerResetTime());
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -174,12 +174,14 @@ class CE_SearchableContainerComponent : ScriptComponent
 		
 		if (HasItemDataConfig())
 		{
-			return m_SpawningSystem.GetItemsFromContainerConfig(m_aItemData, m_Tier, m_Usage, m_Categories, m_iContainerItemMinimum, m_iContainerItemMaximum);
+			//return m_SpawningSystem.GetItemsFromContainerConfig(m_aItemData, m_Tier, m_Usage, m_Categories, m_iContainerItemMinimum, m_iContainerItemMaximum);
 		}
 		else
 		{
-			return m_SpawningSystem.GetItemsFromUniversalConfig(m_Tier, m_Usage, m_Categories, m_iContainerItemMinimum, m_iContainerItemMaximum);
+			//return m_SpawningSystem.GetItemsFromUniversalConfig(m_Tier, m_Usage, m_Categories, m_iContainerItemMinimum, m_iContainerItemMaximum);
 		}
+		
+		return null;
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -244,16 +246,6 @@ class CE_SearchableContainerComponent : ScriptComponent
 		{
 			storageManager.TrySpawnPrefabToStorage(item.m_sPrefab, ownerStorage);
 		}
-		
-		/*
-		CE_SearchableContainerComponent ownerSearchableContainer = CE_SearchableContainerComponent.Cast(pOwnerEntity.FindComponent(CE_SearchableContainerComponent));
-		if (!ownerSearchableContainer)
-			return;
-		
-		//ownerSearchableContainer.SetCurrentContainerResetTime(ownerSearchableContainer.GetContainerResetTime());
-		
-		//Print("Current Timer: " + ownerSearchableContainer.GetCurrentContainerResetTime());
-		*/
 	}
 	
 	//------------------------------------------------------------------------------------------------

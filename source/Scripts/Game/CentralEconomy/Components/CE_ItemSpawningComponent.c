@@ -160,7 +160,8 @@ class CE_ItemSpawningComponent : ScriptComponent
 		if (!m_SpawningSystem)
 			return null;
 
-		return m_SpawningSystem.GetItemFromSpawnerConfig(itemDataArray, m_Tier, m_Usage, m_Categories);
+		return null;
+		//return m_SpawningSystem.GetItemFromSpawnerConfig(itemDataArray, m_Tier, m_Usage, m_Categories);
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -171,7 +172,8 @@ class CE_ItemSpawningComponent : ScriptComponent
 		if (!m_SpawningSystem)
 			return null;
 
-		return m_SpawningSystem.GetItemFromUniversalConfig(m_Tier, m_Usage, m_Categories);
+		return null;
+		//return m_SpawningSystem.GetItemFromUniversalConfig(m_Tier, m_Usage, m_Categories);
 	}	
 	
 	//------------------------------------------------------------------------------------------------
@@ -307,8 +309,8 @@ class CE_ItemSpawningComponent : ScriptComponent
 		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
 		if (m_SpawningSystem)
 		{
-			m_SpawningSystem.GetComponentsWithItem().RemoveItem(this);
-			m_SpawningSystem.GetComponentsWithoutItem().Insert(this);
+			//m_SpawningSystem.GetComponentsWithItem().RemoveItem(this);
+			//m_SpawningSystem.GetComponentsWithoutItem().Insert(this);
 			m_SpawningSystem.SetSpawnedItemCount(m_SpawningSystem.GetSpawnedItemCount() - 1);
 		}
 		

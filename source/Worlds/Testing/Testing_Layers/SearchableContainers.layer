@@ -1,42 +1,3 @@
-PolylineShapeEntity {
- coords 168.489 1 101.436
- Points {
-  ShapePoint "{629F0148E39F240A}" {
-   Position 0 0 0
-  }
-  ShapePoint "{629F0148E39F364E}" {
-   Position -15.892 0 0
-  }
-  ShapePoint "{629F0148E4D9F3CB}" {
-   Position -15.137 0 9.98
-  }
-  ShapePoint "{629F0148E7224D98}" {
-   Position 0.462 0 10.202
-  }
- }
- IsClosed 1
- {
-  CommentEntity {
-   coords -7.824 2.197 5.571
-   m_Comment "USAGE: MILITARY"
-   m_Size 0.1
-   m_Color 0 0 0
-   m_ScaleByDistance 1
-   m_FaceCamera 1
-   m_VisibleOverall 1
-   m_TextBackground 1
-   m_BackgroundColor 0.969 1 0
-   m_BackgroundTransparency 0
-  }
-  CE_UsageTriggerArea : "{DABFAB24173C5C1B}Prefabs/Areas/Usages/UsageArea_Military.et" {
-   coords 0 0 0
-   ShapeColor 0 0.502 0.1255 1
-  }
- }
-}
-GenericEntity : "{06B68C58B72EAAC6}Prefabs/Items/Equipment/Backpacks/Backpack_ALICE_Medium.et" {
- coords 139.592 1 184.289
-}
 GenericEntity : "{0BB4B21E4F560431}Prefabs/Props/Furniture/Chest_01.et" {
  coords 137.632 1 171.139
 }
@@ -103,40 +64,6 @@ GenericEntity : "{728DD36004461456}Prefabs/Props/Furniture/Cupboard_01/Cupboard_
  coords 138.695 1 171.67
  angleY 89.892
 }
-$grp GenericEntity : "{85C71F17C37D274C}Prefabs/Structures/BuildingParts/Entry/Entry_Block_Platform_01_3x6.et" {
- {
-  coords 156.894 1.454 106.836
- }
- {
-  coords 163.359 1.454 111.648
- }
-}
-SCR_DestructibleBuildingEntity : "{8ACC8A8EB87A28FF}Prefabs/Structures/Houses/Village/House_Village_E_1I03/House_Village_E_1I03.et" {
- coords 164.58 0 161.092
- {
-  GenericEntity LootSpawner_Randomized_65B13536C20E57E8 {
-   ID "62B90C0431FF87B3"
-  }
-  GenericEntity LootSpawner_Randomized_65B13536C20E5100 {
-   ID "62B90C0431FF87C4"
-  }
-  GenericEntity LootSpawner_Randomized_65B13536C20E515D {
-   ID "62B90C0431FF87CE"
-  }
-  GenericEntity LootSpawner_Randomized_65B13536C20E52E6 {
-   ID "62B90C0431FF87E3"
-  }
-  GenericEntity LootSpawner_Randomized_65B13536C20E520F {
-   ID "62B90C0431FF87ED"
-  }
-  GenericEntity LootSpawner_Randomized_65B13536C20E5252 {
-   ID "62B90C0431FF87F9"
-  }
-  GenericEntity LootSpawner_Food_65B13536C20E5395 {
-   ID "62B90C0431FF879C"
-  }
- }
-}
 GenericEntity : "{95D947E744336F78}Prefabs/Props/Industrial/Workbench_01.et" {
  coords 142.261 1 176.738
 }
@@ -157,13 +84,6 @@ GenericEntity : "{D21DAFB24F46D64C}Prefabs/Props/Furniture/Nightstand_02.et" {
 GenericEntity : "{D31FBEC7A468AE3B}Prefabs/Props/Furniture/PantryOld_01.et" {
  coords 139.965 1 174.747
 }
-CE_TierTriggerArea : "{D5442362B659903E}Prefabs/Areas/Tiers/TierArea_Tier1.et" {
- coords 136.457 1 140.002
- TriggerShapeType "Oriented Bounding Box"
- BoxMins -5 -5 -5
- BoxMaxs 5 5 5
- DrawShape 1
-}
 CE_UsageTriggerArea : "{DABFAB24173C5C1B}Prefabs/Areas/Usages/UsageArea_Military.et" {
  coords 141.136 1 172.921
  SphereRadius 3
@@ -177,42 +97,6 @@ GenericEntity : "{DD07AE4E1B3E5EE2}Prefabs/Props/Furniture/FirstAidBox_01.et" {
 }
 GenericEntity : "{E66C895D628B01A2}Prefabs/Props/Furniture/Kitchen_01_base.et" {
  coords 138.601 1 175.858
-}
-GenericEntity LootSpawner_Weapons_645F760283418BD10 : "{E99195907C7200AD}Prefabs/Spawners/LootSpawner_Weapons.et" {
- components {
-  CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
-   m_iSpawnerResetTime 10
-  }
- }
- coords 161.219 1.454 111.671
-}
-GenericEntity : "{EF5366EC75D39FF9}Prefabs/Spawners/LootSpawner_Vehicles.et" {
- components {
-  CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
-   m_ItemDataConfig CE_ItemDataConfig "{65BB39CF094FD163}" {
-    m_ItemData {
-     CE_ItemData "{65BB39CF0E4AAF7C}" {
-      m_sName "S105_beige"
-      m_sPrefab "{54C3CC22DEBD57BE}Prefabs/Vehicles/Wheeled/S105/S105_beige.et"
-      m_iNominal 1
-      m_ItemCategory VEHICLES
-      m_ItemUsages TOWN
-      m_ItemTiers 15
-     }
-     CE_ItemData "{65BB39CE2648DC96}" {
-      m_sName "S105_white"
-      m_sPrefab "{63880E311299A016}Prefabs/Vehicles/Wheeled/S105/S105_white.et"
-      m_iNominal 1
-      m_ItemCategory VEHICLES
-      m_ItemUsages TOWN
-      m_ItemTiers 15
-     }
-    }
-   }
-   m_ItemUsage TOWN
-  }
- }
- coords 134.84 1 139.989
 }
 GenericEntity : "{EFCD232A50C15173}Prefabs/Props/Furniture/Nightstand_01.et" {
  coords 139.03 1 174.32

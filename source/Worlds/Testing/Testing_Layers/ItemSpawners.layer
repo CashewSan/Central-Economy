@@ -1,0 +1,48 @@
+$grp GenericEntity : "{85C71F17C37D274C}Prefabs/Structures/BuildingParts/Entry/Entry_Block_Platform_01_3x6.et" {
+ {
+  coords 156.894 1.454 106.836
+ }
+ {
+  coords 163.538 1.454 111.648
+ }
+ {
+  coords 163.532 2.861 115.894
+ }
+}
+CE_UsageTriggerArea : "{DABFAB24173C5C1B}Prefabs/Areas/Usages/UsageArea_Military.et" {
+ coords 161.494 1 108.365
+ DrawShape 1
+ ShapeColor 0 0.502 0.1255 1
+}
+$grp GenericEntity : "{E99195907C7200AD}Prefabs/Spawners/LootSpawner_Weapons.et" {
+ {
+  coords 161.107 1.454 112.65
+ }
+ {
+  coords 161.008 1.454 110.623
+ }
+ {
+  coords 162.262 1.454 112.762
+ }
+ {
+  coords 162.262 1.454 110.602
+ }
+ {
+  coords 163.58 1.454 112.805
+ }
+ {
+  coords 163.537 1.454 110.655
+ }
+ {
+  coords 164.962 1.454 112.762
+ }
+ {
+  coords 164.991 1.454 110.539
+ }
+ {
+  coords 166.216 1.454 112.752
+ }
+ {
+  coords 166.15 1.454 110.518
+ }
+}
