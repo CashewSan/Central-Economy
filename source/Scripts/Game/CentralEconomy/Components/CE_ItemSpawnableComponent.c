@@ -1,8 +1,8 @@
-void CE_ItemLifetimeEnded(CE_ItemSpawnableComponent itemSpawnable);
+void CE_ItemLifetimeEnded(CE_ItemSpawnableComponent itemSpawnable, CE_Item item);
 typedef func CE_ItemLifetimeEnded;
 typedef ScriptInvokerBase<CE_ItemLifetimeEnded> CE_ItemLifetimeEndedInvoker;
 
-void CE_ItemRestockEnded(CE_ItemSpawnableComponent itemSpawnable);
+void CE_ItemRestockEnded(CE_ItemSpawnableComponent itemSpawnable, CE_Item item);
 typedef func CE_ItemRestockEnded;
 typedef ScriptInvokerBase<CE_ItemRestockEnded> CE_ItemRestockEndedInvoker;
 
@@ -17,14 +17,11 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	protected ref CE_ItemRestockEndedInvoker 				m_OnItemRestockEndedInvoker 					= new CE_ItemRestockEndedInvoker();
 	
 	protected CE_ItemSpawnableSystem 						m_SpawnableSystem;														// the spawnable item game system
-	protected CE_ELootCategory							m_ItemDataCategory;														// CE_ItemData category that corresponds to this component's parent entity
-	protected string										m_ItemDataName;															// CE_ItemData name that corresponds to this component's parent entity
+	protected ref CE_Item									m_Item;																	// Which CE_Item does this item spawnable component correspond to?
 	
-	//protected string 									m_sItemUID;																// the unique identifier for this component's parent entity
-	
-	protected int										m_iRestockTime								= 0;							// total restock time
+	protected int										m_iTotalRestockTime							= 0;							// total restock time
 	protected int										m_iCurrentRestockTime							= 0;							// current restock time
-	protected int										m_iLifetime									= 0;							// total lifetime
+	protected int										m_iTotalLifetime								= 0;							// total lifetime
 	protected int										m_iCurrentLifetime							= 0;							// current lifetime
 	
 	protected bool										m_bHasRestockEnded							= false;						// has restock ended?
@@ -61,27 +58,27 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	//! Tick method
 	void Update(int checkInterval)
 	{
-		if (GetLifetime() && GetLifetime() != 0)
+		if (GetTotalLifetime() && GetTotalLifetime() != 0)
 		{
-			SetCurrentLifetime(Math.ClampInt(GetCurrentLifetime() - checkInterval, 0, GetLifetime()));
+			SetCurrentLifetime(Math.ClampInt(GetCurrentLifetime() - checkInterval, 0, GetTotalLifetime()));
 			if (GetCurrentLifetime() == 0 && !HasLifetimeEnded() && !WasItemTaken())
 			{
 				SetHasLifetimeEnded(true);
 				
-				m_OnItemLifetimeEndedInvoker.Invoke(this);
+				m_OnItemLifetimeEndedInvoker.Invoke(this, m_Item);
 			}
 			
 			//Print("Lifetime: " + GetCurrentLifetime());
 		}
 		
-		if (GetRestockTime() && GetRestockTime() != 0 && WasItemTaken())
+		if (GetTotalRestockTime() && GetTotalRestockTime() != 0 && WasItemTaken())
 		{ 
-			SetCurrentRestockTime(Math.ClampInt(GetCurrentRestockTime() - checkInterval, 0, GetRestockTime()));
+			SetCurrentRestockTime(Math.ClampInt(GetCurrentRestockTime() - checkInterval, 0, GetTotalRestockTime()));
 			if (GetCurrentRestockTime() == 0 && !HasRestockEnded())
 			{
 				SetHasRestockEnded(true);
 				
-				m_OnItemRestockEndedInvoker.Invoke(this);
+				m_OnItemRestockEndedInvoker.Invoke(this, m_Item);
 			}
 			
 			//Print("Restock: " + GetCurrentRestockTime());
@@ -121,21 +118,11 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	
 	//------------------------------------------------------------------------------------------------
 	//! Called when restock timer has ended
-	protected void OnRestockEnded(CE_ItemSpawnableComponent itemSpawnable)
+	protected void OnRestockEnded(CE_ItemSpawnableComponent itemSpawnable, CE_Item item)
 	{
 		if (HasRestockEnded())
 		{
-			CE_ItemSpawningSystem m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
-			if (m_SpawningSystem)
-			{
-				CE_ItemData item = m_SpawningSystem.GetItemsNotRestockReady().GetKeyByValue(GetItemDataName());
-				if (item)
-				{
-					//Print("Restock removal");
-					m_SpawningSystem.GetItemsNotRestockReady().Remove(item);
-				}
-					
-			}
+			item.SetAvailableCount(item.GetAvailableCount() + 1);
 			
 			DisconnectFromItemSpawnableSystem();
 		}
@@ -143,10 +130,12 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	
 	//------------------------------------------------------------------------------------------------
 	//! Called when lifetime timer has ended
-	protected void OnLifetimeEnded(CE_ItemSpawnableComponent itemSpawnable)
+	protected void OnLifetimeEnded(CE_ItemSpawnableComponent itemSpawnable, CE_Item item)
 	{
 		if (HasLifetimeEnded() && !WasItemTaken())
 		{
+			item.SetAvailableCount(item.GetAvailableCount() + 1);
+			
 			DisconnectFromItemSpawnableSystem();
 			
 			SCR_EntityHelper.DeleteEntityAndChildren(GetOwner());
@@ -159,16 +148,16 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	
 	//------------------------------------------------------------------------------------------------
 	//! Gets the total restock time
-	int GetRestockTime()
+	int GetTotalRestockTime()
 	{
-		return m_iRestockTime;
+		return m_iTotalRestockTime;
 	}
 	
 	//------------------------------------------------------------------------------------------------
 	//! Sets the total restock time
-	void SetRestockTime(int time)
+	void SetTotalRestockTime(int time)
 	{
-		m_iRestockTime = time;
+		m_iTotalRestockTime = time;
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -187,16 +176,16 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	
 	//------------------------------------------------------------------------------------------------
 	//! Gets the total lifetime
-	int GetLifetime()
+	int GetTotalLifetime()
 	{
-		return m_iLifetime;
+		return m_iTotalLifetime;
 	}
 	
 	//------------------------------------------------------------------------------------------------
 	//! Sets the total lifetime
-	void SetLifetime(int time)
+	void SetTotalLifetime(int time)
 	{
-		m_iLifetime = time;
+		m_iTotalLifetime = time;
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -256,31 +245,17 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Gets corresponding Central Economy item data name
-	string GetItemDataName()
+	//! 
+	CE_Item GetItem()
 	{
-		return m_ItemDataName;
+		return m_Item;
 	}
 		
 	//------------------------------------------------------------------------------------------------
-	//! Sets corresponding Central Economy item data name
-	void SetItemDataName(string itemDataName)
+	//! 
+	void SetItem(CE_Item item)
 	{
-		m_ItemDataName = itemDataName;
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Gets corresponding Central Economy item data category
-	CE_ELootCategory GetItemDataCategory()
-	{
-		return m_ItemDataCategory;
-	}
-		
-	//------------------------------------------------------------------------------------------------
-	//! Sets corresponding Central Economy item data category
-	void SetItemDataCategory(CE_ELootCategory category)
-	{
-		m_ItemDataCategory = category;
+		m_Item = item;
 	}
 	
 	//------------------------------------------------------------------------------------------------

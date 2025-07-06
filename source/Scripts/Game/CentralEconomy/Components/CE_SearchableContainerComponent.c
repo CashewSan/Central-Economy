@@ -1,11 +1,3 @@
-void CE_ContainerSearched(IEntity containerEntity, CE_SearchableContainerComponent container, IEntity searcher);
-typedef func CE_ContainerSearched;
-typedef ScriptInvokerBase<CE_ContainerSearched> CE_OnContainerSearchedInvoker;
-
-void CE_ContainerReset(IEntity containerEntity, CE_SearchableContainerComponent container);
-typedef func CE_ContainerReset;
-typedef ScriptInvokerBase<CE_ContainerReset> CE_OnContainerResetInvoker;
-
 [ComponentEditorProps(category: "CentralEconomy/Components", description: "Component to added to searchable containers")]
 class CE_SearchableContainerComponentClass : ScriptComponentClass
 {
