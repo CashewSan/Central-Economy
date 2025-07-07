@@ -61,7 +61,7 @@ class CE_ItemSpawningSystem : GameSystem
 				processedSpawnersArray.Insert(spawner);
 			}
 			
-			int spawnersHalfCount = processedSpawnersArray.Count() * 0.5;
+			int spawnersHalfCount = Math.Round(processedSpawnersArray.Count() * 0.5);
 			int runCount = 0;
 			int failCount = 0;
 			
@@ -77,9 +77,9 @@ class CE_ItemSpawningSystem : GameSystem
 					
 					CE_ItemSpawningComponent spawningComponent = spawner.GetSpawningComponent();
 					
-					if (spawningComponent && spawningComponent.HasConfig())
+					if (spawningComponent && spawningComponent.HasConfig() && spawningComponent.HaveItemsProcessed())
 					{
-						items = ProcessItemData(spawningComponent.GetConfig());
+						items = spawningComponent.GetItems();
 					}
 					else
 					{
@@ -131,9 +131,9 @@ class CE_ItemSpawningSystem : GameSystem
 					
 					CE_ItemSpawningComponent spawningComponent = spawner.GetSpawningComponent();
 					
-					if (spawningComponent && spawningComponent.HasConfig())
+					if (spawningComponent && spawningComponent.HasConfig() && spawningComponent.HaveItemsProcessed())
 					{
-						items = ProcessItemData(spawningComponent.GetConfig());
+						items = spawningComponent.GetItems();
 					}
 					else
 					{
@@ -151,7 +151,7 @@ class CE_ItemSpawningSystem : GameSystem
 	
 	//------------------------------------------------------------------------------------------------
 	//! 
-	protected array<ref CE_Item> ProcessItemData(CE_ItemDataConfig config)
+	array<ref CE_Item> ProcessItemData(CE_ItemDataConfig config)
 	{	
 		array<ref CE_Item> itemsProcessed = {};
 		array<ref CE_ItemData> itemDataToBeProcessed = {};
@@ -184,7 +184,7 @@ class CE_ItemSpawningSystem : GameSystem
 			}
 			else
 			{
-				CE_Item item = new CE_Item(itemData, itemData.m_ItemTiers, itemData.m_ItemUsages, itemData.m_ItemCategory, itemData.m_iNominal);
+				CE_Item item = new CE_Item(itemData, itemData.m_ItemTiers, itemData.m_ItemUsages, itemData.m_ItemCategory, m_randomGen.RandIntInclusive(itemData.m_iMinimum, itemData.m_iNominal));
 					
 				if (!itemsProcessed.Contains(item))
 				{
@@ -261,18 +261,20 @@ class CE_ItemSpawningSystem : GameSystem
 			spawnerArrayCopy.Insert(spawner);
 		}
 		
-		for (int i = 0; i < spawnerArrayCopy.Count(); i = m_randomGen.RandInt(0, spawnerArrayCopy.Count()))
+		for (int i = 0; i < spawnerArrayCopy.Count(); i++)
 		{
-			CE_Spawner spawnerTemp = spawnerArrayCopy[i];
+			int randomIndex = m_randomGen.RandInt(0, spawnerArrayCopy.Count());
 			
-			if (spawnerTemp.IsReadyForItem()
-			&& !spawnerTemp.GetItemSpawned())
+			CE_Spawner spawnerSelected = spawnerArrayCopy[randomIndex];
+			
+			if (spawnerSelected.IsReadyForItem()
+			&& !spawnerSelected.GetItemSpawned())
 			{
-				return spawnerTemp;
+				return spawnerSelected;
 			}
 			else
 			{
-				spawnerArrayCopy.RemoveItem(spawnerTemp);
+				spawnerArrayCopy.RemoveItem(spawnerSelected);
 				continue;
 			}
 		}
@@ -289,30 +291,35 @@ class CE_ItemSpawningSystem : GameSystem
 		
 		array<ref CE_Item> itemsArrayCopy = {};
 		
+		int probabilityTotal = 0;
 		
 		foreach (CE_Item item : itemsArray)
 		{
 			itemsArrayCopy.Insert(item);
+			
+			probabilityTotal = probabilityTotal + item.GetAvailableCount();
 		}
 		
 		CE_ItemSpawningComponent spawnerComponent = spawner.GetSpawningComponent();
 		
-		for (int i = 0; i < itemsArrayCopy.Count(); i = m_randomGen.RandInt(0, itemsArrayCopy.Count()))
+		for (int i = 0; i < itemsArrayCopy.Count(); i++)
 		{
-			CE_Item itemTemp = itemsArrayCopy[i];
+			int randomIndex = m_randomGen.RandInt(0, itemsArrayCopy.Count());
 			
-			int itemCount = itemTemp.GetAvailableCount();
+			CE_Item itemSelected = itemsArrayCopy[randomIndex];
 			
-			if (itemTemp.GetTiers() & spawnerComponent.GetSpawnerTier() 
-			&& itemTemp.GetUsages() & spawnerComponent.GetSpawnerUsage() 
-			&& itemTemp.GetCategory() & spawnerComponent.m_Categories
+			int itemCount = itemSelected.GetAvailableCount();
+			
+			if (itemSelected.GetTiers() & spawnerComponent.GetSpawnerTier() 
+			&& itemSelected.GetUsages() & spawnerComponent.GetSpawnerUsage() 
+			&& itemSelected.GetCategory() & spawnerComponent.m_Categories
 			&& itemCount > 0)
 			{
-				return itemTemp;
+				return itemSelected;
 			}
 			else
 			{
-				itemsArrayCopy.RemoveItem(itemTemp);
+				itemsArrayCopy.RemoveItem(itemSelected);
 				continue;
 			}
 		}
@@ -366,7 +373,7 @@ class CE_ItemSpawningSystem : GameSystem
 			{
 				if (itemData.m_iQuantityMinimum <= itemData.m_iQuantityMaximum)
 				{
-					SetItemQuantity(newEnt, itemData.m_iQuantityMinimum, itemData.m_iQuantityMaximum);
+					SetQuantities(newEnt, itemData.m_iQuantityMinimum, itemData.m_iQuantityMaximum);
 				}
 				else
 					Print("[CentralEconomy::CE_ItemSpawningSystem] " + itemData.m_sName + " has quantity minimum set to more than quanity maximum! Please fix!", LogLevel.ERROR);
@@ -394,8 +401,8 @@ class CE_ItemSpawningSystem : GameSystem
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Performs checks on the new entity to see if it has quantity min and max set above 0, then determines which item type it is to then set quantity of the item (I.E. ammo count in a magazine)
-	protected void SetItemQuantity(IEntity ent, int quantMin, int quantMax)
+	//! 
+	protected void SetQuantities(IEntity ent, int quantMin, int quantMax)
 	{
 		float randomFloat = Math.RandomIntInclusive(quantMin, quantMax) / 100; // convert it to a decimal to multiplied later on
 		if (!randomFloat)
@@ -434,20 +441,18 @@ class CE_ItemSpawningSystem : GameSystem
 		}
 	}
 	
-	// GameSystem stuff
 	//------------------------------------------------------------------------------------------------
-	//! Gets the system instance
-	static CE_ItemSpawningSystem GetInstance()
+	//! Chooses a randomized number between 0 and the probabilityTotal to the select and item it it's value is greater than said randomized number
+	protected bool Probability(float probability, float probabilityTotal)
 	{
-		World world = GetGame().GetWorld();
-
-		if (!world)
-			return null;
-
-		return CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+		//Print("Probability: " + probability);
+		
+		int random = m_randomGen.RandInt(0, probabilityTotal);
+		
+		return probability >= random;
 	}
-
-	int meow = 0;
+	
+	// GameSystem stuff
 	
 	//------------------------------------------------------------------------------------------------
 	//! Registers spawning component
@@ -459,6 +464,18 @@ class CE_ItemSpawningSystem : GameSystem
 		if (!m_aSpawnerComponents.Contains(component))
 		{
 			m_aSpawnerComponents.Insert(component);
+			
+			if (component && component.HasConfig() && !component.HaveItemsProcessed())
+			{
+				array<ref CE_Item> itemsArray = component.GetItems();
+				
+				foreach (CE_Item item : ProcessItemData(component.GetConfig()))
+				{
+					itemsArray.Insert(item);
+				}
+				
+				component.SetHaveItemsProcessed(true);
+			}
 		}
 	}
 

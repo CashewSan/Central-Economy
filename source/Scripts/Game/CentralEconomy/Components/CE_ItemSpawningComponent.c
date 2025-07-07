@@ -5,16 +5,16 @@ class CE_ItemSpawningComponentClass : ScriptComponentClass
 
 class CE_ItemSpawningComponent : ScriptComponent
 {
-	[Attribute(ResourceName.Empty, UIWidgets.Object, "Item data config to be used (If set, universal config through CE_WorldValidationComponent will be ignored!)", "conf", category: "Item Data")]
+	[Attribute(ResourceName.Empty, UIWidgets.Object, "Item data config to be used (If set, universal config through CE_WorldValidationComponent will be ignored!)", "conf", category: "Spawner Data")]
 	ref CE_ItemDataConfig m_ItemDataConfig;
 	
-	[Attribute(ResourceName.Empty, UIWidgets.ComboBox, desc: "Which spawn location(s) will this item spawn in? (If set, universal usages set throughout the world will be ignored!)", enums: ParamEnumArray.FromEnum(CE_ELootUsage), category: "Item Data")]
+	[Attribute(ResourceName.Empty, UIWidgets.ComboBox, desc: "Which spawn location(s) will this spawner be? (If set, universal usages set throughout the world will be ignored!)", enums: ParamEnumArray.FromEnum(CE_ELootUsage), category: "Spawner Data")]
 	CE_ELootUsage m_ItemUsage;
 	
-	[Attribute(ResourceName.Empty, UIWidgets.Flags, desc: "Category of loot spawn", enums: ParamEnumArray.FromEnum(CE_ELootCategory), category: "Item Data")]
+	[Attribute(ResourceName.Empty, UIWidgets.Flags, desc: "Which category of items do you want to spawn here?", enums: ParamEnumArray.FromEnum(CE_ELootCategory), category: "Spawner Data")]
 	CE_ELootCategory m_Categories;
 	
-	[Attribute("1800", UIWidgets.EditBox, desc: "Time (in seconds) it takes for the spawner to reset after spawned item was taken from it. Helps prevent loot camping.", params: "10 inf 10", category: "Item Data")] // default set to 1800 seconds (30 minutes) 
+	[Attribute("1800", UIWidgets.EditBox, desc: "Time (in seconds) it takes for the spawner to reset after spawned item was taken from it. Helps prevent loot camping.", params: "10 inf 10", category: "Spawner Data")] // default set to 1800 seconds (30 minutes)
 	int m_iSpawnerResetTime;
 	
 	protected CE_ELootUsage 								m_Usage; 																	// gets set by the Usage Trigger Area Entity
@@ -25,6 +25,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	protected bool 										m_bHasItemBeenTaken 						= false;								// has item been taken from spawner?
 	protected bool										m_bHasSpawnerReset						= true;								// has the spawner reset?
 	protected bool 										m_bReadyForItem 							= true;								// has item spawned on the spawner?
+	protected bool										m_bHaveItemsProcessed	;														// have the items of the spawner been processed? ONLY APPLICABLE IF m_ItemDataConfig IS SET!
 	
 	protected int										m_iCurrentSpawnerResetTime				= 0;									// current spawner reset time
 	
@@ -35,10 +36,9 @@ class CE_ItemSpawningComponent : ScriptComponent
 	protected ref CE_OnSpawnerResetInvoker 				m_OnSpawnerResetInvoker 					= new CE_OnSpawnerResetInvoker();
 	protected ref CE_OnVehicleTakenInvoker					m_OnVehicleTakenInvoker					= new CE_OnVehicleTakenInvoker();
 	
-	protected ref array<ref CE_ItemData>					m_aItemData								= new array<ref CE_ItemData>;			// CE_ItemData array, item data gets inserted from config item data
+	protected ref array<ref CE_Item>						m_aItems									= new array<ref CE_Item>;				// CE_Item array, items processed from system IF the spawner has it's own config set (m_ItemDataConfig)
 	protected ref CE_Item 								m_ItemSpawned;																// item that has spawned on the spawner
 	protected IEntity 									m_EntitySpawned;																// entity that has spawned on the spawner
-	protected CE_ItemDataConfig							m_Config;																	// the set config for spawner, can be unique config or universal config
 	protected CE_ItemSpawningSystem 						m_SpawningSystem;															// the spawning game system used to control spawning
 	protected CE_SpawnerTimingSystem 						m_TimingSystem;																// the timing game system used to control spawner reset
 
@@ -50,8 +50,8 @@ class CE_ItemSpawningComponent : ScriptComponent
 		
 		if (m_ItemDataConfig)
 			LoadConfig();
-		
-		GetGame().GetCallqueue().CallLater(ConnectToItemSpawningSystem, 500);
+		else
+			ConnectToItemSpawningSystem();
 		
 		// Defaults for if no info gets set
 		if (!m_Tier)
@@ -66,7 +66,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//!
+	//! 
 	void Update(int checkInterval)
 	{
 		if (HasItemBeenTaken())
@@ -92,7 +92,11 @@ class CE_ItemSpawningComponent : ScriptComponent
 	//! Connects to item spawning system and registers this component
 	protected void ConnectToItemSpawningSystem()
 	{
-		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
+		World world = GetOwner().GetWorld();
+		if (!world)
+			return;
+		
+		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
 		if (!m_SpawningSystem)
 			return;
 		
@@ -103,7 +107,11 @@ class CE_ItemSpawningComponent : ScriptComponent
 	//! Disonnects from item spawning system and unregisters this component
 	protected void DisconnectFromItemSpawningSystem()
 	{
-		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
+		World world = GetOwner().GetWorld();
+		if (!world)
+			return;
+		
+		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
 		if (!m_SpawningSystem)
 			return;
 
@@ -114,15 +122,29 @@ class CE_ItemSpawningComponent : ScriptComponent
 	//! 
 	protected void LoadConfig()
 	{
-		m_Config = m_ItemDataConfig;
-		
-		if (m_Config)
+		if (m_ItemDataConfig)
 		{
 			SetHasConfig(true);
+			
+			World world = GetOwner().GetWorld();
+			if (!world)
+				return;
+			
+			m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+			if (!m_SpawningSystem)
+				return;
+			
+			foreach (CE_Item item : m_SpawningSystem.ProcessItemData(m_ItemDataConfig))
+			{
+				m_aItems.Insert(item);
+			}
+			
+			SetHaveItemsProcessed(false);
 		}
+		else
+			Print("[CentralEconomy::CE_ItemSpawningComponent] NO ITEM DATA CONFIG FOUND!", LogLevel.ERROR); // this should realistically never happen
 		
-		if (!m_Config)
-			Print("[CentralEconomy::CE_ItemSpawningComponent] NO ITEM DATA CONFIG FOUND!", LogLevel.ERROR);
+		ConnectToItemSpawningSystem();
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -176,6 +198,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 		if (itemSpawnable)
 		{
 			itemSpawnable.SetItem(item);
+			itemSpawnable.SetSpawner(this);
 			itemSpawnable.SetWasSpawnedBySystem(true);
 			itemSpawnable.SetTotalRestockTime(itemData.m_iRestock);
 			itemSpawnable.SetCurrentRestockTime(itemData.m_iRestock);
@@ -189,13 +212,22 @@ class CE_ItemSpawningComponent : ScriptComponent
 		SetItemSpawned(item);
 		SetCurrentSpawnerResetTime(m_iSpawnerResetTime);
 		SetEntitySpawned(itemEntity);
-		SetWasItemDespawned(false);
 		SetHasItemBeenTaken(false);
 		SetHasSpawnerReset(false);
 		
 		InventoryItemComponent itemComponent = InventoryItemComponent.Cast(itemEntity.FindComponent(InventoryItemComponent));
 		if (itemComponent)
 			itemComponent.m_OnParentSlotChangedInvoker.Insert(OnItemTaken);
+		
+		World world = GetOwner().GetWorld();
+		if (!world)
+			return;
+		
+		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+		if (m_SpawningSystem)
+		{
+			m_SpawningSystem.UnregisterSpawner(this);
+		}
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -213,8 +245,6 @@ class CE_ItemSpawningComponent : ScriptComponent
 		
 		SetHasItemBeenTaken(true);
 		
-		CE_ItemData itemData = GetItemSpawned().GetItemData();
-		
 		CE_ItemSpawnableComponent itemSpawnable = CE_ItemSpawnableComponent.Cast(GetEntitySpawned().FindComponent(CE_ItemSpawnableComponent));
 		if (itemSpawnable)
 		{
@@ -222,9 +252,19 @@ class CE_ItemSpawningComponent : ScriptComponent
 			itemSpawnable.SetTotalLifetime(0);
 		}
 		else
-			Print("[CentralEconomy::CE_ItemSpawningComponent] THIS ENTITY HAS NO CE_ITEMSPAWNABLECOMPONENT!: " + itemData.m_sName, LogLevel.ERROR);
+		{
+			CE_ItemData itemData = GetItemSpawned().GetItemData();
+			if (!itemData)
+				return;
+			
+			Print("[CentralEconomy::CE_ItemSpawningComponent] THIS ITEM HAS NO CE_ITEMSPAWNABLECOMPONENT!: " + itemData.m_sName, LogLevel.ERROR);
+		}
 		
-		m_TimingSystem = CE_SpawnerTimingSystem.GetInstance();
+		World world = GetOwner().GetWorld();
+		if (!world)
+			return;
+		
+		m_TimingSystem = CE_SpawnerTimingSystem.Cast(world.FindSystem(CE_SpawnerTimingSystem));
 		if (m_TimingSystem)
 		{
 			m_TimingSystem.RegisterSpawner(this);
@@ -239,27 +279,29 @@ class CE_ItemSpawningComponent : ScriptComponent
 	//! Called when spawner resets
 	protected void OnSpawnerReset(CE_ItemSpawningComponent spawner)
 	{
-		//Print("Spawner Reset");
+		Print("Spawner Reset");
 		
-		//SetSpawnedEntityUID(string.Empty);
 		SetEntitySpawned(null);
+		SetItemSpawned(null);
 		SetReadyForItem(true);
 		
-		SetHasSpawnerReset(true);
-			
-		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
+		World world = GetOwner().GetWorld();
+		if (!world)
+			return;
+		
+		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
 		if (m_SpawningSystem)
 		{
-			//m_SpawningSystem.GetComponentsWithItem().RemoveItem(this);
-			//m_SpawningSystem.GetComponentsWithoutItem().Insert(this);
-			//m_SpawningSystem.SetSpawnedItemCount(m_SpawningSystem.GetSpawnedItemCount() - 1);
+			m_SpawningSystem.RegisterSpawner(this);
 		}
 		
-		m_TimingSystem = CE_SpawnerTimingSystem.GetInstance();
+		m_TimingSystem = CE_SpawnerTimingSystem.Cast(world.FindSystem(CE_SpawnerTimingSystem));
 		if (m_TimingSystem)
 		{
 			m_TimingSystem.UnregisterSpawner(this);
 		}
+		
+		SetHasSpawnerReset(true);
 	}
 	
 	// Component Stuff
@@ -289,20 +331,6 @@ class CE_ItemSpawningComponent : ScriptComponent
 	void SetReadyForItem(bool ready)
 	{
 		m_bReadyForItem = ready;
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Was the item despawned from spawner? NOT TAKEN
-	bool WasItemDespawned()
-	{
-		return m_bWasItemDespawned;
-	}
-		
-	//------------------------------------------------------------------------------------------------
-	//! Sets if the item was despawned from the spawner
-	void SetWasItemDespawned(bool despawned)
-	{
-		m_bWasItemDespawned = despawned;
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -425,10 +453,41 @@ class CE_ItemSpawningComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Have items of this spawner been processed (only applies if spawner has it's own config set, will return null otherwise)
+	bool HaveItemsProcessed()
+	{
+		if (HasConfig())
+			return m_bHaveItemsProcessed;
+		
+		return null;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Sets if items of this spawner have been processed (only applies if spawner has it's own config set)
+	void SetHaveItemsProcessed(bool processed)
+	{
+		m_bHaveItemsProcessed = processed;
+	}
+	
+	//------------------------------------------------------------------------------------------------
 	//! Gets the spawners item data config, if set (if NOT set, will return null)
 	CE_ItemDataConfig GetConfig()
 	{
-		return m_Config;
+		if (m_ItemDataConfig)
+			return m_ItemDataConfig;
+		
+		return null;
+	}
+	
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets the spawners item data config, if set (if NOT set, will return null)
+	array<ref CE_Item> GetItems()
+	{
+		if (m_aItems.IsEmpty())
+			return null;
+		
+		return m_aItems;
 	}
 	
 	//------------------------------------------------------------------------------------------------

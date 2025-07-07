@@ -31,18 +31,6 @@ class CE_ItemSpawnableSystem : GameSystem
 		
 		//Print("ItemSpawnableCount: " + m_aComponents.Count());
 	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Gets the system instance
-	static CE_ItemSpawnableSystem GetInstance()
-	{
-		World world = GetGame().GetWorld();
-
-		if (!world)
-			return null;
-
-		return CE_ItemSpawnableSystem.Cast(world.FindSystem(CE_ItemSpawnableSystem));
-	}
 
 	//------------------------------------------------------------------------------------------------
 	//! Registers component

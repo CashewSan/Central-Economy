@@ -17,6 +17,7 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	protected ref CE_ItemRestockEndedInvoker 				m_OnItemRestockEndedInvoker 					= new CE_ItemRestockEndedInvoker();
 	
 	protected CE_ItemSpawnableSystem 						m_SpawnableSystem;														// the spawnable item game system
+	protected CE_ItemSpawningComponent					m_Spawner;																// Which spawner component does this item spawnable component correspond to?
 	protected ref CE_Item									m_Item;																	// Which CE_Item does this item spawnable component correspond to?
 	
 	protected int										m_iTotalRestockTime							= 0;							// total restock time
@@ -89,7 +90,11 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	//! Connects to item spawnable system and registers this component
 	protected void ConnectToItemSpawnableSystem()
 	{
-		m_SpawnableSystem = CE_ItemSpawnableSystem.GetInstance();
+		World world = GetOwner().GetWorld();
+		if (!world)
+			return;
+		
+		m_SpawnableSystem = CE_ItemSpawnableSystem.Cast(world.FindSystem(CE_ItemSpawnableSystem));
 		if (!m_SpawnableSystem)
 			return;
 		
@@ -100,7 +105,11 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	//! Disonnects from item spawning system and unregisters this component
 	protected void DisconnectFromItemSpawnableSystem()
 	{
-		m_SpawnableSystem = CE_ItemSpawnableSystem.GetInstance();
+		World world = GetOwner().GetWorld();
+		if (!world)
+			return;
+		
+		m_SpawnableSystem = CE_ItemSpawnableSystem.Cast(world.FindSystem(CE_ItemSpawnableSystem));
 		if (!m_SpawnableSystem)
 			return;
 
@@ -135,6 +144,8 @@ class CE_ItemSpawnableComponent : ScriptComponent
 		if (HasLifetimeEnded() && !WasItemTaken())
 		{
 			item.SetAvailableCount(item.GetAvailableCount() + 1);
+			
+			GetSpawner().GetSpawnerResetnvoker().Invoke(GetSpawner());
 			
 			DisconnectFromItemSpawnableSystem();
 			
@@ -256,6 +267,20 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	void SetItem(CE_Item item)
 	{
 		m_Item = item;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! 
+	CE_ItemSpawningComponent GetSpawner()
+	{
+		return m_Spawner;
+	}
+		
+	//------------------------------------------------------------------------------------------------
+	//! 
+	void SetSpawner(CE_ItemSpawningComponent spawner)
+	{
+		m_Spawner = spawner;
 	}
 	
 	//------------------------------------------------------------------------------------------------

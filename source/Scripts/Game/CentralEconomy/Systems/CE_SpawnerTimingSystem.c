@@ -31,19 +31,7 @@ class CE_SpawnerTimingSystem : GameSystem
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Gets the system instance
-	static CE_SpawnerTimingSystem GetInstance()
-	{
-		World world = GetGame().GetWorld();
-
-		if (!world)
-			return null;
-
-		return CE_SpawnerTimingSystem.Cast(world.FindSystem(CE_SpawnerTimingSystem));
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Registers spawning component
+	//! Registers spawner component
 	void RegisterSpawner(notnull CE_ItemSpawningComponent component)
 	{
 		if (!IsEnabled())
@@ -54,7 +42,7 @@ class CE_SpawnerTimingSystem : GameSystem
 	}
 
 	//------------------------------------------------------------------------------------------------
-	//! Unregisters spawning component
+	//! Unregisters spawner component
 	void UnregisterSpawner(notnull CE_ItemSpawningComponent component)
 	{
 		m_aSpawnerComponents.RemoveItem(component);

@@ -29,18 +29,6 @@ class CE_ContainerTimingSystem : GameSystem
 			comp.Update(m_fCheckInterval);
 		}
 	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Gets the system instance
-	static CE_ContainerTimingSystem GetInstance()
-	{
-		World world = GetGame().GetWorld();
-
-		if (!world)
-			return null;
-
-		return CE_ContainerTimingSystem.Cast(world.FindSystem(CE_ContainerTimingSystem));
-	}
 
 	//------------------------------------------------------------------------------------------------
 	//! Registers searchable container component

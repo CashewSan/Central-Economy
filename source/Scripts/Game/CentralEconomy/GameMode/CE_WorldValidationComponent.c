@@ -52,6 +52,33 @@ class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Creates item data config in server profile folder
+	protected void CreateConfig()
+	{
+		if (Replication.IsServer()) // only create the config or load config if you're the server
+		{
+			if (!FileIO.FileExists(DB_DIR))
+			{
+				FileIO.MakeDirectory(DB_DIR);
+			}
+			
+			ResourceName m_sDb = string.Format("%1/%2", DB_DIR, DB_NAME_CONF);
+			
+			CE_ItemDataConfig obj = new CE_ItemDataConfig();
+			
+			Resource holder = BaseContainerTools.CreateContainerFromInstance(obj);
+			
+			BaseContainerTools.SaveContainer(holder.GetResource().ToBaseContainer(), m_sDb);
+			
+			Print("[CentralEconomy] CE_ItemData.conf created! Please add items to config and then restart server!");
+		}
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	// GETTERS/SETTERS
+	//------------------------------------------------------------------------------------------------
+	
+	//------------------------------------------------------------------------------------------------
 	//! Gets the instance of the CE_WorldValidationComponent
 	static CE_WorldValidationComponent GetInstance()
 	{
@@ -80,28 +107,5 @@ class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 	CE_ItemDataConfig GetItemDataConfig()
 	{
 		return m_ItemDataConfig;
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Creates item data config in server profile folder
-	protected void CreateConfig()
-	{
-		if (Replication.IsServer()) // only create the config or load config if you're the server
-		{
-			if (!FileIO.FileExists(DB_DIR))
-			{
-				FileIO.MakeDirectory(DB_DIR);
-			}
-			
-			ResourceName m_sDb = string.Format("%1/%2", DB_DIR, DB_NAME_CONF);
-			
-			CE_ItemDataConfig obj = new CE_ItemDataConfig();
-			
-			Resource holder = BaseContainerTools.CreateContainerFromInstance(obj);
-			
-			BaseContainerTools.SaveContainer(holder.GetResource().ToBaseContainer(), m_sDb);
-			
-			Print("[CentralEconomy] CE_ItemData.conf created! Please add items to config and then restart server!");
-		}
 	}
 };

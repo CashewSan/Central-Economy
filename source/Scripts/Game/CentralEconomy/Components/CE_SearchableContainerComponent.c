@@ -90,7 +90,11 @@ class CE_SearchableContainerComponent : ScriptComponent
 	//! Connects to item spawning system and registers this component
 	protected void ConnectToItemSpawningSystem()
 	{
-		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
+		World world = GetOwner().GetWorld();
+		if (!world)
+			return;
+		
+		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
 		if (!m_SpawningSystem)
 			return;
 		
@@ -105,7 +109,11 @@ class CE_SearchableContainerComponent : ScriptComponent
 	//! Disonnects from item spawning system and unregisters this component
 	protected void DisconnectFromItemSpawningSystem()
 	{
-		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
+		World world = GetOwner().GetWorld();
+		if (!world)
+			return;
+		
+		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
 		if (!m_SpawningSystem)
 			return;
 
@@ -116,7 +124,11 @@ class CE_SearchableContainerComponent : ScriptComponent
 	//! Connects to item spawning system and registers this component
 	protected void ConnectToTimingSystem()
 	{
-		m_TimingSystem = CE_ContainerTimingSystem.GetInstance();
+		World world = GetOwner().GetWorld();
+		if (!world)
+			return;
+		
+		m_TimingSystem = CE_ContainerTimingSystem.Cast(world.FindSystem(CE_ContainerTimingSystem));
 		if (!m_TimingSystem)
 			return;
 		
@@ -127,7 +139,11 @@ class CE_SearchableContainerComponent : ScriptComponent
 	//! Disonnects from item spawning system and unregisters this component
 	protected void DisconnectFromTimingSystem()
 	{
-		m_TimingSystem = CE_ContainerTimingSystem.GetInstance();
+		World world = GetOwner().GetWorld();
+		if (!world)
+			return;
+		
+		m_TimingSystem = CE_ContainerTimingSystem.Cast(world.FindSystem(CE_ContainerTimingSystem));
 		if (!m_TimingSystem)
 			return;
 
@@ -160,7 +176,11 @@ class CE_SearchableContainerComponent : ScriptComponent
 	{
 		ConnectToItemSpawningSystem();
 		
-		m_SpawningSystem = CE_ItemSpawningSystem.GetInstance();
+		World world = GetOwner().GetWorld();
+		if (!world)
+			return null;
+		
+		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
 		if (!m_SpawningSystem)
 			return null;
 		
