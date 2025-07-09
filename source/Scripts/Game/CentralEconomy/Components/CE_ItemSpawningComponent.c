@@ -8,24 +8,25 @@ class CE_ItemSpawningComponent : ScriptComponent
 	[Attribute(ResourceName.Empty, UIWidgets.Object, "Item data config to be used (If set, universal config through CE_WorldValidationComponent will be ignored!)", "conf", category: "Spawner Data")]
 	ref CE_ItemDataConfig m_ItemDataConfig;
 	
-	[Attribute(ResourceName.Empty, UIWidgets.ComboBox, desc: "Which spawn location(s) will this spawner be? (If set, universal usages set throughout the world will be ignored!)", enums: ParamEnumArray.FromEnum(CE_ELootUsage), category: "Spawner Data")]
-	CE_ELootUsage m_ItemUsage;
+	[Attribute("", UIWidgets.ComboBox, desc: "Which spawn location(s) will this spawner be? (If set, usages set throughout the world will be ignored!)", enums: ParamEnumArray.FromEnum(CE_ELootUsage), category: "Spawner Data")]
+	protected CE_ELootUsage m_ItemUsage;
 	
-	[Attribute(ResourceName.Empty, UIWidgets.Flags, desc: "Which category of items do you want to spawn here?", enums: ParamEnumArray.FromEnum(CE_ELootCategory), category: "Spawner Data")]
+	[Attribute("", UIWidgets.Flags, desc: "Which category of items do you want to spawn here?", enums: ParamEnumArray.FromEnum(CE_ELootCategory), category: "Spawner Data")]
 	CE_ELootCategory m_Categories;
 	
 	[Attribute("1800", UIWidgets.EditBox, desc: "Time (in seconds) it takes for the spawner to reset after spawned item was taken from it. Helps prevent loot camping.", params: "10 inf 10", category: "Spawner Data")] // default set to 1800 seconds (30 minutes)
 	int m_iSpawnerResetTime;
 	
-	protected CE_ELootUsage 								m_Usage; 																	// gets set by the Usage Trigger Area Entity
-	protected CE_ELootTier 								m_Tier; 																		// gets set by the Tier Trigger Area Entity
-		
+	protected CE_ELootUsage 								m_Usage; 																	// what is the usage of this spawner component? Can be either m_ItemUsage or set throughout the world
+	protected CE_ELootTier 								m_Tier; 																		// what is the tier of this spawner component?
+	
 	protected bool 										m_bHasConfig 							= false;								// does the spawner have a config set in the component?
 	protected bool 										m_bWasItemDespawned 						= false;								// was the item despawned by the system?
 	protected bool 										m_bHasItemBeenTaken 						= false;								// has item been taken from spawner?
 	protected bool										m_bHasSpawnerReset						= true;								// has the spawner reset?
 	protected bool 										m_bReadyForItem 							= true;								// has item spawned on the spawner?
 	protected bool										m_bHaveItemsProcessed	;														// have the items of the spawner been processed? ONLY APPLICABLE IF m_ItemDataConfig IS SET!
+	protected bool										m_bHasUsage								= false;
 	
 	protected int										m_iCurrentSpawnerResetTime				= 0;									// current spawner reset time
 	
@@ -50,19 +51,36 @@ class CE_ItemSpawningComponent : ScriptComponent
 		
 		if (m_ItemDataConfig)
 			LoadConfig();
-		else
-			ConnectToItemSpawningSystem();
 		
+		GetGame().GetCallqueue().CallLater(DelayedInit, 100);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Delayed initialization call after component creation
+	protected void DelayedInit()
+	{
+		/*
 		// Defaults for if no info gets set
 		if (!m_Tier)
 			m_Tier = CE_ELootTier.TIER1;
+		*/
 		
 		if (m_ItemUsage)
 		{
-			m_Usage = m_ItemUsage;
+			m_bHasUsage = true;
+			
+			SetSpawnerUsage(m_ItemUsage);
 		}
-		else if (!m_Usage)
+		
+		/*
+		if (!m_Usage)
 			m_Usage = CE_ELootUsage.TOWN;
+		*/
+		
+		ConnectToItemSpawningSystem();
+		
+		//Print("Spawner Set Usage: " + SCR_Enum.GetEnumName(CE_ELootUsage, m_ItemUsage));
+		//Print("Actual Spawner Set Usage: " + SCR_Enum.GetEnumName(CE_ELootUsage, m_Usage));
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -264,6 +282,12 @@ class CE_ItemSpawningComponent : ScriptComponent
 		if (!world)
 			return;
 		
+		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+		if (m_SpawningSystem)
+		{
+			m_SpawningSystem.SetItemCount(m_SpawningSystem.GetItemCount() - 1);
+		}
+		
 		m_TimingSystem = CE_SpawnerTimingSystem.Cast(world.FindSystem(CE_SpawnerTimingSystem));
 		if (m_TimingSystem)
 		{
@@ -272,7 +296,9 @@ class CE_ItemSpawningComponent : ScriptComponent
 		
 		InventoryItemComponent itemComponent = InventoryItemComponent.Cast(GetEntitySpawned().FindComponent(InventoryItemComponent));
 		if (itemComponent)
+		{
 			itemComponent.m_OnParentSlotChangedInvoker.Remove(OnItemTaken);
+		}
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -479,7 +505,6 @@ class CE_ItemSpawningComponent : ScriptComponent
 		return null;
 	}
 	
-	
 	//------------------------------------------------------------------------------------------------
 	//! Gets the spawners item data config, if set (if NOT set, will return null)
 	array<ref CE_Item> GetItems()
@@ -516,5 +541,12 @@ class CE_ItemSpawningComponent : ScriptComponent
 	CE_OnVehicleTakenInvoker GetVehicleTakenInvoker()
 	{
 		return m_OnVehicleTakenInvoker;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Does this spawner have a usage set in component?
+	bool HasUsage()
+	{
+		return m_bHasUsage;
 	}
 }

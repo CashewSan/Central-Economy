@@ -5,8 +5,11 @@ class CE_WorldValidationComponentClass: SCR_BaseGameModeComponentClass
 
 class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 {
-	[Attribute("5", UIWidgets.EditBox, desc: "Frequency (in seconds) that an item will spawn, LOWER TAKES MORE PERFORMANCE (E.G. If set to 5, an item will attempt to spawn every 5 seconds)", category: "Item Spawning System")] // default set to 1 second
-	float m_iItemSpawningRate;
+	[Attribute("5", UIWidgets.EditBox, desc: "Frequency (in seconds) that an item will spawn, LOWER TAKES MORE PERFORMANCE (E.G. If set to 5, an item will attempt to spawn every 5 seconds)", params: "0 inf 1", category: "Item Spawning System")] // default set to 1 second
+	float m_fItemSpawningFrequency;
+	
+	[Attribute("0.5", UIWidgets.EditBox, desc: "Ratio of items the system will aim to spawn compared to spawners (If set to 0.5, items will populate half of the spawners in the world. If set to 1, items will populate all spawners)", params: "0 1 0.1", category: "Item Spawning System")] // default set to 1 second
+	float m_fItemSpawningRatio;
 	
 	protected bool 											m_bProcessed 			= false;							// has world been processed?
 	

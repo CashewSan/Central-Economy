@@ -76,8 +76,8 @@ class CE_ItemSpawningSystem : GameSystem
 				
 				m_bWorldProcessed = true;
 				
-				if (m_WorldValidationComponent.m_iItemSpawningRate)
-					m_fCheckInterval = m_WorldValidationComponent.m_iItemSpawningRate;
+				if (m_WorldValidationComponent.m_fItemSpawningFrequency)
+					m_fCheckInterval = m_WorldValidationComponent.m_fItemSpawningFrequency;
 				else
 					m_fCheckInterval = 1.0;
 				

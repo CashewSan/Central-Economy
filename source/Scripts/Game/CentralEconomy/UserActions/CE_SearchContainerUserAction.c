@@ -1,4 +1,4 @@
-class CE_SearchContainerUserAction : ScriptedUserAction
+class CE_SearchContainerUserAction : SCR_InventoryAction
 {	
 	[Attribute(ResourceName.Empty, UIWidgets.Auto, "Audio to be used when searching the container")]
 	protected ref SCR_AudioSourceConfiguration m_AudioSourceConfig;
@@ -9,7 +9,28 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 	//------------------------------------------------------------------------------------------------
 	override bool CanBeShownScript(IEntity user)
 	{
-		return CanBePerformedScript(user);
+		// If target does not have searchable container component
+		CE_SearchableContainerComponent targetSearchableContainer = CE_SearchableContainerComponent.Cast(GetOwner().FindComponent(CE_SearchableContainerComponent));
+		if (!targetSearchableContainer)
+			return false;
+		
+		// If target does not have a loot category
+		if (!targetSearchableContainer.m_Categories)
+			return false;
+		
+		// If target has already been searched
+		if (targetSearchableContainer.HasBeenSearched())
+			return false;
+		
+		// If target is destroyed
+		SCR_DamageManagerComponent targetDamageManager = SCR_DamageManagerComponent.Cast(GetOwner().FindComponent(SCR_DamageManagerComponent));
+		if (targetDamageManager)
+		{
+			if (targetDamageManager.IsDestroyed())
+				return false;
+		}
+		
+		return super.CanBeShownScript(user);
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -61,6 +82,8 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 	//------------------------------------------------------------------------------------------------
 	override void OnActionStart(IEntity pUserEntity)
 	{
+		super.OnActionStart(pUserEntity);
+		
 		PlaySound(GetOwner());
 		if (m_StorageItemAttributes)
 			m_StorageItemAttributes.CE_SetVisible(true);
@@ -69,6 +92,8 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 	//------------------------------------------------------------------------------------------------
 	override void OnActionCanceled(IEntity pOwnerEntity, IEntity pUserEntity)
 	{
+		super.OnActionCanceled(pOwnerEntity, pUserEntity);
+		
 		StopSound(pOwnerEntity);
 		if (m_StorageItemAttributes)
 			m_StorageItemAttributes.CE_SetVisible(false);
@@ -77,25 +102,22 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 	//------------------------------------------------------------------------------------------------
 	override void PerformAction(IEntity pOwnerEntity, IEntity pUserEntity)
 	{	
+		super.PerformAction(pOwnerEntity, pUserEntity);
+		
 		CE_SearchableContainerComponent targetSearchableContainer = CE_SearchableContainerComponent.Cast(pOwnerEntity.FindComponent(CE_SearchableContainerComponent));
 		if (!targetSearchableContainer)
 			return;
 		
 		targetSearchableContainer.GetContainerSearchedInvoker().Invoke(pOwnerEntity, targetSearchableContainer, pUserEntity);
-		
-		OpenContainerInventory(pOwnerEntity, pUserEntity);
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Opens the container inventory into player view
-	protected void OpenContainerInventory(IEntity pOwnerEntity, IEntity pUserEntity)
+	protected override void PerformActionInternal(SCR_InventoryStorageManagerComponent manager, IEntity pOwnerEntity, IEntity pUserEntity)
 	{
-		SCR_InventoryStorageManagerComponent userStorageManager = SCR_InventoryStorageManagerComponent.Cast(pUserEntity.FindComponent(SCR_InventoryStorageManagerComponent));
-		if (!userStorageManager)
-			return;
+		super.PerformActionInternal(manager, pOwnerEntity, pUserEntity);
 		
-		userStorageManager.SetStorageToOpen(pOwnerEntity);
-		userStorageManager.OpenInventory();
+		manager.SetStorageToOpen(pOwnerEntity);
+		manager.OpenInventory();
 		
 		if (m_StorageItemAttributes)
 			m_StorageItemAttributes.CE_SetVisible(false);

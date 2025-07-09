@@ -9,4 +9,5 @@ CE_UsageTriggerArea {
  coords 115.106 1.001 159.53
  TriggerShapeType Polyline
  DrawShape 1
+ RunDefaultQueryFirst 0
 }

@@ -5,8 +5,8 @@ class CE_UsageTriggerAreaClass : ScriptedGameTriggerEntityClass
 
 class CE_UsageTriggerArea : ScriptedGameTriggerEntity
 {
-	[Attribute(ResourceName.Empty, UIWidgets.ComboBox, desc: "Which usage is this item spawn?", enums: ParamEnumArray.FromEnum(CE_ELootUsage), category: "Spawn Data")]
-	CE_ELootUsage m_Usage;
+	[Attribute(ResourceName.Empty, UIWidgets.ComboBox, desc: "Which usage is this area?", enums: ParamEnumArray.FromEnum(CE_ELootUsage), category: "Spawn Data")]
+	protected CE_ELootUsage m_Usage;
 	
 	ref array<IEntity> m_SpawnLocationsInside = {};
 	
@@ -17,12 +17,14 @@ class CE_UsageTriggerArea : ScriptedGameTriggerEntity
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//!
 	protected void GatherSpawnLocations()
 	{	
 		QueryEntitiesInside();
-		GetEntitiesInside(m_SpawnLocationsInside);
 		
-		if (m_SpawnLocationsInside.Count() == 0)
+		m_SpawnLocationsInside.Clear();
+		
+		if (GetEntitiesInside(m_SpawnLocationsInside) == 0)
 		{
 			GetGame().GetCallqueue().CallLater(GatherSpawnLocations, 100, false);
 		}
@@ -31,7 +33,7 @@ class CE_UsageTriggerArea : ScriptedGameTriggerEntity
 			foreach (IEntity entity : m_SpawnLocationsInside)
 			{
 				CE_ItemSpawningComponent spawningComp = CE_ItemSpawningComponent.Cast(entity.FindComponent(CE_ItemSpawningComponent));
-				if (spawningComp && !spawningComp.m_ItemUsage)
+				if (m_Usage && spawningComp && !spawningComp.HasUsage())
 				{
 					spawningComp.SetSpawnerUsage(m_Usage);
 				}
@@ -43,7 +45,7 @@ class CE_UsageTriggerArea : ScriptedGameTriggerEntity
 				}
 			}
 		}
-	}  
+	}
 	
 	//------------------------------------------------------------------------------------------------
 	override bool ScriptedEntityFilterForQuery(IEntity ent)
@@ -56,6 +58,7 @@ class CE_UsageTriggerArea : ScriptedGameTriggerEntity
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//!
 	array<IEntity> GetUsageSpawnAreas()
 	{
 		return m_SpawnLocationsInside;
