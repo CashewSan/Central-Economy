@@ -2,8 +2,8 @@ SCR_DestructibleBuildingEntity : "{B484E37C0F973EC9}Prefabs/Structures/Infrastru
  ID "F0DBA538AC2A0552"
  {
   GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
-   ID "62B90C20E4801666"
-   coords -0.856 0.252 -0.827
+   ID "65D319DB703B5E21"
+   coords -0.873 0.252 -1.102
   }
   CE_UsageTriggerArea : "{639185B97538C5F3}Prefabs/Areas/Usages/UsageArea_Coast.et" {
    ID "62B90C20E4801602"

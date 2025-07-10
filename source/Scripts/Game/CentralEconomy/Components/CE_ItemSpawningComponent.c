@@ -12,7 +12,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	protected CE_ELootUsage m_ItemUsage;
 	
 	[Attribute("", UIWidgets.Flags, desc: "Which category of items do you want to spawn here?", enums: ParamEnumArray.FromEnum(CE_ELootCategory), category: "Spawner Data")]
-	CE_ELootCategory m_Categories;
+	protected CE_ELootCategory m_Categories;
 	
 	[Attribute("1800", UIWidgets.EditBox, desc: "Time (in seconds) it takes for the spawner to reset after spawned item was taken from it. Helps prevent loot camping.", params: "10 inf 10", category: "Spawner Data")] // default set to 1800 seconds (30 minutes)
 	int m_iSpawnerResetTime;
@@ -49,22 +49,6 @@ class CE_ItemSpawningComponent : ScriptComponent
 	{
 		HookEvents();
 		
-		if (m_ItemDataConfig)
-			LoadConfig();
-		
-		GetGame().GetCallqueue().CallLater(DelayedInit, 100);
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Delayed initialization call after component creation
-	protected void DelayedInit()
-	{
-		/*
-		// Defaults for if no info gets set
-		if (!m_Tier)
-			m_Tier = CE_ELootTier.TIER1;
-		*/
-		
 		if (m_ItemUsage)
 		{
 			m_bHasUsage = true;
@@ -72,15 +56,18 @@ class CE_ItemSpawningComponent : ScriptComponent
 			SetSpawnerUsage(m_ItemUsage);
 		}
 		
-		/*
-		if (!m_Usage)
-			m_Usage = CE_ELootUsage.TOWN;
-		*/
+		if (m_ItemDataConfig)
+			LoadConfig();
+		else
+			ConnectToItemSpawningSystem();
 		
-		ConnectToItemSpawningSystem();
-		
-		//Print("Spawner Set Usage: " + SCR_Enum.GetEnumName(CE_ELootUsage, m_ItemUsage));
-		//Print("Actual Spawner Set Usage: " + SCR_Enum.GetEnumName(CE_ELootUsage, m_Usage));
+		//GetGame().GetCallqueue().CallLater(TestMeow, 15000);
+	}
+	
+	protected void TestMeow()
+	{
+		Print("Actual Spawner Set Usage: " + SCR_Enum.GetEnumName(CE_ELootUsage, m_Usage));
+		//Print("Actual Spawner Set Tier: " + SCR_Enum.GetEnumName(CE_ELootTier, m_Tier));
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -108,7 +95,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	
 	//------------------------------------------------------------------------------------------------
 	//! Connects to item spawning system and registers this component
-	protected void ConnectToItemSpawningSystem()
+	void ConnectToItemSpawningSystem()
 	{
 		World world = GetOwner().GetWorld();
 		if (!world)
@@ -427,6 +414,20 @@ class CE_ItemSpawningComponent : ScriptComponent
 	void SetSpawnerUsage(CE_ELootUsage usage)
 	{
 		m_Usage = usage;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets the categories of the spawning component
+	CE_ELootCategory GetSpawnerCategories()
+	{
+		return m_Categories;
+	}
+		
+	//------------------------------------------------------------------------------------------------
+	//! Sets the categories of the spawning component
+	void SetSpawnerCategories(CE_ELootCategory category)
+	{
+		m_Categories = category;
 	}
 	
 	//------------------------------------------------------------------------------------------------

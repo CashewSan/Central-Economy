@@ -3,7 +3,7 @@ CE_TierTriggerArea {
  components {
   RplComponent "{626B3E2C8F1E508D}" {
   }
-  Hierarchy "{626EE4575C2ED21B}" {
+  Hierarchy "{65D335071B261A5B}" {
   }
  }
  coords 115.106 1.001 159.53
@@ -11,4 +11,5 @@ CE_TierTriggerArea {
  DrawShape 1
  ShapeColor 0 1 0.969 1
  TriggerActivationType None
+ RunDefaultQueryFirst 0
 }

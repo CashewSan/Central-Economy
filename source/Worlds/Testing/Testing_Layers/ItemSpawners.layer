@@ -1,35 +1,3 @@
-$grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
- {
-  coords 161.124 1.454 112.65
- }
- {
-  coords 160.99 1.454 110.712
- }
- {
-  coords 162.285 1.454 112.694
- }
- {
-  coords 162.151 1.454 110.757
- }
- {
-  coords 163.392 1.454 112.721
- }
- {
-  coords 163.374 1.454 110.784
- }
- {
-  coords 164.544 1.454 112.65
- }
- {
-  coords 164.472 1.454 110.802
- }
- {
-  coords 165.803 1.454 112.578
- }
- {
-  coords 165.758 1.454 110.793
- }
-}
 $grp GenericEntity : "{85C71F17C37D274C}Prefabs/Structures/BuildingParts/Entry/Entry_Block_Platform_01_3x6.et" {
  {
   coords 156.894 1.454 106.836
@@ -40,29 +8,4 @@ $grp GenericEntity : "{85C71F17C37D274C}Prefabs/Structures/BuildingParts/Entry/E
  {
   coords 163.532 2.861 115.894
  }
-}
-SCR_DestructibleBuildingEntity : "{B952B23CBCF785AB}Prefabs/Structures/Infrastructure/Naval/Sheds/FishermanShed_01_V2.et" {
- coords 165.044 0 152.122
- {
-  CE_UsageTriggerArea {
-   ID "62B90C20E4801602"
-   components {
-    RplComponent "{626B3E2B5F4D86A2}" {
-     Streamable Disabled
-    }
-   }
-  }
- }
-}
-CE_TierTriggerArea : "{D5442362B659903E}Prefabs/Areas/Tiers/TierArea_Tier1.et" {
- coords 161.518 1 107.802
- TriggerShapeType "Oriented Bounding Box"
- BoxMins -23 -3 -16
- BoxMaxs 23 15 15
- DrawShape 1
-}
-CE_UsageTriggerArea : "{DABFAB24173C5C1B}Prefabs/Areas/Usages/UsageArea_Military.et" {
- coords 161.494 1 108.365
- DrawShape 1
- ShapeColor 0 0.502 0.1255 1
 }

@@ -49,18 +49,32 @@ class CE_SearchableContainerComponent : ScriptComponent
 		
 		HookEvents();
 		
-		// Defaults for if no info gets set
-		if (!m_Tier)
-			m_Tier = CE_ELootTier.TIER1;
-		
 		if (m_ContainerUsage)
 		{
 			m_Usage = m_ContainerUsage;
 		}
-		else if (!m_Usage)
-			m_Usage = CE_ELootUsage.TOWN;
 		
 		SetCurrentContainerResetTime(GetContainerResetTime());
+		
+		GetGame().GetCallqueue().CallLater(TestMeow, 5000);
+	}
+	
+	protected void TestMeow()
+	{
+		/*
+		EntityFlags flags = GetOwner().GetFlags();
+		
+		array<int> intFlags = {};
+		SCR_Enum.BitToIntArray(flags, intFlags);
+		
+		foreach (int flag : intFlags)
+		{
+			Print("Flag: " + SCR_Enum.GetEnumName(EntityFlags, flag));
+		}
+		*/
+		
+		//Print("Actual Container Set Usage: " + SCR_Enum.GetEnumName(CE_ELootUsage, m_Usage));
+		//Print("Actual Spawner Set Tier: " + SCR_Enum.GetEnumName(CE_ELootTier, m_Tier));
 	}
 	
 	//------------------------------------------------------------------------------------------------
