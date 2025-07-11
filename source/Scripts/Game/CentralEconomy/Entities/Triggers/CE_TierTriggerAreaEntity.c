@@ -29,12 +29,14 @@ class CE_TierTriggerArea : SCR_BaseTriggerEntity
 	//!
 	protected void GatherSpawnLocations()
 	{
-		if (GetEntitiesInside(m_aSpawnLocationsInside) == 0)
+		GetEntitiesInside(m_aSpawnLocationsInside);
+		
+		if (m_aSpawnLocationsInside.IsEmpty())
 		{
 			DisconnectFromItemSpawningSystem();
 		}
 		else
-			GetGame().GetCallqueue().CallLater(SetTier, 5000);
+			SetTier();
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -55,7 +57,6 @@ class CE_TierTriggerArea : SCR_BaseTriggerEntity
 				
 				if (spawningComp.GetSpawnerTier())
 				{
-					//Print("Spawner Tier: " + SCR_Enum.GetEnumName(CE_ELootTier, spawningComp.GetSpawnerTier()));
 					spawnerSetCount++;
 				}
 			}

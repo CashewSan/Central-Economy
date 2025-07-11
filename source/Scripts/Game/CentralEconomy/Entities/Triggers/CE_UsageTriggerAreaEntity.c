@@ -36,7 +36,7 @@ class CE_UsageTriggerArea : SCR_BaseTriggerEntity
 			DisconnectFromItemSpawningSystem();
 		}
 		else
-			GetGame().GetCallqueue().CallLater(SetUsage, 5000);
+			SetUsage();
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -57,7 +57,6 @@ class CE_UsageTriggerArea : SCR_BaseTriggerEntity
 				
 				if (spawningComp.GetSpawnerUsage())
 				{
-					//Print("Spawner Usage: " + SCR_Enum.GetEnumName(CE_ELootUsage, spawningComp.GetSpawnerUsage()));
 					spawnerSetCount++;
 				}
 			}
@@ -67,11 +66,6 @@ class CE_UsageTriggerArea : SCR_BaseTriggerEntity
 			{
 				containerComp.SetContainerUsage(m_Usage);
 			}
-		}
-		
-		if (spawnerSetCount != spawnerCount)
-		{
-			Print("What the FUCK");
 		}
 		
 		if (spawnerSetCount >= spawnerCount)

@@ -8,10 +8,10 @@ class CE_SearchableContainerComponent : ScriptComponent
 	[Attribute(ResourceName.Empty, UIWidgets.Object, "Item data config to be used (If set, universal config through CE_WorldValidationComponent will be ignored!)", "conf", category: "Container Data")]
 	ref CE_ItemDataConfig m_ItemDataConfig;
 	
-	[Attribute(ResourceName.Empty, UIWidgets.ComboBox, desc: "Which spawn location(s) will this container spawn items in? (If set, universal usages set throughout the world will be ignored!)", enums: ParamEnumArray.FromEnum(CE_ELootUsage), category: "Container Data")]
+	[Attribute("", UIWidgets.ComboBox, desc: "Which spawn location(s) will this container spawn items in? (If set, usages set throughout the world will be ignored!)", enums: ParamEnumArray.FromEnum(CE_ELootUsage), category: "Container Data")]
 	CE_ELootUsage m_ContainerUsage;
 	
-	[Attribute(ResourceName.Empty, UIWidgets.Flags, desc: "Category of searchable container", enums: ParamEnumArray.FromEnum(CE_ELootCategory), category: "Container Data")]
+	[Attribute("", UIWidgets.Flags, desc: "Which category of items do you want to spawn here?", enums: ParamEnumArray.FromEnum(CE_ELootCategory), category: "Container Data")]
 	CE_ELootCategory m_Categories;
 	
 	[Attribute("1800", UIWidgets.EditBox, desc: "Time (in seconds) it takes for the container to reset after it was initially searched. Helps prevent loot camping.", params: "10 inf 10", category: "Container Data")] // default set to 1800 seconds (30 minutes)
@@ -55,26 +55,6 @@ class CE_SearchableContainerComponent : ScriptComponent
 		}
 		
 		SetCurrentContainerResetTime(GetContainerResetTime());
-		
-		GetGame().GetCallqueue().CallLater(TestMeow, 5000);
-	}
-	
-	protected void TestMeow()
-	{
-		/*
-		EntityFlags flags = GetOwner().GetFlags();
-		
-		array<int> intFlags = {};
-		SCR_Enum.BitToIntArray(flags, intFlags);
-		
-		foreach (int flag : intFlags)
-		{
-			Print("Flag: " + SCR_Enum.GetEnumName(EntityFlags, flag));
-		}
-		*/
-		
-		//Print("Actual Container Set Usage: " + SCR_Enum.GetEnumName(CE_ELootUsage, m_Usage));
-		//Print("Actual Spawner Set Tier: " + SCR_Enum.GetEnumName(CE_ELootTier, m_Tier));
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -243,8 +223,6 @@ class CE_SearchableContainerComponent : ScriptComponent
 		{
 			SCR_EntityHelper.DeleteEntityAndChildren(storageItem);
 		}
-		
-		Print("Container Has Been Reset");
 		
 		SetHasContainerReset(false);
 		

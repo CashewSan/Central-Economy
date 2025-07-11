@@ -9,8 +9,12 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 	//------------------------------------------------------------------------------------------------
 	override bool CanBeShownScript(IEntity user)
 	{
+		IEntity owner = GetOwner();
+		if (!owner)
+			return false;
+		
 		// If target does not have searchable container component
-		CE_SearchableContainerComponent targetSearchableContainer = CE_SearchableContainerComponent.Cast(GetOwner().FindComponent(CE_SearchableContainerComponent));
+		CE_SearchableContainerComponent targetSearchableContainer = CE_SearchableContainerComponent.Cast(owner.FindComponent(CE_SearchableContainerComponent));
 		if (!targetSearchableContainer)
 			return false;
 		
@@ -23,7 +27,7 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 			return false;
 		
 		// If target is destroyed
-		SCR_DamageManagerComponent targetDamageManager = SCR_DamageManagerComponent.Cast(GetOwner().FindComponent(SCR_DamageManagerComponent));
+		SCR_DamageManagerComponent targetDamageManager = SCR_DamageManagerComponent.Cast(owner.FindComponent(SCR_DamageManagerComponent));
 		if (targetDamageManager)
 		{
 			if (targetDamageManager.IsDestroyed())
@@ -36,8 +40,12 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 	//------------------------------------------------------------------------------------------------
 	override bool CanBePerformedScript(IEntity user)
 	{
+		IEntity owner = GetOwner();
+		if (!owner)
+			return false;
+		
 		// If target does not have searchable container component
-		CE_SearchableContainerComponent targetSearchableContainer = CE_SearchableContainerComponent.Cast(GetOwner().FindComponent(CE_SearchableContainerComponent));
+		CE_SearchableContainerComponent targetSearchableContainer = CE_SearchableContainerComponent.Cast(owner.FindComponent(CE_SearchableContainerComponent));
 		if (!targetSearchableContainer)
 			return false;
 		
@@ -50,7 +58,7 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 			return false;
 		
 		// If target is destroyed
-		SCR_DamageManagerComponent targetDamageManager = SCR_DamageManagerComponent.Cast(GetOwner().FindComponent(SCR_DamageManagerComponent));
+		SCR_DamageManagerComponent targetDamageManager = SCR_DamageManagerComponent.Cast(owner.FindComponent(SCR_DamageManagerComponent));
 		if (targetDamageManager)
 		{
 			if (targetDamageManager.IsDestroyed())
@@ -64,6 +72,9 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 	override void Init(IEntity pOwnerEntity, GenericComponent pManagerComponent)
 	{
 		super.Init(pOwnerEntity, pManagerComponent);
+		
+		if (!pOwnerEntity)
+			return;
 		
 		SCR_UniversalInventoryStorageComponent ownerStorage = SCR_UniversalInventoryStorageComponent.Cast(pOwnerEntity.FindComponent(SCR_UniversalInventoryStorageComponent));
 		if (!ownerStorage)
@@ -82,9 +93,12 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 	//------------------------------------------------------------------------------------------------
 	override void OnActionStart(IEntity pUserEntity)
 	{
-		super.OnActionStart(pUserEntity);
+		IEntity owner = GetOwner();
+		if (!owner)
+			return;
 		
-		PlaySound(GetOwner());
+		PlaySound(owner);
+		
 		if (m_StorageItemAttributes)
 			m_StorageItemAttributes.CE_SetVisible(true);
 	}
@@ -92,9 +106,11 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 	//------------------------------------------------------------------------------------------------
 	override void OnActionCanceled(IEntity pOwnerEntity, IEntity pUserEntity)
 	{
-		super.OnActionCanceled(pOwnerEntity, pUserEntity);
+		if (!pOwnerEntity)
+			return;
 		
 		StopSound(pOwnerEntity);
+		
 		if (m_StorageItemAttributes)
 			m_StorageItemAttributes.CE_SetVisible(false);
 	}
@@ -114,10 +130,9 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 	//------------------------------------------------------------------------------------------------
 	protected override void PerformActionInternal(SCR_InventoryStorageManagerComponent manager, IEntity pOwnerEntity, IEntity pUserEntity)
 	{
-		super.PerformActionInternal(manager, pOwnerEntity, pUserEntity);
-		
-		manager.SetStorageToOpen(pOwnerEntity);
-		manager.OpenInventory();
+		if (manager && pOwnerEntity)
+			manager.SetStorageToOpen(pOwnerEntity);
+			manager.OpenInventory();
 		
 		if (m_StorageItemAttributes)
 			m_StorageItemAttributes.CE_SetVisible(false);
@@ -127,6 +142,9 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 	//! Plays sound on entity
 	protected void PlaySound(IEntity owner)
 	{
+		if (!owner)
+			return;
+		
 		// Get SoundManagerEntity
 		SCR_SoundManagerEntity soundManagerEntity = GetGame().GetSoundManagerEntity();
 		if (!soundManagerEntity || !m_AudioSourceConfig || !m_AudioSourceConfig.IsValid())
@@ -155,6 +173,9 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 	//! Stops sound on entity
 	protected void StopSound(IEntity owner)
 	{
+		if (!owner)
+			return;
+		
 		// Get SoundManagerEntity
 		SCR_SoundManagerEntity soundManagerEntity = GetGame().GetSoundManagerEntity();
 		if (!soundManagerEntity)

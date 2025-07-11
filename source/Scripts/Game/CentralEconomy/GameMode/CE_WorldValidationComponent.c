@@ -73,7 +73,7 @@ class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 			
 			BaseContainerTools.SaveContainer(holder.GetResource().ToBaseContainer(), m_sDb);
 			
-			Print("[CentralEconomy] CE_ItemData.conf created! Please add items to config and then restart server!");
+			Print("[CentralEconomy] CE_ItemData.conf created in your server profile folder! Please add items to config and then restart server!");
 		}
 	}
 	

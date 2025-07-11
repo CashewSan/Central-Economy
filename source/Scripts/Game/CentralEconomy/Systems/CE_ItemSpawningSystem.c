@@ -5,8 +5,8 @@ class CE_ItemSpawningSystem : GameSystem
 	protected ref array<ref CE_Spawner>					m_aSpawners						= new array<ref CE_Spawner>;						// processed CE_ItemSpawningComponent into CE_Spawner
 	protected ref array<CE_SearchableContainerComponent> 	m_aContainers 					= new array<CE_SearchableContainerComponent>; 		// ALL registered searchable container components in the world
 	protected ref array<ref CE_Item>						m_aItems 						= new array<ref CE_Item>;							// processed CE_ItemData into CE_Item
-	protected ref array<CE_UsageTriggerArea>				m_aUsageAreas					= new array<CE_UsageTriggerArea>;					// 
-	protected ref array<CE_TierTriggerArea>				m_aTierAreas						= new array<CE_TierTriggerArea>;					// 
+	protected ref array<CE_UsageTriggerArea>				m_aUsageAreas					= new array<CE_UsageTriggerArea>;					// usage areas registered to the system
+	protected ref array<CE_TierTriggerArea>				m_aTierAreas						= new array<CE_TierTriggerArea>;					// tier areas registered to the system
 	
 	protected ref RandomGenerator 						m_RandomGen						= new RandomGenerator();							// vanilla random generator
 	
@@ -16,8 +16,8 @@ class CE_ItemSpawningSystem : GameSystem
 	
 	protected int										m_iItemCount						= 0;												// count of items currently on a spawner
 	protected int										m_iSpawnerRatioCount				= 0;												// count of spawners multiplied by the m_fItemSpawningRatio
-	protected int										m_iUsageAreasQueried				= 0;												// 
-	protected int										m_iTierAreasQueried				= 0;												// 
+	protected int										m_iUsageAreasQueried				= 0;												// count of usage areas queried
+	protected int										m_iTierAreasQueried				= 0;												// count of tier areas queried
 	
 	protected bool										m_bInitiallyRan					= false;											// has the system finished it's initial spawning phase?
 	
@@ -39,11 +39,7 @@ class CE_ItemSpawningSystem : GameSystem
 				
 				CE_ItemDataConfig m_Config = m_WorldValidationComponent.GetItemDataConfig();
 				
-				//Print("ItemData Count: " + m_Config.m_ItemData.Count());
-				
 				m_aItems = ProcessItemData(m_Config);
-				
-				//GetGame().GetCallqueue().CallLater(InitialSpawningPhase, 2000);
 			}
 			else
 			{
@@ -64,6 +60,8 @@ class CE_ItemSpawningSystem : GameSystem
 	{
 		if (!m_aItems.IsEmpty())
 		{
+			m_bInitiallyRan = true;
+			
 			array<ref CE_Spawner> processedSpawnersArray = {};
 			
 			foreach (CE_Spawner spawner : ProcessSpawners())
@@ -71,19 +69,13 @@ class CE_ItemSpawningSystem : GameSystem
 				processedSpawnersArray.Insert(spawner);
 			}
 			
-			Print("ProcessedSpawnersArrayCount: " + processedSpawnersArray.Count());
-			
 			m_iSpawnerRatioCount = Math.Round(processedSpawnersArray.Count() * m_fItemSpawningRatio);
 			int runCount = 0;
 			int failCount = 0;
 			
-			//Print(m_iSpawnerRatioCount);
-			
 			while (runCount < m_iSpawnerRatioCount && failCount < processedSpawnersArray.Count())
 			{
 				CE_Spawner spawner = SelectSpawner(processedSpawnersArray);
-				
-				//Print(spawner);
 				
 				if (spawner)
 				{
@@ -109,23 +101,16 @@ class CE_ItemSpawningSystem : GameSystem
 					}
 					else
 					{
-						//Print("fail2");
 						failCount++;
 						continue;
 					}
 				}
 				else	
 				{
-					//Print("fail1");
 					failCount++;
 					continue;
 				}
 			}
-			
-			//Print(runCount);
-			//Print(failCount);
-			
-			m_bInitiallyRan = true;
 		}
 	}
 	
@@ -145,6 +130,8 @@ class CE_ItemSpawningSystem : GameSystem
 			
 			PrintFormat("Usage Areas Queried: %1 - Total Count: %2", GetUsageAreasQueried(), m_aUsageAreas.Count());
 			PrintFormat("Tier Areas Queried: %1 - Total Count: %2", GetTierAreasQueried(), m_aTierAreas.Count());
+			
+			Print("Item Count: " + GetItemCount());
 		}
 		
 		if (GetUsageAreasQueried() >= m_aUsageAreas.Count() 
@@ -204,8 +191,6 @@ class CE_ItemSpawningSystem : GameSystem
 			itemDataToBeProcessed.Insert(itemData)
 		}
 		
-		//Print("ItemDataToBeProcessed Count: " + itemDataToBeProcessed.Count());
-		
 		int itemCount = itemDataToBeProcessed.Count();
 		
 		for (int i = 0, maxCount = Math.Min(itemCount, config.m_ItemData.Count()); i < maxCount; i++)
@@ -222,7 +207,16 @@ class CE_ItemSpawningSystem : GameSystem
 			|| !itemData.m_ItemUsages 
 			|| !itemData.m_ItemTiers)
 			{
-				Print("[CentralEconomy::CE_ItemSpawningSystem] " + itemData.m_sName + " is missing information!  Please fix!", LogLevel.ERROR);
+				Print("[CentralEconomy::CE_ItemSpawningSystem] " + itemData.m_sName + " is missing information! Please fix!", LogLevel.ERROR);
+				itemDataToBeProcessed.Remove(0);
+				itemCount--;
+				continue;
+			}
+			else if (itemData.m_iNominal < itemData.m_iMinimum)
+			{
+				Print("[CentralEconomy::CE_ItemSpawningSystem] " + itemData.m_sName + " has a nominal value less than the minimum value! Please fix!", LogLevel.ERROR);
+				itemDataToBeProcessed.Remove(0);
+				itemCount--;
 				continue;
 			}
 			else
@@ -238,8 +232,6 @@ class CE_ItemSpawningSystem : GameSystem
 			itemDataToBeProcessed.Remove(0);
 			itemCount--;
 		}
-		
-		//Print("Item Count: " + itemsProcessed.Count());
 		
 		return itemsProcessed;
 	}
@@ -259,34 +251,25 @@ class CE_ItemSpawningSystem : GameSystem
 		{
 			CE_ItemSpawningComponent spawnerComponent = spawnersToBeProcessed[0];
 			if (!spawnerComponent)
+			{
+				spawnersToBeProcessed.Remove(0);
+				spawnerCount--;
 				continue;
-			
-			//Print("Spawner Tier: " + SCR_Enum.GetEnumName(CE_ELootTier,spawnerComponent.GetSpawnerTier()));
-			//Print("Spawner Usage: " + SCR_Enum.GetEnumName(CE_ELootUsage, spawnerComponent.GetSpawnerUsage()));
+			}
 			
 			if (!spawnerComponent.GetSpawnerUsage() 
 			|| !spawnerComponent.GetSpawnerTier() 
 			|| !spawnerComponent.GetSpawnerCategories()
 			|| spawnerComponent.m_iSpawnerResetTime == 0)
 			{
-				//Print("Spawner Usage: " + SCR_Enum.GetEnumName(CE_ELootUsage, spawnerComponent.GetSpawnerUsage()));
 				//Print("[CentralEconomy::CE_ItemSpawningSystem] " + spawnerComponent + " is missing information! Please fix!", LogLevel.ERROR);
+				spawnersToBeProcessed.Remove(0);
+				spawnerCount--;
 				
-				if (!spawnerComponent.GetSpawnerUsage())
+				if (m_aSpawnerComponents.Contains(spawnerComponent))
 				{
-					Print("Wrong: usage");
-					//Print("Spawner Usage: " + SCR_Enum.GetEnumName(CE_ELootUsage, spawnerComponent.GetSpawnerUsage()));
-					//Print("Spawner Usage: " + spawnerComponent.GetSpawnerUsage());
+					m_aSpawnerComponents.RemoveItem(spawnerComponent); // if missing info, just remove permanently
 				}
-				
-				if (!spawnerComponent.GetSpawnerTier())
-					Print("Wrong: tier");
-				
-				if (!spawnerComponent.GetSpawnerCategories())
-					Print("Wrong: category");
-				
-				if (!spawnerComponent.m_iSpawnerResetTime)
-					Print("Wrong: reset time");
 				
 				continue;
 			}
@@ -303,9 +286,6 @@ class CE_ItemSpawningSystem : GameSystem
 			spawnersToBeProcessed.Remove(0);
 			spawnerCount--;
 		}
-		
-		
-		//Print("Spawner Count: " + spawnersProcessed.Count());
 		
 		return spawnersProcessed;
 	}
@@ -480,7 +460,7 @@ class CE_ItemSpawningSystem : GameSystem
 	//! 
 	protected void SetQuantities(IEntity ent, int quantMin, int quantMax)
 	{
-		float randomFloat = Math.RandomIntInclusive(quantMin, quantMax) / 100; // convert it to a decimal to multiplied later on
+		float randomFloat = Math.RandomIntInclusive(quantMin, quantMax) / 100; // convert it to a decimal to be multiplied later on
 		if (!randomFloat)
 			return;	
 		
@@ -515,17 +495,6 @@ class CE_ItemSpawningSystem : GameSystem
 				fuelNode.SetFuel(fuelNode.GetMaxFuel() * quantity);
 			}
 		}
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Chooses a randomized number between 0 and the probabilityTotal to the select and item it it's value is greater than said randomized number
-	protected bool Probability(float probability, float probabilityTotal)
-	{
-		//Print("Probability: " + probability);
-		
-		int random = m_RandomGen.RandInt(0, probabilityTotal);
-		
-		return probability >= random;
 	}
 	
 	// GameSystem stuff
@@ -600,7 +569,6 @@ class CE_ItemSpawningSystem : GameSystem
 		{
 			m_aUsageAreas.Insert(area);
 		}
-			
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -643,42 +611,42 @@ class CE_ItemSpawningSystem : GameSystem
 	}
 		
 	//------------------------------------------------------------------------------------------------
-	//!
+	//! Gets m_iItemCount
 	int GetItemCount()
 	{
 		return m_iItemCount;
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//!
+	//! Sets m_iItemCount
 	void SetItemCount(int count)
 	{
 		m_iItemCount = count;
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//!
+	//! Gets the m_iUsageAreasQueried count
 	int GetUsageAreasQueried()
 	{
 		return m_iUsageAreasQueried;
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//!
+	//! Sets the m_iUsageAreasQueried count
 	void SetUsageAreasQueried(int count)
 	{
 		m_iUsageAreasQueried = count;
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//!
+	//! Gets the m_iTierAreasQueried count
 	int GetTierAreasQueried()
 	{
 		return m_iTierAreasQueried;
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//!
+	//! Sets the m_iTierAreasQueried count
 	void SetTierAreasQueried(int count)
 	{
 		m_iTierAreasQueried = count;
@@ -888,10 +856,6 @@ typedef ScriptInvokerBase<CE_ItemSpawned> CE_OnItemSpawnedInvoker;
 void CE_ItemDespawned(IEntity itemEntity, CE_Item item);
 typedef func CE_ItemDespawned;
 typedef ScriptInvokerBase<CE_ItemDespawned> CE_OnItemDespawnedInvoker;
-
-void CE_VehicleTaken(IEntity vehicleEntity, CE_Item item);
-typedef func CE_VehicleTaken;
-typedef ScriptInvokerBase<CE_VehicleTaken> CE_OnVehicleTakenInvoker;
 
 void CE_SpawnerReset(CE_ItemSpawningComponent spawner);
 typedef func CE_SpawnerReset;

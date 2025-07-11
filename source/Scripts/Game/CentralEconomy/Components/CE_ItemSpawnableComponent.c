@@ -1,11 +1,3 @@
-void CE_ItemLifetimeEnded(CE_ItemSpawnableComponent itemSpawnable, CE_Item item);
-typedef func CE_ItemLifetimeEnded;
-typedef ScriptInvokerBase<CE_ItemLifetimeEnded> CE_ItemLifetimeEndedInvoker;
-
-void CE_ItemRestockEnded(CE_ItemSpawnableComponent itemSpawnable, CE_Item item);
-typedef func CE_ItemRestockEnded;
-typedef ScriptInvokerBase<CE_ItemRestockEnded> CE_ItemRestockEndedInvoker;
-
 [ComponentEditorProps(category: "CentralEconomy/Components", description: "Component to added to spawnable items (mostly for tracking UID)")]
 class CE_ItemSpawnableComponentClass : ScriptComponentClass
 {
