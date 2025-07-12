@@ -23,7 +23,7 @@ class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 	override void OnWorldPostProcess(World world)
 	{
 		super.OnWorldPostProcess(world);
-		SetWorldProcessed(true);
+		m_bProcessed = true;
 		
 		if (Replication.IsServer()) // only create the config or load config if you're the server
 		{
@@ -99,16 +99,9 @@ class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Sets if the world has been processed
-	void SetWorldProcessed(bool processed)
-	{
-		m_bProcessed = processed;
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Gets item data config
+	//! Gets the universal item data config
 	CE_ItemDataConfig GetItemDataConfig()
 	{
 		return m_ItemDataConfig;
 	}
-};
+}

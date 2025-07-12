@@ -1,0 +1,15 @@
+GenericEntity : "{530C3C02C09C6B68}Prefabs/Props/Furniture/CabinetMetal_01_Base.et" {
+ coords 145.87 1 152.32
+}
+CE_UsageTriggerArea : "{78155C5236E20EEB}Prefabs/Areas/Usages/UsageArea_Town.et" {
+ coords 145.889 1 152.391
+ BoxMins -2 -5 -2
+ BoxMaxs 2 5 2
+ DrawShape 0
+}
+CE_TierTriggerArea : "{B91017820A9D1F10}Prefabs/Areas/Tiers/TierArea_Tier2.et" {
+ coords 145.89 0.999 152.391
+ TriggerShapeType "Oriented Bounding Box"
+ BoxMins -2 -5 -2
+ BoxMaxs 2 5 2
+}

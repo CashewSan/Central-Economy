@@ -500,7 +500,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Gets the spawners item data config, if set (if NOT set, will return null)
+	//! Gets the container's item data config, if set (if NOT set, will return null)
 	array<ref CE_Item> GetItems()
 	{
 		if (m_aItems.IsEmpty())

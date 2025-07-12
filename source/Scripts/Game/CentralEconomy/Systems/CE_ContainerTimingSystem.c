@@ -1,12 +1,16 @@
 class CE_ContainerTimingSystem : GameSystem
 {
-	protected ref array<CE_SearchableContainerComponent> 	m_aContainerComponents 		= {}; 			// container components registered
+	/* 
+		Handles CE_SearchableContainerComponent timings
+	*/
 	
-	protected float 										m_fTimer						= 0;				// current timer count
-	protected float										m_fCheckInterval				= 1; 			// how often the system will check (in seconds)
+	protected ref array<CE_SearchableContainerComponent> 	m_aContainerComponents 		= new array<CE_SearchableContainerComponent>; 			// array of CE_SearchableContainerComponents registered to this system
+	
+	protected float 										m_fTimer						= 0;													// timer for check frequency
+	protected const float									m_fCheckInterval				= 1; 												// how often (in seconds) the system will update CE_SearchableContainerComponents
 	
 	//------------------------------------------------------------------------------------------------
-	//! Tick method, currently set to control timer for spawner resets every n seconds
+	//! Tick method, handles updates for CE_SearchableContainerComponents
 	override event protected void OnUpdate(ESystemPoint point)
 	{
 		float timeSlice = GetWorld().GetFixedTimeSlice();

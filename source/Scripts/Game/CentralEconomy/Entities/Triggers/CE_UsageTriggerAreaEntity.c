@@ -44,7 +44,9 @@ class CE_UsageTriggerArea : SCR_BaseTriggerEntity
 	protected void SetUsage()
 	{
 		int spawnerCount = 0;
+		int containerCount = 0;
 		int spawnerSetCount = 0;
+		int containerSetCount = 0;
 		
 		foreach (IEntity entity : m_aSpawnLocationsInside)
 		{
@@ -62,13 +64,20 @@ class CE_UsageTriggerArea : SCR_BaseTriggerEntity
 			}
 			
 			CE_SearchableContainerComponent containerComp = CE_SearchableContainerComponent.Cast(entity.FindComponent(CE_SearchableContainerComponent));
-			if (m_Usage && containerComp && !containerComp.m_ContainerUsage)
+			if (containerComp && !containerComp.HasUsage() && m_Usage)
 			{
+				containerCount++;
+				
 				containerComp.SetContainerUsage(m_Usage);
+				
+				if (containerComp.GetContainerUsage())
+				{
+					containerSetCount++;
+				}
 			}
 		}
 		
-		if (spawnerSetCount >= spawnerCount)
+		if (spawnerSetCount >= spawnerCount && containerSetCount >= containerCount)
 		{
 			World world = GetWorld();
 			if (!world)

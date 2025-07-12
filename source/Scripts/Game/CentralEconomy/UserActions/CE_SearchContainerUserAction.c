@@ -3,27 +3,43 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 	[Attribute(ResourceName.Empty, UIWidgets.Auto, "Audio to be used when searching the container")]
 	protected ref SCR_AudioSourceConfiguration m_AudioSourceConfig;
 	
-	protected SCR_ItemAttributeCollection m_StorageItemAttributes;
-	protected UIInfo m_StorageUIInfo;
+	protected SCR_ItemAttributeCollection 									m_StorageItemAttributes;											// SCR_ItemAttributeCollection of the searchable container entity
+	protected UIInfo 													m_StorageUIInfo;													// UIInfo of the searchable container entity
+	
+	protected CE_ItemSpawningSystem 										m_SpawningSystem;												// item spawning system that handles all item spawning with CentralEconomy (A.K.A. the brain)
+	
+	protected CE_SearchableContainerComponent 								m_ContainerComponent;												// CE_SearchableContainerComponent corresponding to the searchable container entity
+	
+	protected ref CE_SearchableContainer									m_Container;														// CE_SearchableContainer corresponding to the searchable container entity
 	
 	//------------------------------------------------------------------------------------------------
 	override bool CanBeShownScript(IEntity user)
 	{
+		// If no CE_ItemSpawningSystem
+		if (!m_SpawningSystem)
+			return false;
+		
+		// If CE_ItemSpawningSystem has not finished having areas queried
+		if (!m_SpawningSystem.HaveAreasQueried())
+			return false;
+		
+		// If no owner entity
 		IEntity owner = GetOwner();
 		if (!owner)
 			return false;
 		
 		// If target does not have searchable container component
-		CE_SearchableContainerComponent targetSearchableContainer = CE_SearchableContainerComponent.Cast(owner.FindComponent(CE_SearchableContainerComponent));
-		if (!targetSearchableContainer)
+		m_ContainerComponent = CE_SearchableContainerComponent.Cast(owner.FindComponent(CE_SearchableContainerComponent));
+		if (!m_ContainerComponent)
 			return false;
 		
-		// If target does not have a loot category
-		if (!targetSearchableContainer.m_Categories)
+		// If the CE_SearchableContainerComponent has not been processed into a CE_SearchableContainer
+		m_Container = m_ContainerComponent.GetContainer();
+		if (!m_Container)
 			return false;
 		
 		// If target has already been searched
-		if (targetSearchableContainer.HasBeenSearched())
+		if (m_ContainerComponent.HasBeenSearched())
 			return false;
 		
 		// If target is destroyed
@@ -40,21 +56,31 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 	//------------------------------------------------------------------------------------------------
 	override bool CanBePerformedScript(IEntity user)
 	{
+		// If no CE_ItemSpawningSystem
+		if (!m_SpawningSystem)
+			return false;
+		
+		// If CE_ItemSpawningSystem has not finished having areas queried
+		if (!m_SpawningSystem.HaveAreasQueried())
+			return false;
+		
+		// If no owner entity
 		IEntity owner = GetOwner();
 		if (!owner)
 			return false;
 		
 		// If target does not have searchable container component
-		CE_SearchableContainerComponent targetSearchableContainer = CE_SearchableContainerComponent.Cast(owner.FindComponent(CE_SearchableContainerComponent));
-		if (!targetSearchableContainer)
+		m_ContainerComponent = CE_SearchableContainerComponent.Cast(owner.FindComponent(CE_SearchableContainerComponent));
+		if (!m_ContainerComponent)
 			return false;
 		
-		// If target does not have a loot category
-		if (!targetSearchableContainer.m_Categories)
+		// If the CE_SearchableContainerComponent has not been processed into a CE_SearchableContainer
+		m_Container = m_ContainerComponent.GetContainer();
+		if (!m_Container)
 			return false;
 		
 		// If target has already been searched
-		if (targetSearchableContainer.HasBeenSearched())
+		if (m_ContainerComponent.HasBeenSearched())
 			return false;
 		
 		// If target is destroyed
@@ -73,20 +99,37 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 	{
 		super.Init(pOwnerEntity, pManagerComponent);
 		
-		if (!pOwnerEntity)
-			return;
-		
-		SCR_UniversalInventoryStorageComponent ownerStorage = SCR_UniversalInventoryStorageComponent.Cast(pOwnerEntity.FindComponent(SCR_UniversalInventoryStorageComponent));
-		if (!ownerStorage)
-			return;
-		
-		m_StorageItemAttributes = SCR_ItemAttributeCollection.Cast(ownerStorage.GetAttributes());
-		
-		if (m_StorageItemAttributes)
+		if (GetGame().InPlayMode())
 		{
-			m_StorageItemAttributes.CE_SetVisible(false);
+			if (!pOwnerEntity)
+				return;
 			
-			m_StorageUIInfo = m_StorageItemAttributes.GetUIInfo();
+			World world = pOwnerEntity.GetWorld();
+			if (!world)
+				return;
+			
+			m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+			if (!m_SpawningSystem)
+				return;
+			
+			m_ContainerComponent = CE_SearchableContainerComponent.Cast(pOwnerEntity.FindComponent(CE_SearchableContainerComponent));
+			if (!m_ContainerComponent)
+				return;
+			
+			m_Container = m_ContainerComponent.GetContainer();
+			
+			SCR_UniversalInventoryStorageComponent ownerStorage = SCR_UniversalInventoryStorageComponent.Cast(pOwnerEntity.FindComponent(SCR_UniversalInventoryStorageComponent));
+			if (!ownerStorage)
+				return;
+			
+			m_StorageItemAttributes = SCR_ItemAttributeCollection.Cast(ownerStorage.GetAttributes());
+			
+			if (m_StorageItemAttributes)
+			{
+				m_StorageItemAttributes.CE_SetVisible(false);
+				
+				m_StorageUIInfo = m_StorageItemAttributes.GetUIInfo();
+			}
 		}
 	}
 	
@@ -120,11 +163,61 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 	{	
 		super.PerformAction(pOwnerEntity, pUserEntity);
 		
-		CE_SearchableContainerComponent targetSearchableContainer = CE_SearchableContainerComponent.Cast(pOwnerEntity.FindComponent(CE_SearchableContainerComponent));
-		if (!targetSearchableContainer)
+		World world = pOwnerEntity.GetWorld();
+		if (!world)
 			return;
 		
-		targetSearchableContainer.GetContainerSearchedInvoker().Invoke(pOwnerEntity, targetSearchableContainer, pUserEntity);
+		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+		if (!m_SpawningSystem)
+			return;
+		
+		m_ContainerComponent = CE_SearchableContainerComponent.Cast(pOwnerEntity.FindComponent(CE_SearchableContainerComponent));
+		if (!m_ContainerComponent)
+			return;
+		
+		if (m_Container)
+		{
+			m_ContainerComponent.GetContainerSearchedInvoker().Invoke(m_Container, pUserEntity);
+		
+			TryToPopulateStorage(m_Container);
+		}
+	}
+	
+	protected void TryToPopulateStorage(CE_SearchableContainer container)
+	{
+		if (!container)
+			return;
+		
+		World world = GetOwner().GetWorld();
+		if (!world)
+			return;
+		
+		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+		if (!m_SpawningSystem)
+			return;
+		
+		CE_SearchableContainerComponent containerComp = container.GetContainerComponent();
+		
+		array<ref CE_Item> items = {};
+		
+		if (containerComp && containerComp.HasConfig() && containerComp.HaveItemsProcessed())
+		{
+			items = containerComp.GetItems();
+		}
+		else
+		{
+			items = m_SpawningSystem.GetItems();
+		}
+		
+		array<ref CE_Item> itemsSelected = m_SpawningSystem.SelectItems(items, container, containerComp.GetContainerItemMinimum(), containerComp.GetContainerItemMaximum());
+		
+		Print(itemsSelected);
+		
+		if (itemsSelected && !itemsSelected.IsEmpty())
+		{
+			Print("meow itemsSelected");
+			m_SpawningSystem.TryToSpawnItems(container, itemsSelected);
+		}
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -188,7 +281,16 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 	//! Adjusts action name script
 	override bool GetActionNameScript(out string outName)
 	{
-		outName = "#CE-UserAction_Search" + " " + SCR_StringHelper.Translate(m_StorageUIInfo.GetName());
+		if (m_StorageUIInfo)
+		{
+			outName = "#CE-UserAction_Search" + " " + SCR_StringHelper.Translate(m_StorageUIInfo.GetName());
+		}
 		return true;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	override bool HasLocalEffectOnlyScript()
+	{
+		return false;
 	}
 }

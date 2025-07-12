@@ -9,10 +9,10 @@ class CE_SearchableContainerComponent : ScriptComponent
 	ref CE_ItemDataConfig m_ItemDataConfig;
 	
 	[Attribute("", UIWidgets.ComboBox, desc: "Which spawn location(s) will this container spawn items in? (If set, usages set throughout the world will be ignored!)", enums: ParamEnumArray.FromEnum(CE_ELootUsage), category: "Container Data")]
-	CE_ELootUsage m_ContainerUsage;
+	protected CE_ELootUsage m_ContainerUsage;
 	
 	[Attribute("", UIWidgets.Flags, desc: "Which category of items do you want to spawn here?", enums: ParamEnumArray.FromEnum(CE_ELootCategory), category: "Container Data")]
-	CE_ELootCategory m_Categories;
+	protected CE_ELootCategory m_Categories;
 	
 	[Attribute("1800", UIWidgets.EditBox, desc: "Time (in seconds) it takes for the container to reset after it was initially searched. Helps prevent loot camping.", params: "10 inf 10", category: "Container Data")] // default set to 1800 seconds (30 minutes)
 	int m_iContainerResetTime;
@@ -26,18 +26,26 @@ class CE_SearchableContainerComponent : ScriptComponent
 	protected CE_ELootUsage 								m_Usage; 																	// gets set by the Usage Trigger Area Entity
 	protected CE_ELootTier 								m_Tier; 																		// gets set by the Tier Trigger Area Entity
 	
-	protected bool 										m_bHasItemDataConfig 						= false;								// does the searchable container have a custom item data config? (NOT THE UNIVERSAL ONE)
+	protected bool 										m_bHasConfig 							= false;								// does the searchable container have a custom item data config? (NOT THE UNIVERSAL ONE)
 	protected bool 										m_bHasBeenSearched						= false;								// has the container been searched?
 	protected bool 										m_bWereItemsDespawned 					= false;								// was the items despawned by the system?
+	protected bool										m_bHaveItemsProcessed	;														// have the items of the container been processed? ONLY APPLICABLE IF m_ItemDataConfig IS SET!
 	protected bool										m_bHasContainerReset						= false;								// has the container reset?
+	protected bool										m_bHasUsage								= false;								// does the container have a usage set through the component?
+	protected bool 										m_bReadyForItems 						= true;								// has item spawned on the spawner?
 	
 	protected int										m_iCurrentContainerResetTime				= 0;									// current container reset time
 	
 	protected ref CE_OnContainerSearchedInvoker 			m_OnContainerSearchedInvoker 				= new CE_OnContainerSearchedInvoker();	// script invoker for when the container is searched
 	protected ref CE_OnContainerResetInvoker 				m_OnContainerResetInvoker 				= new CE_OnContainerResetInvoker();	// script invoker for when the container is reset
 	
-	protected ref array<ref CE_ItemData>					m_aItemData								= new array<ref CE_ItemData>;			// CE_ItemData array, item data gets inserted from config item data
-	protected CE_ItemDataConfig							m_Config;																	// the set config for container, can be unique config or universal config
+	protected ref array<ref CE_Item>						m_aItems									= new array<ref CE_Item>;				// CE_Item array, items processed from system IF the container has it's own config set (m_ItemDataConfig)
+	protected ref array<ref CE_Item> 						m_aItemsSpawned							= new array<ref CE_Item>;				// CE_Item array that has spawned on the container
+	protected ref array<IEntity> 							m_EntitiesSpawned						= new array<IEntity>;					// IEntity array that has spawned on the container
+	
+	[RplProp()]
+	protected ref CE_SearchableContainer					m_Container;																	// CE_SearchableContainer corresponding to this CE_SearchableContainerComponent
+	
 	protected CE_ItemSpawningSystem 						m_SpawningSystem;															// the spawning game system used to control spawning
 	protected CE_ContainerTimingSystem					m_TimingSystem;																// the timing system for controlling container reset
 	
@@ -51,10 +59,29 @@ class CE_SearchableContainerComponent : ScriptComponent
 		
 		if (m_ContainerUsage)
 		{
-			m_Usage = m_ContainerUsage;
+			m_bHasUsage = true;
+			SetContainerUsage(m_ContainerUsage);
 		}
 		
+		if (m_ItemDataConfig)
+			LoadConfig();
+		else
+			ConnectToItemSpawningSystem();
+		
 		SetCurrentContainerResetTime(GetContainerResetTime());
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Tick method
+	void Update(int checkInterval)
+	{
+		SetCurrentContainerResetTime(Math.ClampInt(GetCurrentContainerResetTime() - checkInterval, 0, GetContainerResetTime()));
+		if (GetCurrentContainerResetTime() == 0 && HasBeenSearched())
+		{
+			m_OnContainerResetInvoker.Invoke(this);
+		}
+		
+		//Print("Timer: " + GetCurrentContainerResetTime());
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -63,21 +90,6 @@ class CE_SearchableContainerComponent : ScriptComponent
 	{
 		m_OnContainerSearchedInvoker.Insert(OnContainerSearched);
 		m_OnContainerResetInvoker.Insert(OnContainerReset);
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Tick method
-	void Update(int checkInterval)
-	{
-		//Print("Container Reset Check");
-		
-		SetCurrentContainerResetTime(Math.ClampInt(GetCurrentContainerResetTime() - checkInterval, 0, GetContainerResetTime()));
-		if (GetCurrentContainerResetTime() == 0 && HasBeenSearched())
-		{
-			m_OnContainerResetInvoker.Invoke(GetOwner(), this);
-		}
-		
-		//Print("Timer: " + GetCurrentContainerResetTime());
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -93,10 +105,6 @@ class CE_SearchableContainerComponent : ScriptComponent
 			return;
 		
 		m_SpawningSystem.RegisterContainer(this);
-		
-		if (m_ItemDataConfig)
-			LoadConfig();
-		// else we're gonna rely on universal config
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -148,56 +156,35 @@ class CE_SearchableContainerComponent : ScriptComponent
 	//! Loads CE_ItemData config containing items, deciding if it's one attached to the component or the universal config
 	protected void LoadConfig()
 	{
-		m_Config = m_ItemDataConfig;
-		
-		if (m_Config)
+		if (m_ItemDataConfig)
 		{
-			SetHasItemDataConfig(true);
+			SetHasConfig(true);
 			
-			foreach (CE_ItemData itemData : m_Config.m_ItemData)
+			World world = GetOwner().GetWorld();
+			if (!world)
+				return;
+			
+			m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+			if (!m_SpawningSystem)
+				return;
+			
+			foreach (CE_Item item : m_SpawningSystem.ProcessItemData(m_ItemDataConfig))
 			{
-				m_aItemData.Insert(itemData);
+				m_aItems.Insert(item);
 			}
-		}
-		
-		if (!m_Config)
-			Print("[CentralEconomy::CE_SearchableContainerComponent] NO ITEM DATA CONFIG FOUND!", LogLevel.ERROR);
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Calls to item spawning to request item
-	array<CE_ItemData> GetItemsToPopulateStorage()
-	{
-		ConnectToItemSpawningSystem();
-		
-		World world = GetOwner().GetWorld();
-		if (!world)
-			return null;
-		
-		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
-		if (!m_SpawningSystem)
-			return null;
-		
-		if (HasItemDataConfig())
-		{
-			//return m_SpawningSystem.GetItemsFromContainerConfig(m_aItemData, m_Tier, m_Usage, m_Categories, m_iContainerItemMinimum, m_iContainerItemMaximum);
+			
+			SetHaveItemsProcessed(false);
 		}
 		else
-		{
-			//return m_SpawningSystem.GetItemsFromUniversalConfig(m_Tier, m_Usage, m_Categories, m_iContainerItemMinimum, m_iContainerItemMaximum);
-		}
+			Print("[CentralEconomy::CE_SearchableContainerComponent] NO ITEM DATA CONFIG FOUND!", LogLevel.ERROR); // this should realistically never happen
 		
-		return null;
+		ConnectToItemSpawningSystem();
 	}
 	
 	//------------------------------------------------------------------------------------------------
 	//! Called when container is searched by user action
-	protected void OnContainerSearched(IEntity containerEntity, CE_SearchableContainerComponent container, IEntity searcher)
-	{
-		array<CE_ItemData> itemsArray = GetItemsToPopulateStorage();
-		if (itemsArray && !itemsArray.IsEmpty())
-			PopulateStorage(itemsArray);
-		
+	protected void OnContainerSearched(CE_SearchableContainer container, IEntity userEntity)
+	{	
 		SetHasBeenSearched(true);
 		
 		ConnectToTimingSystem();
@@ -205,8 +192,12 @@ class CE_SearchableContainerComponent : ScriptComponent
 	
 	//------------------------------------------------------------------------------------------------
 	//! Called when container resets
-	protected void OnContainerReset(IEntity containerEntity, CE_SearchableContainerComponent container)
+	protected void OnContainerReset(CE_SearchableContainerComponent container)
 	{
+		IEntity containerEntity = container.GetOwner();
+		if (containerEntity)
+			return;
+		
 		SCR_InventoryStorageManagerComponent storageManager = SCR_InventoryStorageManagerComponent.Cast(containerEntity.FindComponent(SCR_InventoryStorageManagerComponent));
 		if (!storageManager)
 			return;
@@ -235,26 +226,38 @@ class CE_SearchableContainerComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Populates searchable container storage with items
-	protected void PopulateStorage(array<CE_ItemData> itemsArray)
+	// GETTERS/SETTERS
+	//------------------------------------------------------------------------------------------------
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets CE_SearchableContainer corresponding to this component
+	CE_SearchableContainer GetContainer()
 	{
-		SCR_InventoryStorageManagerComponent storageManager = SCR_InventoryStorageManagerComponent.Cast(GetOwner().FindComponent(SCR_InventoryStorageManagerComponent));
-		if (!storageManager)
-			return;
-		
-		SCR_UniversalInventoryStorageComponent ownerStorage = SCR_UniversalInventoryStorageComponent.Cast(GetOwner().FindComponent(SCR_UniversalInventoryStorageComponent));
-		if (!ownerStorage)
-			return;
-		
-		foreach (CE_ItemData item: itemsArray)
-		{
-			storageManager.TrySpawnPrefabToStorage(item.m_sPrefab, ownerStorage);
-		}
+		return m_Container;
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	// GETTERS/SETTERS
+	//! Sets CE_SearchableContainer corresponding to this component
+	void SetContainer(CE_SearchableContainer container)
+	{
+		m_Container = container;
+		
+		Replication.BumpMe();
+	}
+	
 	//------------------------------------------------------------------------------------------------
+	//! Is the spawner ready for an item to be spawned on it?
+	bool IsReadyForItems()
+	{
+		return m_bReadyForItems;
+	}
+		
+	//------------------------------------------------------------------------------------------------
+	//! Sets if the spawner is ready for an item to be spawned on it
+	void SetReadyForItems(bool ready)
+	{
+		m_bReadyForItems = ready;
+	}
 	
 	//------------------------------------------------------------------------------------------------
 	//! Has the container been searched?
@@ -271,17 +274,24 @@ class CE_SearchableContainerComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Does this container have a config?
-	bool HasItemDataConfig()
+	//! Does this container have a config set by the component?
+	bool HasConfig()
 	{
-		return m_bHasItemDataConfig;
+		return m_bHasConfig;
 	}
 		
 	//------------------------------------------------------------------------------------------------
-	//! Sets if the container has a config
-	void SetHasItemDataConfig(bool config)
+	//! Sets if the container has a config set by the component
+	void SetHasConfig(bool config)
 	{
-		m_bHasItemDataConfig = config;
+		m_bHasConfig = config;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Does this container have a usage set by the component?
+	bool HasUsage()
+	{
+		return m_bHasUsage;
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -310,6 +320,37 @@ class CE_SearchableContainerComponent : ScriptComponent
 	void SetContainerUsage(CE_ELootUsage usage)
 	{
 		m_Usage = usage;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets the categories of the container component
+	CE_ELootCategory GetContainerCategories()
+	{
+		return m_Categories;
+	}
+		
+	//------------------------------------------------------------------------------------------------
+	//! Sets the categories of the container component
+	void SetContainerCategories(CE_ELootCategory category)
+	{
+		m_Categories = category;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Have items of this container been processed (only applies if container has it's own config set, will return null otherwise)
+	bool HaveItemsProcessed()
+	{
+		if (HasConfig())
+			return m_bHaveItemsProcessed;
+		
+		return null;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Sets if items of this container have been processed (only applies if container has it's own config set)
+	void SetHaveItemsProcessed(bool processed)
+	{
+		m_bHaveItemsProcessed = processed;
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -373,6 +414,23 @@ class CE_SearchableContainerComponent : ScriptComponent
 	int GetContainerItemMaximum()
 	{
 		return m_iContainerItemMaximum;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets the container's item data config, if set (if NOT set, will return null)
+	array<ref CE_Item> GetItems()
+	{
+		if (m_aItems.IsEmpty())
+			return null;
+		
+		return m_aItems;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets CE_Item spawned on the spawning component
+	array<ref CE_Item> GetItemsSpawned()
+	{
+		return m_aItemsSpawned;
 	}
 	
 	//------------------------------------------------------------------------------------------------

@@ -14,7 +14,7 @@ modded class SCR_OpenStorageAction : SCR_InventoryAction
 		if (targetSearchableContainer)
 		{
 			// If target does not have a loot category
-			if (!targetSearchableContainer.m_Categories)
+			if (!targetSearchableContainer.GetContainerCategories())
 				return false;
 			
 			// If target has already been searched
@@ -45,7 +45,7 @@ modded class SCR_OpenStorageAction : SCR_InventoryAction
 		if (targetSearchableContainer)
 		{
 			// If target does not have a loot category
-			if (!targetSearchableContainer.m_Categories)
+			if (!targetSearchableContainer.GetContainerCategories())
 				return false;
 			
 			// If target has already been searched
