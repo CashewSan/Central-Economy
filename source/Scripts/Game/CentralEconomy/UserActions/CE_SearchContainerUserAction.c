@@ -15,6 +15,7 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 	//------------------------------------------------------------------------------------------------
 	override bool CanBeShownScript(IEntity user)
 	{
+		/*
 		// If no CE_ItemSpawningSystem
 		if (!m_SpawningSystem)
 			return false;
@@ -22,11 +23,23 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 		// If CE_ItemSpawningSystem has not finished having areas queried
 		if (!m_SpawningSystem.HaveAreasQueried())
 			return false;
+		*/
 		
 		// If no owner entity
 		IEntity owner = GetOwner();
 		if (!owner)
 			return false;
+		
+		SCR_UniversalInventoryStorageComponent ownerStorage = SCR_UniversalInventoryStorageComponent.Cast(owner.FindComponent(SCR_UniversalInventoryStorageComponent));
+		if (!ownerStorage)
+			return false;
+		
+		m_StorageItemAttributes = SCR_ItemAttributeCollection.Cast(ownerStorage.GetAttributes());
+		
+		if (m_StorageItemAttributes)
+		{
+			m_StorageUIInfo = m_StorageItemAttributes.GetUIInfo();
+		}
 		
 		// If target does not have searchable container component
 		m_ContainerComponent = CE_SearchableContainerComponent.Cast(owner.FindComponent(CE_SearchableContainerComponent));
@@ -35,6 +48,9 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 		
 		// If the CE_SearchableContainerComponent has not been processed into a CE_SearchableContainer
 		m_Container = m_ContainerComponent.GetContainer();
+		
+		Print(m_Container);
+		
 		if (!m_Container)
 			return false;
 		
@@ -56,6 +72,7 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 	//------------------------------------------------------------------------------------------------
 	override bool CanBePerformedScript(IEntity user)
 	{
+		/*
 		// If no CE_ItemSpawningSystem
 		if (!m_SpawningSystem)
 			return false;
@@ -63,6 +80,7 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 		// If CE_ItemSpawningSystem has not finished having areas queried
 		if (!m_SpawningSystem.HaveAreasQueried())
 			return false;
+		*/
 		
 		// If no owner entity
 		IEntity owner = GetOwner();

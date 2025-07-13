@@ -43,16 +43,51 @@ class CE_SearchableContainerComponent : ScriptComponent
 	protected ref array<ref CE_Item> 						m_aItemsSpawned							= new array<ref CE_Item>;				// CE_Item array that has spawned on the container
 	protected ref array<IEntity> 							m_EntitiesSpawned						= new array<IEntity>;					// IEntity array that has spawned on the container
 	
-	[RplProp()]
+	[RplProp(onRplName: "OnRpl_Meow")]
 	protected ref CE_SearchableContainer					m_Container;																	// CE_SearchableContainer corresponding to this CE_SearchableContainerComponent
 	
 	protected CE_ItemSpawningSystem 						m_SpawningSystem;															// the spawning game system used to control spawning
 	protected CE_ContainerTimingSystem					m_TimingSystem;																// the timing system for controlling container reset
 	
+	void OnRpl_Meow()
+	{
+		Print("meowmeowmeow");
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	void NetTestRpc(CE_SearchableContainer container)
+	{
+		Print(container);
+		
+		if (GetContainer())
+			Print("meowmeowmeow: " + m_Container);
+		else
+		{
+			m_Container = container;
+			Print("CONTAINER SET");
+		}
+	}
+	
+	override void EOnFrame(IEntity owner, float timeSlice)
+	{
+		if (Debug.KeyState(KeyCode.KC_P))
+		{
+			Debug.ClearKey(KeyCode.KC_P);
+			
+			Rpc(NetTestRpc, m_Container);
+			//NetTestRpc_Owner(m_Container);
+			
+			Print("RPC SEND: " + m_Container);
+		}
+	}
+	
 	//------------------------------------------------------------------------------------------------
 	//! Sets default attributes if not set by trigger entities
 	protected override void OnPostInit(IEntity owner)
 	{
+		SetEventMask(owner, EntityEvent.FRAME);
+		
 		owner.ClearFlags(EntityFlags.STATIC);
 		
 		HookEvents();
@@ -242,7 +277,7 @@ class CE_SearchableContainerComponent : ScriptComponent
 	{
 		m_Container = container;
 		
-		Replication.BumpMe();
+		Rpc(NetTestRpc, container);
 	}
 	
 	//------------------------------------------------------------------------------------------------
