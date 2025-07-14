@@ -145,6 +145,9 @@ class CE_ItemSpawningSystem : GameSystem
 		&& GetTierAreasQueried() >= m_aTierAreas.Count()
 		&& !m_bInitiallyRan)
 		{
+			PrintFormat("Usage Areas Queried: %1 - Total Count: %2", GetUsageAreasQueried(), m_aUsageAreas.Count());
+			PrintFormat("Tier Areas Queried: %1 - Total Count: %2", GetTierAreasQueried(), m_aTierAreas.Count());
+			
 			SetHaveAreasQueried(true);
 			
 			InitialSpawningPhase();
@@ -305,14 +308,18 @@ class CE_ItemSpawningSystem : GameSystem
 	//! Takes each CE_SearchableContainerComponent and processes them into a CE_SearchableContainer, as long as they pass certain checks
 	protected void ProcessContainers()
 	{
+		Print("Processing");
+		
 		array<CE_SearchableContainerComponent> containersToBeProcessed = {};
 		
 		containersToBeProcessed.Copy(m_aContainerComponents);
 		
 		int containerCount = containersToBeProcessed.Count();
 		
-		for (int i = 0, maxCount = Math.Min(containerCount, m_aSpawnerComponents.Count()); i < maxCount; i++)
+		for (int i = 0, maxCount = Math.Min(containerCount, m_aContainerComponents.Count()); i < maxCount; i++)
 		{
+			Print("meow");
+			
 			CE_SearchableContainerComponent containerComponent = containersToBeProcessed[0];
 			if (!containerComponent)
 			{
@@ -346,16 +353,48 @@ class CE_ItemSpawningSystem : GameSystem
 			}
 			else
 			{
-				CE_SearchableContainer container = new CE_SearchableContainer();
+				/*
+				if (!rplId)
+				{
+					containersToBeProcessed.Remove(0);
+					containerCount--;
+					
+					if (m_aContainerComponents.Contains(containerComponent))
+					{
+						m_aContainerComponents.RemoveItem(containerComponent); // if missing info, just remove permanently
+					}
+					
+					continue;
+				}
+				*/
 				
-				container.SetContainerComponent(containerComponent);
+				CE_SearchableContainer container = new CE_SearchableContainer();
+
+				RplId rplId;
+				
+				RplComponent rplComponent = RplComponent.Cast(containerComponent.GetOwner().FindComponent(RplComponent));
+				if (rplComponent)
+					rplId = rplComponent.Id();
+				
+				Print(rplComponent);
+				
+				if (rplId && rplId.IsValid())
+				{
+					Print(rplId);
+					
+					Print("Role: " + rplComponent.Role());
+					
+					container.SetContainerRplId(rplId);
+					
+					//Rpc(RPC_DoSetContainerRplId, rplId, container);
+				}
 				
 				foreach (CE_Item item : containerComponent.GetItemsSpawned())
 				{
 					container.GetItemsSpawned().Insert(item);
 				}
 				
-				container.SetReadyForItems(containerComponent.IsReadyForItems());
+				container.SetReadyForItems(/*containerComponent.IsReadyForItems()*/ true);
 				
 				containerComponent.SetContainer(container);
 			}
@@ -363,6 +402,23 @@ class CE_ItemSpawningSystem : GameSystem
 			containersToBeProcessed.Remove(0);
 			containerCount--;
 		}
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! 
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	protected void RPC_AskSetContainerRplId(RplId id, CE_SearchableContainer container)
+	{
+		RPC_DoSetContainerRplId(id, container);
+		Rpc(RPC_DoSetContainerRplId, id, container);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! 
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	protected void RPC_DoSetContainerRplId(RplId id, CE_SearchableContainer container)
+	{
+		container.SetContainerRplId(id);
 	}
 	
 	/*
@@ -511,7 +567,7 @@ class CE_ItemSpawningSystem : GameSystem
 		if (itemsArrayCopy.IsEmpty())
 			return null;
 		
-		CE_SearchableContainerComponent containerComponent = container.GetContainerComponent();
+		CE_SearchableContainerComponent containerComponent = container.GetContainerComponentFromRplId(container.GetContainerRplId());
 		if (!containerComponent)
 			return null;
 		
@@ -633,7 +689,7 @@ class CE_ItemSpawningSystem : GameSystem
 	//! Tries to spawn the CE_Item to the CE_SearchableContainer
 	void TryToSpawnItems(CE_SearchableContainer container, array<ref CE_Item> itemsArray)
 	{
-		CE_SearchableContainerComponent containerComp = container.GetContainerComponent();
+		CE_SearchableContainerComponent containerComp = container.GetContainerComponentFromRplId(container.GetContainerRplId());
 		if (!containerComp)
 			return;
 		

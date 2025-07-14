@@ -1,5 +1,5 @@
-GenericEntity : "{530C3C02C09C6B68}Prefabs/Props/Furniture/CabinetMetal_01_Base.et" {
- coords 145.87 1 152.32
+GenericEntity : "{39419B55C4CFD156}Prefabs/Props/Furniture/Wardrobe_02.et" {
+ coords 146.581 1 152.033
 }
 CE_UsageTriggerArea : "{78155C5236E20EEB}Prefabs/Areas/Usages/UsageArea_Town.et" {
  coords 145.889 1 152.391

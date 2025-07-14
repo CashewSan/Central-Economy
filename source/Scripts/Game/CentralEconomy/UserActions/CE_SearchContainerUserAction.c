@@ -49,7 +49,7 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 		// If the CE_SearchableContainerComponent has not been processed into a CE_SearchableContainer
 		m_Container = m_ContainerComponent.GetContainer();
 		
-		Print(m_Container);
+		//Print(m_Container);
 		
 		if (!m_Container)
 			return false;
@@ -214,11 +214,15 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 		if (!m_SpawningSystem)
 			return;
 		
-		CE_SearchableContainerComponent containerComp = container.GetContainerComponent();
+		Print(container.GetContainerRplId());
+		
+		CE_SearchableContainerComponent containerComp = container.GetContainerComponentFromRplId(container.GetContainerRplId());
+		if (!containerComp)
+			return;
 		
 		array<ref CE_Item> items = {};
 		
-		if (containerComp && containerComp.HasConfig() && containerComp.HaveItemsProcessed())
+		if (containerComp.HasConfig() && containerComp.HaveItemsProcessed())
 		{
 			items = containerComp.GetItems();
 		}

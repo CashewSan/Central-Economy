@@ -94,6 +94,26 @@ class CE_ItemSpawningComponent : ScriptComponent
 			return;
 		
 		m_SpawningSystem.RegisterSpawner(this);
+		
+		//Rpc(RPC_AskRegisterSpawner, this);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! 
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	protected void RPC_AskRegisterSpawner()
+	{
+		m_SpawningSystem.RegisterSpawner(this);
+		
+		Rpc(RPC_DoRegisterSpawner);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! 
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast, RplCondition.NoOwner)]
+	protected void RPC_DoRegisterSpawner()
+	{
+		m_SpawningSystem.RegisterSpawner(this);
 	}
 	
 	//------------------------------------------------------------------------------------------------

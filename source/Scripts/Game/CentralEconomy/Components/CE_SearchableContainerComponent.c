@@ -58,7 +58,7 @@ class CE_SearchableContainerComponent : ScriptComponent
 	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
 	void NetTestRpc(CE_SearchableContainer container)
 	{
-		Print(container);
+		Print(container.GetContainerRplId());
 		
 		if (GetContainer())
 			Print("meowmeowmeow: " + m_Container);
@@ -276,8 +276,6 @@ class CE_SearchableContainerComponent : ScriptComponent
 	void SetContainer(CE_SearchableContainer container)
 	{
 		m_Container = container;
-		
-		Rpc(NetTestRpc, container);
 	}
 	
 	//------------------------------------------------------------------------------------------------

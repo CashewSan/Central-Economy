@@ -13,7 +13,7 @@ class CE_UsageTriggerArea : SCR_BaseTriggerEntity
 	protected CE_ItemSpawningSystem m_SpawningSystem;
 	
 	//------------------------------------------------------------------------------------------------
-	override void OnInit(IEntity owner)
+	override void EOnInit(IEntity owner)
 	{	
 		if (GetGame().InPlayMode())
 		{

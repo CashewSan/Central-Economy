@@ -1,3 +1,12 @@
+GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
+ coords 162.402 1.454 111.791
+}
+CE_UsageTriggerArea : "{78155C5236E20EEB}Prefabs/Areas/Usages/UsageArea_Town.et" {
+ coords 162.749 1.455 111.537
+ BoxMins -2 -5 -2
+ BoxMaxs 2 5 2
+ DrawShape 0
+}
 $grp GenericEntity : "{85C71F17C37D274C}Prefabs/Structures/BuildingParts/Entry/Entry_Block_Platform_01_3x6.et" {
  {
   coords 156.894 1.454 106.836
@@ -8,4 +17,10 @@ $grp GenericEntity : "{85C71F17C37D274C}Prefabs/Structures/BuildingParts/Entry/E
  {
   coords 163.532 2.861 115.894
  }
+}
+CE_TierTriggerArea : "{B91017820A9D1F10}Prefabs/Areas/Tiers/TierArea_Tier2.et" {
+ coords 162.75 1.454 111.537
+ TriggerShapeType "Oriented Bounding Box"
+ BoxMins -2 -5 -2
+ BoxMaxs 2 5 2
 }
