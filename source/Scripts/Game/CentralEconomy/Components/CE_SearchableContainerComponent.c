@@ -43,40 +43,20 @@ class CE_SearchableContainerComponent : ScriptComponent
 	protected ref array<ref CE_Item> 						m_aItemsSpawned							= new array<ref CE_Item>;				// CE_Item array that has spawned on the container
 	protected ref array<IEntity> 							m_EntitiesSpawned						= new array<IEntity>;					// IEntity array that has spawned on the container
 	
-	[RplProp(onRplName: "OnRpl_Meow")]
+	[RplProp()]
 	protected ref CE_SearchableContainer					m_Container;																	// CE_SearchableContainer corresponding to this CE_SearchableContainerComponent
 	
 	protected CE_ItemSpawningSystem 						m_SpawningSystem;															// the spawning game system used to control spawning
 	protected CE_ContainerTimingSystem					m_TimingSystem;																// the timing system for controlling container reset
 	
-	void OnRpl_Meow()
-	{
-		Print("meowmeowmeow");
-	}
-	
 	//------------------------------------------------------------------------------------------------
-	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	void NetTestRpc(CE_SearchableContainer container)
-	{
-		Print(container.GetContainerRplId());
-		
-		if (GetContainer())
-			Print("meowmeowmeow: " + m_Container);
-		else
-		{
-			m_Container = container;
-			Print("CONTAINER SET");
-		}
-	}
-	
 	override void EOnFrame(IEntity owner, float timeSlice)
 	{
 		if (Debug.KeyState(KeyCode.KC_P))
 		{
 			Debug.ClearKey(KeyCode.KC_P);
 			
-			Rpc(NetTestRpc, m_Container);
-			//NetTestRpc_Owner(m_Container);
+			RequestSetContainer(m_Container);
 			
 			Print("RPC SEND: " + m_Container);
 		}
@@ -261,6 +241,52 @@ class CE_SearchableContainerComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	// REPLICATION STUFF
+	//------------------------------------------------------------------------------------------------
+	
+	/*
+	//------------------------------------------------------------------------------------------------
+	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
+	protected void RpcAsk_SetContainer(CE_SearchableContainer container)
+	{
+		Print("authority-side code");
+		SetContainer(container);
+		
+		Rpc(RpcDo_SetContainer, container);
+	}
+	*/
+	
+	//------------------------------------------------------------------------------------------------
+	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
+	protected void RpcDo_SetContainer(CE_SearchableContainer container)
+	{
+		Print("proxy-side code");
+		SetContainer(container);
+	}
+	
+	/*
+	//------------------------------------------------------------------------------------------------
+	override bool RplSave(ScriptBitWriter writer)
+	{
+		super.RplSave(writer);
+		
+		writer.Write(m_Container, 32);
+		
+		return true;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	override bool RplLoad(ScriptBitReader reader)
+	{
+		super.RplLoad(reader);
+		
+		reader.Read(m_Container, 32);
+		
+		return true;
+	}
+	*/
+	
+	//------------------------------------------------------------------------------------------------
 	// GETTERS/SETTERS
 	//------------------------------------------------------------------------------------------------
 	
@@ -276,6 +302,12 @@ class CE_SearchableContainerComponent : ScriptComponent
 	void SetContainer(CE_SearchableContainer container)
 	{
 		m_Container = container;
+	}
+	
+	void RequestSetContainer(CE_SearchableContainer container)
+	{
+		SetContainer(container);
+		Rpc(RpcDo_SetContainer, container);
 	}
 	
 	//------------------------------------------------------------------------------------------------

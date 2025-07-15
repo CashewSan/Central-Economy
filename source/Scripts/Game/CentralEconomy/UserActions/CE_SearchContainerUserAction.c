@@ -49,7 +49,7 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 		// If the CE_SearchableContainerComponent has not been processed into a CE_SearchableContainer
 		m_Container = m_ContainerComponent.GetContainer();
 		
-		//Print(m_Container);
+		Print(m_Container);
 		
 		if (!m_Container)
 			return false;

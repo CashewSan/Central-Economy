@@ -128,6 +128,8 @@ class CE_ItemSpawningSystem : GameSystem
 	//! Tick method, handles timing for spawning
 	override event protected void OnUpdate(ESystemPoint point)
 	{	
+		super.OnUpdate(point);
+		
 		float testTimeSlice = GetWorld().GetFixedTimeSlice();
 		m_fTestTimer += testTimeSlice;
 		
@@ -384,9 +386,9 @@ class CE_ItemSpawningSystem : GameSystem
 					
 					Print("Role: " + rplComponent.Role());
 					
-					container.SetContainerRplId(rplId);
+					Print("System Rpl Mode: " + RplSession.Mode());
 					
-					//Rpc(RPC_DoSetContainerRplId, rplId, container);
+					container.SetContainerRplId(rplId);
 				}
 				
 				foreach (CE_Item item : containerComponent.GetItemsSpawned())
@@ -394,7 +396,7 @@ class CE_ItemSpawningSystem : GameSystem
 					container.GetItemsSpawned().Insert(item);
 				}
 				
-				container.SetReadyForItems(/*containerComponent.IsReadyForItems()*/ true);
+				container.SetReadyForItems(containerComponent.IsReadyForItems());
 				
 				containerComponent.SetContainer(container);
 			}
@@ -402,23 +404,8 @@ class CE_ItemSpawningSystem : GameSystem
 			containersToBeProcessed.Remove(0);
 			containerCount--;
 		}
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! 
-	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
-	protected void RPC_AskSetContainerRplId(RplId id, CE_SearchableContainer container)
-	{
-		RPC_DoSetContainerRplId(id, container);
-		Rpc(RPC_DoSetContainerRplId, id, container);
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! 
-	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	protected void RPC_DoSetContainerRplId(RplId id, CE_SearchableContainer container)
-	{
-		container.SetContainerRplId(id);
+		
+		Replication.BumpMe();
 	}
 	
 	/*
