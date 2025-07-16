@@ -10,7 +10,10 @@ class CE_ItemSpawningSystem : GameSystem
 	protected ref array<CE_ItemSpawningComponent> 			m_aSpawnerComponents		 		= new array<CE_ItemSpawningComponent>; 			// ALL registered spawner components in the world
 	protected ref array<ref CE_Spawner>					m_aSpawners						= new array<ref CE_Spawner>;						// processed CE_ItemSpawningComponent into CE_Spawner
 	protected ref array<CE_SearchableContainerComponent> 	m_aContainerComponents 			= new array<CE_SearchableContainerComponent>; 		// ALL registered searchable container components in the world
+	
+	[RplProp()]
 	protected ref array<ref CE_Item>						m_aItems 						= new array<ref CE_Item>;							// processed CE_ItemData into CE_Item
+	
 	protected ref array<CE_UsageTriggerArea>				m_aUsageAreas					= new array<CE_UsageTriggerArea>;					// usage areas registered to the system
 	protected ref array<CE_TierTriggerArea>				m_aTierAreas						= new array<CE_TierTriggerArea>;					// tier areas registered to the system
 	
@@ -29,9 +32,19 @@ class CE_ItemSpawningSystem : GameSystem
 	protected bool										m_bInitiallyRan					= false;											// has the system finished it's initial spawning phase?
 	
 	//------------------------------------------------------------------------------------------------
-	//! Initialization
-	override void OnInit()
+	//! On system start
+	override void OnStarted()
 	{
+		super.OnStarted();
+		
+		const RplId systemRplId = Replication.FindItemId(this);
+		const RplNode systemRplNode = Replication.FindNode(systemRplId);
+		
+		if (systemRplNode.GetRole() == RplRole.Proxy)
+			return;
+		
+		Print("meowmeowmeow");
+		
 		CE_WorldValidationComponent m_WorldValidationComponent;
 		
 		if (GetGame().InPlayMode())
@@ -47,6 +60,8 @@ class CE_ItemSpawningSystem : GameSystem
 				CE_ItemDataConfig m_Config = m_WorldValidationComponent.GetItemDataConfig();
 				
 				m_aItems = ProcessItemData(m_Config);
+				
+				Replication.BumpMe();
 			}
 			else
 			{
@@ -65,7 +80,7 @@ class CE_ItemSpawningSystem : GameSystem
 	//! Handles the initial spawning phase, is called when all usage and tier areas have been queried
 	protected void InitialSpawningPhase()
 	{
-		if (!m_aItems.IsEmpty())
+		if (m_aItems && !m_aItems.IsEmpty())
 		{
 			m_bInitiallyRan = true;
 			
@@ -130,6 +145,15 @@ class CE_ItemSpawningSystem : GameSystem
 	{	
 		super.OnUpdate(point);
 		
+		const RplId systemRplId = Replication.FindItemId(this);
+		const RplNode systemRplNode = Replication.FindNode(systemRplId);
+		
+		if (systemRplNode.GetRole() == RplRole.Proxy)
+			return;
+		
+		if (point != ESystemPoint.FixedFrame)
+			return;
+		
 		float testTimeSlice = GetWorld().GetFixedTimeSlice();
 		m_fTestTimer += testTimeSlice;
 		
@@ -157,10 +181,12 @@ class CE_ItemSpawningSystem : GameSystem
 			ProcessContainers();
 		}
 		
+		
+		
 		if (GetItemCount() >= m_iSpawnerRatioCount)
 			return;
 		
-		if (!m_aItems.IsEmpty() && m_bInitiallyRan)
+		if (m_aItems && !m_aItems.IsEmpty() && m_bInitiallyRan)
 		{
 			float timeSlice = GetWorld().GetFixedTimeSlice();
 			m_fTimer += timeSlice;
@@ -196,60 +222,71 @@ class CE_ItemSpawningSystem : GameSystem
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Takes the config and processes eacg item data into a CE_Item, as long as they pass certains checks
+	//! Takes the config and processes each item data into a CE_Item, as long as they pass certains checks
 	array<ref CE_Item> ProcessItemData(CE_ItemDataConfig config)
 	{	
 		array<ref CE_Item> itemsProcessed = {};
 		array<ref CE_ItemData> itemDataToBeProcessed = {};
 		
-		foreach (CE_ItemData itemData : config.m_ItemData)
-		{
-			itemDataToBeProcessed.Insert(itemData)
-		}
-		
-		int itemCount = itemDataToBeProcessed.Count();
-		
-		for (int i = 0, maxCount = Math.Min(itemCount, config.m_ItemData.Count()); i < maxCount; i++)
-		{
-			CE_ItemData itemData = itemDataToBeProcessed[0];
+		if (config && config.m_ItemData)
+		{	
+			foreach (CE_ItemData itemData : config.m_ItemData)
+			{
+				itemDataToBeProcessed.Insert(itemData)
+			}
 			
-			if (!itemData.m_sName 
-			|| !itemData.m_sPrefab 
-			|| !itemData.m_iNominal 
-			|| !itemData.m_iMinimum 
-			|| !itemData.m_iLifetime 
-			|| !itemData.m_iRestock 
-			|| !itemData.m_ItemCategory 
-			|| !itemData.m_ItemUsages 
-			|| !itemData.m_ItemTiers)
+			int itemCount = itemDataToBeProcessed.Count();
+			
+			for (int i = 0, maxCount = Math.Min(itemCount, config.m_ItemData.Count()); i < maxCount; i++)
 			{
-				Print("[CentralEconomy::CE_ItemSpawningSystem] " + itemData.m_sName + " is missing information! Please fix!", LogLevel.ERROR);
-				itemDataToBeProcessed.Remove(0);
-				itemCount--;
-				continue;
-			}
-			else if (itemData.m_iNominal < itemData.m_iMinimum)
-			{
-				Print("[CentralEconomy::CE_ItemSpawningSystem] " + itemData.m_sName + " has a nominal value less than the minimum value! Please fix!", LogLevel.ERROR);
-				itemDataToBeProcessed.Remove(0);
-				itemCount--;
-				continue;
-			}
-			else
-			{
-				CE_Item item = new CE_Item(itemData, itemData.m_ItemTiers, itemData.m_ItemUsages, itemData.m_ItemCategory, m_RandomGen.RandIntInclusive(itemData.m_iMinimum, itemData.m_iNominal));
-					
-				if (!itemsProcessed.Contains(item))
+				CE_ItemData itemData = itemDataToBeProcessed[0];
+				
+				if (!itemData.m_sName 
+				|| !itemData.m_sPrefab 
+				|| !itemData.m_iNominal 
+				|| !itemData.m_iMinimum 
+				|| !itemData.m_iLifetime 
+				|| !itemData.m_iRestock 
+				|| !itemData.m_ItemCategory 
+				|| !itemData.m_ItemUsages 
+				|| !itemData.m_ItemTiers)
 				{
-					itemsProcessed.Insert(item);
+					Print("[CentralEconomy::CE_ItemSpawningSystem] " + itemData.m_sName + " is missing information! Please fix!", LogLevel.ERROR);
+					itemDataToBeProcessed.Remove(0);
+					itemCount--;
+					continue;
 				}
+				else if (itemData.m_iNominal < itemData.m_iMinimum)
+				{
+					Print("[CentralEconomy::CE_ItemSpawningSystem] " + itemData.m_sName + " has a nominal value less than the minimum value! Please fix!", LogLevel.ERROR);
+					itemDataToBeProcessed.Remove(0);
+					itemCount--;
+					continue;
+				}
+				else
+				{
+					CE_Item item = new CE_Item();
+					
+					item.SetItemData(itemData);
+					item.SetTiers(itemData.m_ItemTiers);
+					item.SetUsages(itemData.m_ItemUsages);
+					item.SetCategory(itemData.m_ItemCategory);
+					item.SetAvailableCount(m_RandomGen.RandIntInclusive(itemData.m_iMinimum, itemData.m_iNominal));
+					
+					if (!itemsProcessed.Contains(item))
+					{
+						itemsProcessed.Insert(item);
+					}
+				}
+				
+				itemDataToBeProcessed.Remove(0);
+				itemCount--;
 			}
 			
-			itemDataToBeProcessed.Remove(0);
-			itemCount--;
+			return itemsProcessed;
 		}
 		
-		return itemsProcessed;
+		return null;
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -307,11 +344,10 @@ class CE_ItemSpawningSystem : GameSystem
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Takes each CE_SearchableContainerComponent and processes them into a CE_SearchableContainer, as long as they pass certain checks
+	//! Takes a CE_SearchableContainerComponent and processes it into a CE_SearchableContainer, as long as it passes certain checks
 	protected void ProcessContainers()
 	{
-		Print("Processing");
-		
+		array<ref CE_SearchableContainer> containersProcessed = {};
 		array<CE_SearchableContainerComponent> containersToBeProcessed = {};
 		
 		containersToBeProcessed.Copy(m_aContainerComponents);
@@ -320,8 +356,6 @@ class CE_ItemSpawningSystem : GameSystem
 		
 		for (int i = 0, maxCount = Math.Min(containerCount, m_aContainerComponents.Count()); i < maxCount; i++)
 		{
-			Print("meow");
-			
 			CE_SearchableContainerComponent containerComponent = containersToBeProcessed[0];
 			if (!containerComponent)
 			{
@@ -329,7 +363,7 @@ class CE_ItemSpawningSystem : GameSystem
 				containerCount--;
 				continue;
 			}
-			
+		
 			if (!containerComponent.GetContainerUsage() 
 			|| !containerComponent.GetContainerTier() 
 			|| !containerComponent.GetContainerCategories()
@@ -348,48 +382,25 @@ class CE_ItemSpawningSystem : GameSystem
 			else if (containerComponent.GetContainerItemMinimum() > containerComponent.GetContainerItemMaximum())
 			{
 				Print("[CentralEconomy::CE_ItemSpawningSystem] " + containerComponent + " has a item maximum value less than the item minimum value! Please fix!", LogLevel.ERROR);
+				
+				containersToBeProcessed.Remove(0);
+				containerCount--;
+				
 				if (m_aContainerComponents.Contains(containerComponent))
 				{
-					m_aContainerComponents.RemoveItem(containerComponent); // if missing info, just remove permanently
+					m_aContainerComponents.RemoveItem(containerComponent); // if wrong info, just remove permanently
 				}
+				
+				continue;
 			}
 			else
 			{
-				/*
-				if (!rplId)
-				{
-					containersToBeProcessed.Remove(0);
-					containerCount--;
-					
-					if (m_aContainerComponents.Contains(containerComponent))
-					{
-						m_aContainerComponents.RemoveItem(containerComponent); // if missing info, just remove permanently
-					}
-					
-					continue;
-				}
-				*/
+				const RplId containerRplId = Replication.FindItemId(containerComponent);
 				
 				CE_SearchableContainer container = new CE_SearchableContainer();
-
-				RplId rplId;
 				
-				RplComponent rplComponent = RplComponent.Cast(containerComponent.GetOwner().FindComponent(RplComponent));
-				if (rplComponent)
-					rplId = rplComponent.Id();
-				
-				Print(rplComponent);
-				
-				if (rplId && rplId.IsValid())
-				{
-					Print(rplId);
-					
-					Print("Role: " + rplComponent.Role());
-					
-					Print("System Rpl Mode: " + RplSession.Mode());
-					
-					container.SetContainerRplId(rplId);
-				}
+				if (containerRplId)
+					container.SetContainerRplId(containerRplId);
 				
 				foreach (CE_Item item : containerComponent.GetItemsSpawned())
 				{
@@ -399,13 +410,13 @@ class CE_ItemSpawningSystem : GameSystem
 				container.SetReadyForItems(containerComponent.IsReadyForItems());
 				
 				containerComponent.SetContainer(container);
+				
+				Replication.BumpMe();
 			}
 			
 			containersToBeProcessed.Remove(0);
 			containerCount--;
 		}
-		
-		Replication.BumpMe();
 	}
 	
 	/*
@@ -539,6 +550,10 @@ class CE_ItemSpawningSystem : GameSystem
 		if (!container)
 			return null;
 		
+		CE_SearchableContainerComponent containerComponent = container.GetContainerComponentFromRplId(container.GetContainerRplId());
+		if (!containerComponent)
+			return null;
+		
 		int itemsCount = m_RandomGen.RandIntInclusive(min, max);
 		if (itemsCount == 0)
 			return null;
@@ -554,28 +569,18 @@ class CE_ItemSpawningSystem : GameSystem
 		if (itemsArrayCopy.IsEmpty())
 			return null;
 		
-		CE_SearchableContainerComponent containerComponent = container.GetContainerComponentFromRplId(container.GetContainerRplId());
-		if (!containerComponent)
-			return null;
-		
-		for (int i = 0; i < itemsArrayCopy.Count(); i++)
+		while (itemsSelected.Count() < itemsCount && itemsArrayCopy.Count() != 0)
 		{
 			int randomIndex = m_RandomGen.RandInt(0, itemsArrayCopy.Count());
-			if (!randomIndex)
-				return null;
 			
 			CE_Item itemSelected = itemsArrayCopy[randomIndex];
 			if (!itemSelected)
-				return null;
+				continue;
 			
-			int itemCount = itemSelected.GetAvailableCount();
-			if (!itemCount)
-				return null;
-			
-			if (itemSelected.GetTiers() & containerComponent.GetContainerTier() 
+			if (itemSelected.GetAvailableCount() > 0
+			&& itemSelected.GetTiers() & containerComponent.GetContainerTier() 
 			&& itemSelected.GetUsages() & containerComponent.GetContainerUsage() 
-			&& itemSelected.GetCategory() & containerComponent.GetContainerCategories()
-			&& itemCount > 0)
+			&& itemSelected.GetCategory() & containerComponent.GetContainerCategories())
 			{
 				itemsSelected.Insert(itemSelected);
 			}
@@ -584,9 +589,6 @@ class CE_ItemSpawningSystem : GameSystem
 				itemsArrayCopy.RemoveItem(itemSelected);
 				continue;
 			}
-			
-			if (itemsSelected.Count() == itemsCount)
-				break;
 		}
 		
 		if (	itemsSelected.IsEmpty())
@@ -599,8 +601,10 @@ class CE_ItemSpawningSystem : GameSystem
 	//! Tries to spawn the CE_Item to the CE_Spawner, returns true if item spawned properly
 	protected bool TryToSpawnItem(CE_Spawner spawner, CE_Item item)
 	{
+		/*
 		if (!Replication.IsServer())
 			return false;
+		*/
 		
 		if (item && spawner)
 		{

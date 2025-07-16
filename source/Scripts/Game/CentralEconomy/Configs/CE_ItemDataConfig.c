@@ -36,6 +36,135 @@ class CE_ItemData
 	
 	[Attribute("", UIWidgets.Flags, desc: "Which tier(s) will this item spawn in?", enums: ParamEnumArray.FromEnum(CE_ELootTier))]
 	CE_ELootTier m_ItemTiers;
+	
+	static const int DATA_SIZE_EXCLUDE_STRINGS = 48;
+	
+	//------------------------------------------------------------------------------------------------
+	//! 
+	bool RplSave(ScriptBitWriter writer)
+	{
+		writer.WriteString(m_sName);
+		writer.WriteResourceName(m_sPrefab);
+		writer.Write(m_vItemRotation, 96);
+		writer.Write(m_iNominal, 32);
+		writer.Write(m_iMinimum, 32);
+		writer.Write(m_iLifetime, 32);
+		writer.Write(m_iRestock, 32);
+		writer.Write(m_iQuantityMaximum, 32);
+		writer.Write(m_iQuantityMinimum, 32);
+		writer.Write(m_ItemCategory, 32);
+		writer.Write(m_ItemUsages, 32);
+		writer.Write(m_ItemTiers, 32);
+		
+		return true;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! 
+	bool RplLoad(ScriptBitReader reader)
+	{
+		reader.ReadString(m_sName);
+		reader.ReadResourceName(m_sPrefab);
+		reader.Read(m_vItemRotation, 96);
+		reader.Read(m_iNominal, 32);
+		reader.Read(m_iMinimum, 32);
+		reader.Read(m_iLifetime, 32);
+		reader.Read(m_iRestock, 32);
+		reader.Read(m_iQuantityMaximum, 32);
+		reader.Read(m_iQuantityMinimum, 32);
+		reader.Read(m_ItemCategory, 32);
+		reader.Read(m_ItemUsages, 32);
+		reader.Read(m_ItemTiers, 32);
+		
+		return true;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Extracts relevant properties from an instance of type T into snapshot. Opposite of Inject()
+	static bool Extract(CE_ItemData prop, ScriptCtx ctx, SSnapSerializerBase snapshot)
+	{
+		snapshot.SerializeString(prop.m_sName);
+		snapshot.SerializeString(prop.m_sPrefab);
+		snapshot.SerializeBytes(prop.m_vItemRotation, 12);
+		snapshot.SerializeBytes(prop.m_iNominal, 4);
+		snapshot.SerializeBytes(prop.m_iMinimum, 4);
+		snapshot.SerializeBytes(prop.m_iLifetime, 4);
+		snapshot.SerializeBytes(prop.m_iRestock, 4);
+		snapshot.SerializeBytes(prop.m_iQuantityMaximum, 4);
+		snapshot.SerializeBytes(prop.m_iQuantityMinimum, 4);
+		snapshot.SerializeBytes(prop.m_ItemCategory, 4);
+		snapshot.SerializeBytes(prop.m_ItemUsages, 4);
+		snapshot.SerializeBytes(prop.m_ItemTiers, 4);
+		
+		return true;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Injects relevant properties from snapshot into an instance of type T . Opposite of Extract()
+	static bool Inject(SSnapSerializerBase snapshot, ScriptCtx ctx, CE_ItemData prop)
+	{
+		snapshot.SerializeString(prop.m_sName);
+		snapshot.SerializeString(prop.m_sPrefab);
+		snapshot.SerializeBytes(prop.m_vItemRotation, 12);
+		snapshot.SerializeBytes(prop.m_iNominal, 4);
+		snapshot.SerializeBytes(prop.m_iMinimum, 4);
+		snapshot.SerializeBytes(prop.m_iLifetime, 4);
+		snapshot.SerializeBytes(prop.m_iRestock, 4);
+		snapshot.SerializeBytes(prop.m_iQuantityMaximum, 4);
+		snapshot.SerializeBytes(prop.m_iQuantityMinimum, 4);
+		snapshot.SerializeBytes(prop.m_ItemCategory, 4);
+		snapshot.SerializeBytes(prop.m_ItemUsages, 4);
+		snapshot.SerializeBytes(prop.m_ItemTiers, 4);
+		
+		return true;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Takes snapshot and compresses it into packet. Opposite of Decode()
+	static void Encode(SSnapSerializerBase snapshot, ScriptCtx ctx, ScriptBitSerializer packet)
+	{
+		snapshot.EncodeString(packet);
+		snapshot.EncodeString(packet);
+		snapshot.Serialize(packet, CE_ItemData.DATA_SIZE_EXCLUDE_STRINGS);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Takes packet and decompresses it into snapshot. Opposite of Encode()
+	static bool Decode(ScriptBitSerializer packet, ScriptCtx ctx, SSnapSerializerBase snapshot)
+	{
+		snapshot.DecodeString(packet);
+		snapshot.DecodeString(packet);
+		snapshot.Serialize(packet, CE_ItemData.DATA_SIZE_EXCLUDE_STRINGS);
+		
+		return true;
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Compares two snapshots to see whether they are the same or not
+	static bool SnapCompare(SSnapSerializerBase lhs, SSnapSerializerBase rhs, ScriptCtx ctx)
+	{
+		return lhs.CompareStringSnapshots(rhs)
+			&& lhs.CompareStringSnapshots(rhs)
+			&& lhs.CompareSnapshots(rhs, CE_ItemData.DATA_SIZE_EXCLUDE_STRINGS);
+	}
+
+	//------------------------------------------------------------------------------------------------
+	//! Compares instance and a snapshot to see if any property has changed enough to require a new snapshot
+	static bool PropCompare(CE_ItemData prop, SSnapSerializerBase snapshot, ScriptCtx ctx)
+	{
+		return snapshot.CompareString(prop.m_sName)
+			&& snapshot.CompareString(prop.m_sPrefab)
+			&& snapshot.Compare(prop.m_vItemRotation, 12)
+			&& snapshot.Compare(prop.m_iNominal, 4)
+			&& snapshot.Compare(prop.m_iMinimum, 4)
+			&& snapshot.Compare(prop.m_iLifetime, 4)
+			&& snapshot.Compare(prop.m_iRestock, 4)
+			&& snapshot.Compare(prop.m_iQuantityMaximum, 4)
+			&& snapshot.Compare(prop.m_iQuantityMinimum, 4)
+			&& snapshot.Compare(prop.m_ItemCategory, 4)
+			&& snapshot.Compare(prop.m_ItemUsages, 4)
+			&& snapshot.Compare(prop.m_ItemTiers, 4);
+	}
 }
 
 [BaseContainerProps(configRoot: true)]

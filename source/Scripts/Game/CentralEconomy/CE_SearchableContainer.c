@@ -1,9 +1,12 @@
 class CE_SearchableContainer
 {
-	static const int DATA_SIZE = 5; // ContainerRplId (4 bytes) + ReadyForItems (We'll send it as 1 byte)
+	static const int DATA_SIZE_EXCLUDE_ITEMSSPAWNED = 5; // ContainerRplId (4 bytes) + ReadyForItems (We'll send it as 1 byte) 
 	
 	protected RplId ContainerRplId = RplId.Invalid();
-	protected ref array<ref CE_Item> ItemsSpawned	= {};
+	
+	
+	//protected CE_SearchableContainerComponent m_ContainerComponent;
+	protected static ref array<ref CE_Item> ItemsSpawned	= {};
 	protected bool ReadyForItems = true;
 	
 	//------------------------------------------------------------------------------------------------
@@ -26,6 +29,22 @@ class CE_SearchableContainer
 	{
 		ContainerRplId = rplId;
 	}
+	
+	/*
+	//------------------------------------------------------------------------------------------------
+	//! 
+	CE_SearchableContainerComponent GetContainerComponent()
+	{
+		return m_ContainerComponent;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! 
+	void SetContainerComponent(CE_SearchableContainerComponent component)
+	{
+		m_ContainerComponent = component;
+	}
+	*/
 	
 	//------------------------------------------------------------------------------------------------
 	//! Returns the CE_Item(s) spawned corresponding to this CE_SearchableContainer
@@ -53,22 +72,15 @@ class CE_SearchableContainer
 	bool RplSave(ScriptBitWriter writer)
 	{
 		writer.Write(ContainerRplId, 32); // 4 bytes * 8 = 32 bits.
+		writer.Write(ReadyForItems, 1);
 		
-		/*
 		int itemCount = ItemsSpawned.Count();
-		writer.WriteInt(itemCount);
+		writer.Write(itemCount, 32);
 		
 		for (int i = 0; i < itemCount; ++i)
 		{
-			writer.Write(ItemsSpawned[i].GetItemData(), 4);
-			writer.Write(ItemsSpawned[i].GetTiers(), 1);
-			writer.Write(ItemsSpawned[i].GetUsages(), 1);
-			writer.Write(ItemsSpawned[i].GetCategory(), 1);
-			writer.Write(ItemsSpawned[i].GetAvailableCount(), 4);
+			ItemsSpawned[i].RplSave(writer);
 		}
-		*/
-		
-		writer.Write(ReadyForItems, 1);
 		
 		return true;
 	}
@@ -78,22 +90,15 @@ class CE_SearchableContainer
 	bool RplLoad(ScriptBitReader reader)
 	{
 		reader.Read(ContainerRplId, 32);
+		reader.Read(ReadyForItems, 1);
 		
-		/*
 		int itemCount = ItemsSpawned.Count();
-		reader.ReadInt(itemCount);
+		reader.Read(itemCount, 32);
 		
 		for (int i = 0; i < itemCount; ++i)
 		{
-			reader.Read(ItemsSpawned[i].GetItemData(), 4);
-			reader.Read(ItemsSpawned[i].GetTiers(), 1);
-			reader.Read(ItemsSpawned[i].GetUsages(), 1);
-			reader.Read(ItemsSpawned[i].GetCategory(), 1);
-			reader.Read(ItemsSpawned[i].GetAvailableCount(), 4);
+			ItemsSpawned[i].RplLoad(reader);
 		}
-		*/
-		
-		reader.Read(ReadyForItems, 1);
 		
 		return true;
 	}
@@ -103,22 +108,15 @@ class CE_SearchableContainer
 	static bool Extract(CE_SearchableContainer prop, ScriptCtx ctx, SSnapSerializerBase snapshot)
 	{
 		snapshot.SerializeBytes(prop.ContainerRplId, 4);
+		snapshot.SerializeBytes(prop.ReadyForItems, 1);
 		
-		/*
 		int itemCount = prop.ItemsSpawned.Count();
-		snapshot.SerializeInt(itemCount);
+		snapshot.SerializeBytes(itemCount, 4);
 		
 		for (int i = 0; i < itemCount; ++i)
 		{
-			snapshot.SerializeBytes(prop.ItemsSpawned[i].GetItemData(), 4);
-			snapshot.SerializeBytes(prop.ItemsSpawned[i].GetTiers(), 1);
-			snapshot.SerializeBytes(prop.ItemsSpawned[i].GetUsages(), 1);
-			snapshot.SerializeBytes(prop.ItemsSpawned[i].GetCategory(), 1);
-			snapshot.SerializeBytes(prop.ItemsSpawned[i].GetAvailableCount(), 4);
+			prop.ItemsSpawned[i].Extract(prop.ItemsSpawned[i], ctx, snapshot);
 		}
-		*/
-		
-		snapshot.SerializeBytes(prop.ReadyForItems, 1);
 		
 		return true;
 	}
@@ -128,46 +126,22 @@ class CE_SearchableContainer
 	static bool Inject(SSnapSerializerBase snapshot, ScriptCtx ctx, CE_SearchableContainer prop)
 	{
 		snapshot.SerializeBytes(prop.ContainerRplId, 4);
+		snapshot.SerializeBytes(prop.ReadyForItems, 1);
 		
-		/*
 		int itemCount;
-		snapshot.SerializeInt(itemCount);
+		snapshot.SerializeBytes(itemCount, 4);
 		
 		prop.ItemsSpawned.Clear();
 		
 		CE_Item item;
 		for (int i = 0; i < itemCount; ++i)
 		{
-			CE_ItemData itemData;
-			snapshot.SerializeBytes(itemData, 4);
+			item = new CE_Item();
 			
-			CE_ELootTier tier;
-			snapshot.SerializeBytes(tier, 1);
+			item.Inject(snapshot, ctx, item);
 			
-			CE_ELootUsage usage;
-			snapshot.SerializeBytes(usage, 1);
-			
-			CE_ELootCategory category;
-			snapshot.SerializeBytes(category, 1);
-			
-			int availableCount;
-			snapshot.SerializeBytes(availableCount, 4);
-			
-			item = new CE_Item(itemData, tier, usage, category, availableCount);
-			
-			/*
-			item.SetItemData(itemData);
-			item.SetTiers(tier);
-			item.SetUsages(usage);
-			item.SetCategory(category);
-			item.SetAvailableCount(availableCount);
-			*/
-			/*
 			prop.ItemsSpawned.Insert(item);
 		}
-		*/
-		
-		snapshot.SerializeBytes(prop.ReadyForItems, 1);
 		
 		return true;
 	}
@@ -176,29 +150,66 @@ class CE_SearchableContainer
 	//! Takes snapshot and compresses it into packet. Opposite of Decode()
 	static void Encode(SSnapSerializerBase snapshot, ScriptCtx ctx, ScriptBitSerializer packet)
 	{
-		snapshot.Serialize(packet, CE_SearchableContainer.DATA_SIZE);
+		snapshot.Serialize(packet, CE_SearchableContainer.DATA_SIZE_EXCLUDE_ITEMSSPAWNED);
+		
+		int itemCount;
+		snapshot.SerializeBytes(itemCount, 4);
+		packet.Serialize(itemCount, 32);
+
+		for (int i = 0; i < itemCount; ++i)
+		{
+			ItemsSpawned[i].Encode(snapshot, ctx, packet);
+		}
 	}
 
 	//------------------------------------------------------------------------------------------------
 	//! Takes packet and decompresses it into snapshot. Opposite of Encode()
 	static bool Decode(ScriptBitSerializer packet, ScriptCtx ctx, SSnapSerializerBase snapshot)
 	{
-		return snapshot.Serialize(packet, CE_SearchableContainer.DATA_SIZE);
+		snapshot.Serialize(packet, CE_SearchableContainer.DATA_SIZE_EXCLUDE_ITEMSSPAWNED);
+		
+		int itemCount;
+		packet.Serialize(itemCount, 32);
+		snapshot.SerializeBytes(itemCount, 4);
+
+		for (int i = 0; i < itemCount; ++i)
+		{
+			ItemsSpawned[i].Decode(packet, ctx, snapshot);
+		}
+		
+		return true;
 	}
 
 	//------------------------------------------------------------------------------------------------
 	//! Compares two snapshots to see whether they are the same or not
 	static bool SnapCompare(SSnapSerializerBase lhs, SSnapSerializerBase rhs, ScriptCtx ctx)
 	{
-		return lhs.CompareSnapshots(rhs, CE_SearchableContainer.DATA_SIZE);
+		lhs.CompareSnapshots(rhs, CE_SearchableContainer.DATA_SIZE_EXCLUDE_ITEMSSPAWNED);
+		
+		int itemCount = ItemsSpawned.Count();
+		
+		for (int i = 0; i < itemCount; ++i)
+		{
+			ItemsSpawned[i].SnapCompare(lhs, rhs, ctx);
+		}
+		
+		return true;
 	}
 
 	//------------------------------------------------------------------------------------------------
 	//! Compares instance and a snapshot to see if any property has changed enough to require a new snapshot
 	static bool PropCompare(CE_SearchableContainer prop, SSnapSerializerBase snapshot, ScriptCtx ctx)
 	{
-		return snapshot.Compare(prop.ContainerRplId, 4)
-			//&& snapshot.Compare(prop.ItemsSpawned, 24) // itemCount = 4, GetItemData() = 4, GetItemTiers() = 4, GetItemUsages() = 4, GetItemCategory() = 4, GetAvailableCount() = 4
-			&& snapshot.Compare(prop.ReadyForItems, 1);
+		snapshot.Compare(prop.ContainerRplId, 4);
+		snapshot.Compare(prop.ReadyForItems, 1);
+		
+		int itemCount = prop.ItemsSpawned.Count();
+		
+		for (int i = 0; i < itemCount; ++i)
+		{
+			prop.ItemsSpawned[i].PropCompare(prop.ItemsSpawned[i], snapshot, ctx);
+		}
+		
+		return true;
 	}
 }

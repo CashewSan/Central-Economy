@@ -270,7 +270,7 @@ class CE_SearchableContainerComponent : ScriptComponent
 	{
 		super.RplSave(writer);
 		
-		writer.Write(m_Container, 32);
+		m_Container.RplSave(writer);
 		
 		return true;
 	}
@@ -280,7 +280,7 @@ class CE_SearchableContainerComponent : ScriptComponent
 	{
 		super.RplLoad(reader);
 		
-		reader.Read(m_Container, 32);
+		m_Container.RplLoad(reader);
 		
 		return true;
 	}
@@ -302,6 +302,8 @@ class CE_SearchableContainerComponent : ScriptComponent
 	void SetContainer(CE_SearchableContainer container)
 	{
 		m_Container = container;
+		
+		Replication.BumpMe();
 	}
 	
 	void RequestSetContainer(CE_SearchableContainer container)
