@@ -27,7 +27,11 @@ class CE_SearchableContainerComponent : ScriptComponent
 	protected CE_ELootTier 								m_Tier; 																		// gets set by the Tier Trigger Area Entity
 	
 	protected bool 										m_bHasConfig 							= false;								// does the searchable container have a custom item data config? (NOT THE UNIVERSAL ONE)
+	
+	[RplProp()]
 	protected bool 										m_bHasBeenSearched						= false;								// has the container been searched?
+	[RplProp()]
+	protected bool										m_bIsSearchable							= false;								// is the container searchable?
 	protected bool 										m_bWereItemsDespawned 					= false;								// was the items despawned by the system?
 	protected bool										m_bHaveItemsProcessed	;														// have the items of the container been processed? ONLY APPLICABLE IF m_ItemDataConfig IS SET!
 	protected bool										m_bHasContainerReset						= false;								// has the container reset?
@@ -38,37 +42,50 @@ class CE_SearchableContainerComponent : ScriptComponent
 	
 	protected ref CE_OnContainerSearchedInvoker 			m_OnContainerSearchedInvoker 				= new CE_OnContainerSearchedInvoker();	// script invoker for when the container is searched
 	protected ref CE_OnContainerResetInvoker 				m_OnContainerResetInvoker 				= new CE_OnContainerResetInvoker();	// script invoker for when the container is reset
+	protected ref CE_OnAreasQueriedInvoker					m_OnAreasQueriedInvoker					= new CE_OnAreasQueriedInvoker();		// script invoker for when all areas have been queried
 	
 	protected ref array<ref CE_Item>						m_aItems									= new array<ref CE_Item>;				// CE_Item array, items processed from system IF the container has it's own config set (m_ItemDataConfig)
 	protected ref array<ref CE_Item> 						m_aItemsSpawned							= new array<ref CE_Item>;				// CE_Item array that has spawned on the container
 	protected ref array<IEntity> 							m_EntitiesSpawned						= new array<IEntity>;					// IEntity array that has spawned on the container
 	
 	[RplProp()]
-	protected ref CE_SearchableContainer					m_Container;																	// CE_SearchableContainer corresponding to this CE_SearchableContainerComponent
+	protected ref CE_SearchableContainer					m_Container								/*= new CE_SearchableContainer()*/;		// CE_SearchableContainer corresponding to this CE_SearchableContainerComponent
+	protected ref RandomGenerator 						m_RandomGen								= new RandomGenerator();				// vanilla random generator
 	
 	protected CE_ItemSpawningSystem 						m_SpawningSystem;															// the spawning game system used to control spawning
 	protected CE_ContainerTimingSystem					m_TimingSystem;																// the timing system for controlling container reset
 	
 	//------------------------------------------------------------------------------------------------
-	override void EOnFrame(IEntity owner, float timeSlice)
-	{
-		if (Debug.KeyState(KeyCode.KC_P))
-		{
-			Debug.ClearKey(KeyCode.KC_P);
-			
-			RequestSetContainer(m_Container);
-			
-			Print("RPC SEND: " + m_Container);
-		}
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Sets default attributes if not set by trigger entities
+	//! Event on post initiailization
 	protected override void OnPostInit(IEntity owner)
 	{
-		SetEventMask(owner, EntityEvent.FRAME);
-		
 		owner.ClearFlags(EntityFlags.STATIC);
+		
+		World world = GetOwner().GetWorld();
+		if (!world)
+			return;
+		
+		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+		if (!m_SpawningSystem)
+			return;
+		
+		m_SpawningSystem.m_OnAreasQueriedInvoker.Insert(OnAreasQueried);
+	}
+	
+	protected void OnAreasQueried()
+	{
+		CE_WorldValidationComponent m_WorldValidationComponent = CE_WorldValidationComponent.GetInstance();
+		if (!m_WorldValidationComponent)
+			return;
+		
+		float randomFloat = m_RandomGen.RandFloat01();
+		
+		if (m_WorldValidationComponent.GetSearchableContainerChance() < randomFloat)
+			return;
+		
+		SetIsSearchable(true);
+		
+		Replication.BumpMe();
 		
 		HookEvents();
 		
@@ -202,6 +219,8 @@ class CE_SearchableContainerComponent : ScriptComponent
 	{	
 		SetHasBeenSearched(true);
 		
+		Replication.BumpMe();
+		
 		ConnectToTimingSystem();
 	}
 	
@@ -244,47 +263,12 @@ class CE_SearchableContainerComponent : ScriptComponent
 	// REPLICATION STUFF
 	//------------------------------------------------------------------------------------------------
 	
-	/*
 	//------------------------------------------------------------------------------------------------
-	[RplRpc(RplChannel.Reliable, RplRcver.Server)]
-	protected void RpcAsk_SetContainer(CE_SearchableContainer container)
+	//!
+	void UpdateContainer()
 	{
-		Print("authority-side code");
-		SetContainer(container);
-		
-		Rpc(RpcDo_SetContainer, container);
+		Replication.BumpMe();
 	}
-	*/
-	
-	//------------------------------------------------------------------------------------------------
-	[RplRpc(RplChannel.Reliable, RplRcver.Broadcast)]
-	protected void RpcDo_SetContainer(CE_SearchableContainer container)
-	{
-		Print("proxy-side code");
-		SetContainer(container);
-	}
-	
-	/*
-	//------------------------------------------------------------------------------------------------
-	override bool RplSave(ScriptBitWriter writer)
-	{
-		super.RplSave(writer);
-		
-		m_Container.RplSave(writer);
-		
-		return true;
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	override bool RplLoad(ScriptBitReader reader)
-	{
-		super.RplLoad(reader);
-		
-		m_Container.RplLoad(reader);
-		
-		return true;
-	}
-	*/
 	
 	//------------------------------------------------------------------------------------------------
 	// GETTERS/SETTERS
@@ -306,12 +290,6 @@ class CE_SearchableContainerComponent : ScriptComponent
 		Replication.BumpMe();
 	}
 	
-	void RequestSetContainer(CE_SearchableContainer container)
-	{
-		SetContainer(container);
-		Rpc(RpcDo_SetContainer, container);
-	}
-	
 	//------------------------------------------------------------------------------------------------
 	//! Is the spawner ready for an item to be spawned on it?
 	bool IsReadyForItems()
@@ -324,6 +302,20 @@ class CE_SearchableContainerComponent : ScriptComponent
 	void SetReadyForItems(bool ready)
 	{
 		m_bReadyForItems = ready;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Is container searchable?
+	bool IsSearchable()
+	{
+		return m_bIsSearchable;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Sets if container is searchable
+	void SetIsSearchable(bool searchable)
+	{
+		m_bIsSearchable = searchable;
 	}
 	
 	//------------------------------------------------------------------------------------------------

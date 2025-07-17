@@ -37,6 +37,7 @@ RadioManagerEntity RadioManager : "{B8E09FAB91C4ECCD}Prefabs/Radio/RadioManager.
 SCR_BaseGameMode GameModeSF : "{ECEEDB2D3737204B}Prefabs/Systems/ScenarioFramework/GameModeSF.et" {
  components {
   CE_WorldValidationComponent "{629F0149901D11AC}" {
+   m_fSearchableContainerChance 1
   }
  }
  coords 114.399 1 107.482

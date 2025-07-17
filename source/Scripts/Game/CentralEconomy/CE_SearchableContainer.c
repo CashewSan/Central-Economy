@@ -2,11 +2,9 @@ class CE_SearchableContainer
 {
 	static const int DATA_SIZE_EXCLUDE_ITEMSSPAWNED = 5; // ContainerRplId (4 bytes) + ReadyForItems (We'll send it as 1 byte) 
 	
+	protected CE_SearchableContainerComponent m_ContainerComponent; // not replicated
 	protected RplId ContainerRplId = RplId.Invalid();
-	
-	
-	//protected CE_SearchableContainerComponent m_ContainerComponent;
-	protected static ref array<ref CE_Item> ItemsSpawned	= {};
+	protected static ref array<ref CE_Item> ItemsSpawned = {};
 	protected bool ReadyForItems = true;
 	
 	//------------------------------------------------------------------------------------------------
@@ -30,7 +28,6 @@ class CE_SearchableContainer
 		ContainerRplId = rplId;
 	}
 	
-	/*
 	//------------------------------------------------------------------------------------------------
 	//! 
 	CE_SearchableContainerComponent GetContainerComponent()
@@ -44,7 +41,6 @@ class CE_SearchableContainer
 	{
 		m_ContainerComponent = component;
 	}
-	*/
 	
 	//------------------------------------------------------------------------------------------------
 	//! Returns the CE_Item(s) spawned corresponding to this CE_SearchableContainer
@@ -125,6 +121,9 @@ class CE_SearchableContainer
 	//! Injects relevant properties from snapshot into an instance of type T . Opposite of Extract()
 	static bool Inject(SSnapSerializerBase snapshot, ScriptCtx ctx, CE_SearchableContainer prop)
 	{
+		if (!prop)
+			return false;
+		
 		snapshot.SerializeBytes(prop.ContainerRplId, 4);
 		snapshot.SerializeBytes(prop.ReadyForItems, 1);
 		
@@ -142,6 +141,8 @@ class CE_SearchableContainer
 			
 			prop.ItemsSpawned.Insert(item);
 		}
+		
+		prop.SetContainerComponent(CE_SearchableContainerComponent.Cast(Replication.FindItem(prop.ContainerRplId)));
 		
 		return true;
 	}
@@ -200,6 +201,9 @@ class CE_SearchableContainer
 	//! Compares instance and a snapshot to see if any property has changed enough to require a new snapshot
 	static bool PropCompare(CE_SearchableContainer prop, SSnapSerializerBase snapshot, ScriptCtx ctx)
 	{
+		if (!prop)
+			return false;
+		
 		snapshot.Compare(prop.ContainerRplId, 4);
 		snapshot.Compare(prop.ReadyForItems, 1);
 		

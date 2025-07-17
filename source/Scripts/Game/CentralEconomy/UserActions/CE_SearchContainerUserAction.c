@@ -1,4 +1,4 @@
-class CE_SearchContainerUserAction : SCR_InventoryAction
+class CE_SearchContainerUserAction : ScriptedUserAction
 {	
 	[Attribute(ResourceName.Empty, UIWidgets.Auto, "Audio to be used when searching the container")]
 	protected ref SCR_AudioSourceConfiguration m_AudioSourceConfig;
@@ -15,19 +15,31 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 	//------------------------------------------------------------------------------------------------
 	override bool CanBeShownScript(IEntity user)
 	{
-		/*
-		// If no CE_ItemSpawningSystem
-		if (!m_SpawningSystem)
-			return false;
-		
-		// If CE_ItemSpawningSystem has not finished having areas queried
-		if (!m_SpawningSystem.HaveAreasQueried())
-			return false;
-		*/
-		
 		// If no owner entity
 		IEntity owner = GetOwner();
 		if (!owner)
+			return false;
+		
+		// If target is destroyed
+		SCR_DamageManagerComponent targetDamageManager = SCR_DamageManagerComponent.Cast(owner.FindComponent(SCR_DamageManagerComponent));
+		if (targetDamageManager)
+		{
+			if (targetDamageManager.IsDestroyed())
+				return false;
+		}
+		
+		World world = owner.GetWorld();
+		if (!world)
+			return false;
+		
+		// If no CE_ItemSpawningSystem
+		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+		if (!m_SpawningSystem)
+			return false;
+		
+		
+		// If CE_ItemSpawningSystem has not finished having areas queried
+		if (!m_SpawningSystem.HaveAreasQueried())
 			return false;
 		
 		SCR_UniversalInventoryStorageComponent ownerStorage = SCR_UniversalInventoryStorageComponent.Cast(owner.FindComponent(SCR_UniversalInventoryStorageComponent));
@@ -46,25 +58,29 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 		if (!m_ContainerComponent)
 			return false;
 		
-		// If the CE_SearchableContainerComponent has not been processed into a CE_SearchableContainer
-		m_Container = m_ContainerComponent.GetContainer();
+		Print(m_ContainerComponent.IsSearchable());
 		
-		//Print(m_Container);
-		
-		if (!m_Container)
+		if (!m_ContainerComponent.IsSearchable())
 			return false;
+		
+		Print(m_ContainerComponent.HasBeenSearched());
 		
 		// If target has already been searched
 		if (m_ContainerComponent.HasBeenSearched())
 			return false;
 		
-		// If target is destroyed
-		SCR_DamageManagerComponent targetDamageManager = SCR_DamageManagerComponent.Cast(owner.FindComponent(SCR_DamageManagerComponent));
-		if (targetDamageManager)
-		{
-			if (targetDamageManager.IsDestroyed())
-				return false;
-		}
+		// If the CE_SearchableContainerComponent has not been processed into a CE_SearchableContainer
+		m_Container = m_ContainerComponent.GetContainer();
+		Print(m_Container);
+		
+		if (!m_Container)
+			return false;
+		
+		Print(m_Container.GetContainerRplId());
+		
+		// If container RplId has not been set
+		if (m_Container.GetContainerRplId() == RplId.Invalid())
+			return false;
 		
 		return super.CanBeShownScript(user);
 	}
@@ -72,33 +88,9 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 	//------------------------------------------------------------------------------------------------
 	override bool CanBePerformedScript(IEntity user)
 	{
-		/*
-		// If no CE_ItemSpawningSystem
-		if (!m_SpawningSystem)
-			return false;
-		
-		// If CE_ItemSpawningSystem has not finished having areas queried
-		if (!m_SpawningSystem.HaveAreasQueried())
-			return false;
-		*/
-		
 		// If no owner entity
 		IEntity owner = GetOwner();
 		if (!owner)
-			return false;
-		
-		// If target does not have searchable container component
-		m_ContainerComponent = CE_SearchableContainerComponent.Cast(owner.FindComponent(CE_SearchableContainerComponent));
-		if (!m_ContainerComponent)
-			return false;
-		
-		// If the CE_SearchableContainerComponent has not been processed into a CE_SearchableContainer
-		m_Container = m_ContainerComponent.GetContainer();
-		if (!m_Container)
-			return false;
-		
-		// If target has already been searched
-		if (m_ContainerComponent.HasBeenSearched())
 			return false;
 		
 		// If target is destroyed
@@ -108,6 +100,48 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 			if (targetDamageManager.IsDestroyed())
 				return false;
 		}
+		
+		World world = owner.GetWorld();
+		if (!world)
+			return false;
+		
+		// If no CE_ItemSpawningSystem
+		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+		if (!m_SpawningSystem)
+			return false;
+		
+		// If CE_ItemSpawningSystem has not finished having areas queried
+		if (!m_SpawningSystem.HaveAreasQueried())
+			return false;
+		
+		SCR_UniversalInventoryStorageComponent ownerStorage = SCR_UniversalInventoryStorageComponent.Cast(owner.FindComponent(SCR_UniversalInventoryStorageComponent));
+		if (!ownerStorage)
+			return false;
+		
+		m_StorageItemAttributes = SCR_ItemAttributeCollection.Cast(ownerStorage.GetAttributes());
+		
+		if (m_StorageItemAttributes)
+		{
+			m_StorageUIInfo = m_StorageItemAttributes.GetUIInfo();
+		}
+		
+		// If target does not have searchable container component
+		m_ContainerComponent = CE_SearchableContainerComponent.Cast(owner.FindComponent(CE_SearchableContainerComponent));
+		if (!m_ContainerComponent)
+			return false;
+		
+		// If target has already been searched
+		if (m_ContainerComponent.HasBeenSearched())
+			return false;
+		
+		// If the CE_SearchableContainerComponent has not been processed into a CE_SearchableContainer
+		m_Container = m_ContainerComponent.GetContainer();
+		if (!m_Container)
+			return false;
+		
+		// If container RplId has not been set
+		if (m_Container.GetContainerRplId() == RplId.Invalid())
+			return false;
 		
 		return super.CanBePerformedScript(user);
 	}
@@ -196,9 +230,15 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 		if (m_Container)
 		{
 			m_ContainerComponent.GetContainerSearchedInvoker().Invoke(m_Container, pUserEntity);
-		
+			
 			TryToPopulateStorage(m_Container);
 		}
+		
+		SCR_InventoryStorageManagerComponent genericInventoryManager =  SCR_InventoryStorageManagerComponent.Cast(pUserEntity.FindComponent( SCR_InventoryStorageManagerComponent ));
+		if (!genericInventoryManager)
+			return;
+		
+		PerformActionInternal(genericInventoryManager, pOwnerEntity, pUserEntity);
 	}
 	
 	protected void TryToPopulateStorage(CE_SearchableContainer container)
@@ -213,8 +253,6 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
 		if (!m_SpawningSystem)
 			return;
-		
-		Print(container.GetContainerRplId());
 		
 		CE_SearchableContainerComponent containerComp = container.GetContainerComponentFromRplId(container.GetContainerRplId());
 		if (!containerComp)
@@ -237,17 +275,19 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 		
 		if (itemsSelected && !itemsSelected.IsEmpty())
 		{
-			Print("meow itemsSelected");
 			m_SpawningSystem.TryToSpawnItems(container, itemsSelected);
 		}
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	protected override void PerformActionInternal(SCR_InventoryStorageManagerComponent manager, IEntity pOwnerEntity, IEntity pUserEntity)
+	protected void PerformActionInternal(SCR_InventoryStorageManagerComponent manager, IEntity pOwnerEntity, IEntity pUserEntity)
 	{
-		if (manager && pOwnerEntity)
-			manager.SetStorageToOpen(pOwnerEntity);
-			manager.OpenInventory();
+		CharacterVicinityComponent vicinity = CharacterVicinityComponent.Cast(pUserEntity.FindComponent(CharacterVicinityComponent));
+		if (!vicinity)
+			return;
+		
+		manager.SetStorageToOpen(pOwnerEntity);
+		manager.OpenInventory();
 		
 		if (m_StorageItemAttributes)
 			m_StorageItemAttributes.CE_SetVisible(false);
@@ -310,9 +350,8 @@ class CE_SearchContainerUserAction : SCR_InventoryAction
 		return true;
 	}
 	
-	//------------------------------------------------------------------------------------------------
-	override bool HasLocalEffectOnlyScript()
+	protected override bool HasLocalEffectOnlyScript()
 	{
-		return false;
+		return true;
 	}
 }

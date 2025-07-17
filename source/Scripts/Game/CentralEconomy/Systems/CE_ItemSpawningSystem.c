@@ -7,17 +7,18 @@ class CE_ItemSpawningSystem : GameSystem
 			- Cashew
 	*/
 	
-	protected ref array<CE_ItemSpawningComponent> 			m_aSpawnerComponents		 		= new array<CE_ItemSpawningComponent>; 			// ALL registered spawner components in the world
-	protected ref array<ref CE_Spawner>					m_aSpawners						= new array<ref CE_Spawner>;						// processed CE_ItemSpawningComponent into CE_Spawner
-	protected ref array<CE_SearchableContainerComponent> 	m_aContainerComponents 			= new array<CE_SearchableContainerComponent>; 		// ALL registered searchable container components in the world
+	protected ref array<CE_ItemSpawningComponent> 			m_aSpawnerComponents		 		= new array<CE_ItemSpawningComponent>(); 			// ALL registered spawner components in the world
+	protected ref array<ref CE_Spawner>					m_aSpawners						= new array<ref CE_Spawner>();					// processed CE_ItemSpawningComponent into CE_Spawner
+	protected ref array<CE_SearchableContainerComponent> 	m_aContainerComponents 			= new array<CE_SearchableContainerComponent>(); 	// ALL registered searchable container components in the world
 	
-	[RplProp()]
-	protected ref array<ref CE_Item>						m_aItems 						= new array<ref CE_Item>;							// processed CE_ItemData into CE_Item
+	protected ref array<ref CE_Item>						m_aItems 						= new array<ref CE_Item>();						// processed CE_ItemData into CE_Item
 	
-	protected ref array<CE_UsageTriggerArea>				m_aUsageAreas					= new array<CE_UsageTriggerArea>;					// usage areas registered to the system
-	protected ref array<CE_TierTriggerArea>				m_aTierAreas						= new array<CE_TierTriggerArea>;					// tier areas registered to the system
+	protected ref array<CE_UsageTriggerArea>				m_aUsageAreas					= new array<CE_UsageTriggerArea>();				// usage areas registered to the system
+	protected ref array<CE_TierTriggerArea>				m_aTierAreas						= new array<CE_TierTriggerArea>();				// tier areas registered to the system
 	
 	protected ref RandomGenerator 						m_RandomGen						= new RandomGenerator();							// vanilla random generator
+	
+	ref CE_OnAreasQueriedInvoker					m_OnAreasQueriedInvoker			= new CE_OnAreasQueriedInvoker();					// script invoker for when all areas have been queried
 	
 	protected float 										m_fTimer							= 0;												// timer for spawning check interval
 	protected float										m_fItemSpawningFrequency			= 0; 											// frequency (in seconds) that an item will spawn
@@ -28,8 +29,10 @@ class CE_ItemSpawningSystem : GameSystem
 	protected int										m_iUsageAreasQueried				= 0;												// count of usage areas queried
 	protected int										m_iTierAreasQueried				= 0;												// count of tier areas queried
 	
+	[RplProp()]
 	protected bool										m_bHaveAreasQueried				= false;											// have the usage and tier areas finished querying?
-	protected bool										m_bInitiallyRan					= false;											// has the system finished it's initial spawning phase?
+	protected bool										m_bInitialSpawningRan				= false;											// has the system ran it's initial spawning phase?
+	protected bool										m_bContainersProcessed			= false;											// have CE_SearchableContainerComponent's been processed?
 	
 	//------------------------------------------------------------------------------------------------
 	//! On system start
@@ -42,8 +45,6 @@ class CE_ItemSpawningSystem : GameSystem
 		
 		if (systemRplNode.GetRole() == RplRole.Proxy)
 			return;
-		
-		Print("meowmeowmeow");
 		
 		CE_WorldValidationComponent m_WorldValidationComponent;
 		
@@ -60,8 +61,6 @@ class CE_ItemSpawningSystem : GameSystem
 				CE_ItemDataConfig m_Config = m_WorldValidationComponent.GetItemDataConfig();
 				
 				m_aItems = ProcessItemData(m_Config);
-				
-				Replication.BumpMe();
 			}
 			else
 			{
@@ -82,7 +81,7 @@ class CE_ItemSpawningSystem : GameSystem
 	{
 		if (m_aItems && !m_aItems.IsEmpty())
 		{
-			m_bInitiallyRan = true;
+			m_bInitialSpawningRan = true;
 			
 			array<ref CE_Spawner> processedSpawnersArray = {};
 			
@@ -136,8 +135,8 @@ class CE_ItemSpawningSystem : GameSystem
 		}
 	}
 	
-	float m_fTestTimer = 0;
-	float m_fTestFrequency = 5;
+	//float m_fTestTimer = 0;
+	//float m_fTestFrequency = 5;
 	
 	//------------------------------------------------------------------------------------------------
 	//! Tick method, handles timing for spawning
@@ -145,15 +144,13 @@ class CE_ItemSpawningSystem : GameSystem
 	{	
 		super.OnUpdate(point);
 		
-		const RplId systemRplId = Replication.FindItemId(this);
-		const RplNode systemRplNode = Replication.FindNode(systemRplId);
-		
-		if (systemRplNode.GetRole() == RplRole.Proxy)
-			return;
-		
 		if (point != ESystemPoint.FixedFrame)
 			return;
 		
+		const RplId systemRplId = Replication.FindItemId(this);
+		const RplNode systemRplNode = Replication.FindNode(systemRplId);
+		
+		/*
 		float testTimeSlice = GetWorld().GetFixedTimeSlice();
 		m_fTestTimer += testTimeSlice;
 		
@@ -166,27 +163,58 @@ class CE_ItemSpawningSystem : GameSystem
 			
 			Print("Item Count: " + GetItemCount());
 		}
+		*/
 		
 		if (GetUsageAreasQueried() >= m_aUsageAreas.Count() 
-		&& GetTierAreasQueried() >= m_aTierAreas.Count()
-		&& !m_bInitiallyRan)
+		&& GetTierAreasQueried() >= m_aTierAreas.Count())
 		{
+			/*
 			PrintFormat("Usage Areas Queried: %1 - Total Count: %2", GetUsageAreasQueried(), m_aUsageAreas.Count());
 			PrintFormat("Tier Areas Queried: %1 - Total Count: %2", GetTierAreasQueried(), m_aTierAreas.Count());
+			*/
 			
-			SetHaveAreasQueried(true);
+			if (HaveAreasQueried() == false)
+			{
+				SetHaveAreasQueried(true);
+				
+				Print("invoked");
+				m_OnAreasQueriedInvoker.Invoke();
+				
+				Replication.BumpMe();
+			}
 			
-			InitialSpawningPhase();
-			
-			ProcessContainers();
+			if (systemRplNode.GetRole() == RplRole.Authority && !m_bInitialSpawningRan)
+			{
+				Print("Initial Spawning");
+				
+				InitialSpawningPhase();
+			}
+			/*
+			if (m_bContainersProcessed == false)
+			{
+				m_bContainersProcessed = true;
+				
+				if (m_aContainerComponents.IsEmpty())
+					return;
+				
+				Print("Processing Containers");
+				
+				// Loop backwards to avoid index issues if the array is modified during iteration
+				for (int i = m_aContainerComponents.Count() - 1; i >= 0; i--)
+				{
+					ProcessContainer(m_aContainerComponents[i]);
+				}
+			}
+			*/
 		}
 		
-		
+		if (systemRplNode.GetRole() == RplRole.Proxy)
+			return;
 		
 		if (GetItemCount() >= m_iSpawnerRatioCount)
 			return;
 		
-		if (m_aItems && !m_aItems.IsEmpty() && m_bInitiallyRan)
+		if (m_aItems && !m_aItems.IsEmpty() && m_bInitialSpawningRan)
 		{
 			float timeSlice = GetWorld().GetFixedTimeSlice();
 			m_fTimer += timeSlice;
@@ -345,113 +373,68 @@ class CE_ItemSpawningSystem : GameSystem
 	
 	//------------------------------------------------------------------------------------------------
 	//! Takes a CE_SearchableContainerComponent and processes it into a CE_SearchableContainer, as long as it passes certain checks
-	protected void ProcessContainers()
+	protected void ProcessContainer(notnull CE_SearchableContainerComponent containerComponent)
 	{
-		array<ref CE_SearchableContainer> containersProcessed = {};
-		array<CE_SearchableContainerComponent> containersToBeProcessed = {};
-		
-		containersToBeProcessed.Copy(m_aContainerComponents);
-		
-		int containerCount = containersToBeProcessed.Count();
-		
-		for (int i = 0, maxCount = Math.Min(containerCount, m_aContainerComponents.Count()); i < maxCount; i++)
+		CE_SearchableContainer container = containerComponent.GetContainer();
+		if (!container)
 		{
-			CE_SearchableContainerComponent containerComponent = containersToBeProcessed[0];
-			if (!containerComponent)
-			{
-				containersToBeProcessed.Remove(0);
-				containerCount--;
-				continue;
-			}
-		
-			if (!containerComponent.GetContainerUsage() 
-			|| !containerComponent.GetContainerTier() 
-			|| !containerComponent.GetContainerCategories()
-			|| containerComponent.m_iContainerResetTime == 0)
-			{
-				containersToBeProcessed.Remove(0);
-				containerCount--;
-				
-				if (m_aContainerComponents.Contains(containerComponent))
-				{
-					m_aContainerComponents.RemoveItem(containerComponent); // if missing info, just remove permanently
-				}
-				
-				continue;
-			}
-			else if (containerComponent.GetContainerItemMinimum() > containerComponent.GetContainerItemMaximum())
-			{
-				Print("[CentralEconomy::CE_ItemSpawningSystem] " + containerComponent + " has a item maximum value less than the item minimum value! Please fix!", LogLevel.ERROR);
-				
-				containersToBeProcessed.Remove(0);
-				containerCount--;
-				
-				if (m_aContainerComponents.Contains(containerComponent))
-				{
-					m_aContainerComponents.RemoveItem(containerComponent); // if wrong info, just remove permanently
-				}
-				
-				continue;
-			}
-			else
-			{
-				const RplId containerRplId = Replication.FindItemId(containerComponent);
-				
-				CE_SearchableContainer container = new CE_SearchableContainer();
-				
-				if (containerRplId)
-					container.SetContainerRplId(containerRplId);
-				
-				foreach (CE_Item item : containerComponent.GetItemsSpawned())
-				{
-					container.GetItemsSpawned().Insert(item);
-				}
-				
-				container.SetReadyForItems(containerComponent.IsReadyForItems());
-				
-				containerComponent.SetContainer(container);
-				
-				Replication.BumpMe();
-			}
-			
-			containersToBeProcessed.Remove(0);
-			containerCount--;
+			container = new CE_SearchableContainer();
 		}
-	}
-	
-	/*
-	//------------------------------------------------------------------------------------------------
-	//! Takes each CE_ItemSpawningComponent and processes them into a CE_Spawner, as long as they pass certain checks
-	CE_SearchableContainer ProcessContainer(CE_SearchableContainerComponent containerComponent)
-	{
+		
 		if (!containerComponent.GetContainerUsage() 
 		|| !containerComponent.GetContainerTier() 
 		|| !containerComponent.GetContainerCategories()
 		|| containerComponent.m_iContainerResetTime == 0)
 		{
+			container.SetReadyForItems(false);
+			
 			if (m_aContainerComponents.Contains(containerComponent))
 			{
-				m_aContainerComponents.RemoveItem(containerComponent); // if missing info, just remove permanently
+				m_aContainerComponents.RemoveItem(containerComponent);
 			}
+			
+			return;
 		}
 		else if (containerComponent.GetContainerItemMinimum() > containerComponent.GetContainerItemMaximum())
 		{
 			Print("[CentralEconomy::CE_ItemSpawningSystem] " + containerComponent + " has a item maximum value less than the item minimum value! Please fix!", LogLevel.ERROR);
+			
+			container.SetReadyForItems(false);
+			
 			if (m_aContainerComponents.Contains(containerComponent))
 			{
-				m_aContainerComponents.RemoveItem(containerComponent); // if missing info, just remove permanently
+				m_aContainerComponents.RemoveItem(containerComponent);
 			}
+			
+			return;
 		}
 		else
 		{
-			CE_SearchableContainer spawner = new CE_SearchableContainer(containerComponent, containerComponent.GetItemsSpawned(), containerComponent.IsReadyForItems());
+			RplId containerRplId = Replication.FindItemId(containerComponent);
 			
-			return spawner;
+			if (containerRplId)
+				container.SetContainerRplId(containerRplId);
+			
+			foreach (CE_Item item : containerComponent.GetItemsSpawned())
+			{
+				container.GetItemsSpawned().Insert(item);
+			}
+			
+			container.SetReadyForItems(containerComponent.IsReadyForItems());
+			container.SetContainerComponent(containerComponent);
+			
+			containerComponent.SetContainer(container);
 		}
 		
-		return null;
+		/*
+		if (m_aContainerComponents.Contains(containerComponent))
+		{
+			m_aContainerComponents.RemoveItem(containerComponent); // remove as they're not really worth to be kept in memory? They only gotta process once, and then rest is handle through useraction
+		}
+		*/
+		
+		Print("Processed Container");
 	}
-	*/
 	
 	//------------------------------------------------------------------------------------------------
 	//! Randomly selects a CE_Spawner from a CE_Spawner array, and checks if it's ready for an item
@@ -634,7 +617,7 @@ class CE_ItemSpawningSystem : GameSystem
 			if (!m_Resource)
 				return false;
 			
-			IEntity newEnt = GetGame().SpawnEntityPrefab(m_Resource, GetGame().GetWorld(), params);
+			IEntity newEnt = GetGame().SpawnEntityPrefab(m_Resource, spawnEntity.GetWorld(), params);
 			if (!newEnt)
 				return false;
 			
@@ -649,7 +632,7 @@ class CE_ItemSpawningSystem : GameSystem
 				{
 					SetQuantities(newEnt, itemData.m_iQuantityMinimum, itemData.m_iQuantityMaximum);
 				}
-				else // else you get this error in config
+				else // else you get this error in console
 					Print("[CentralEconomy::CE_ItemSpawningSystem] " + itemData.m_sName + " has quantity minimum set to more than quantity maximum! Please fix!", LogLevel.ERROR);
 			}
 			
@@ -702,7 +685,50 @@ class CE_ItemSpawningSystem : GameSystem
 			if (!itemData)
 				continue;
 			
-			storageManager.TrySpawnPrefabToStorage(itemData.m_sPrefab, ownerStorage);
+			vector worldTransform[4];
+			containerEntity.GetWorldTransform(worldTransform);
+			
+			EntitySpawnParams params();
+			params.Transform = worldTransform;
+			
+			Resource resource = Resource.Load(itemData.m_sPrefab);
+			if (!resource)
+				return;
+			
+			IEntity newEnt = GetGame().SpawnEntityPrefab(resource, containerEntity.GetWorld(), params);
+			if (!newEnt)
+				return;
+			
+			/*
+			if (storageManager.TrySpawnPrefabToStorage(itemData.m_sPrefab, ownerStorage))
+				item.SetAvailableCount(item.GetAvailableCount() - 1);
+			*/
+			
+			if (!storageManager.CanInsertItemInStorage(newEnt, ownerStorage))
+			{
+				Print("entity deleted");
+				
+				SCR_EntityHelper.DeleteEntityAndChildren(newEnt);
+			}
+			else
+			{
+				storageManager.InsertItem(newEnt, ownerStorage);
+				
+				item.SetAvailableCount(item.GetAvailableCount() - 1);
+				
+				// if quantities are set greater than -1 within the item data config
+				if (itemData.m_iQuantityMinimum > -1 
+				&& itemData.m_iQuantityMaximum > -1)
+				{
+					// making sure quantity maximum is not less than quantity minimum
+					if (itemData.m_iQuantityMinimum <= itemData.m_iQuantityMaximum)
+					{
+						SetQuantities(newEnt, itemData.m_iQuantityMinimum, itemData.m_iQuantityMaximum);
+					}
+					else // else you get this error in console
+						Print("[CentralEconomy::CE_ItemSpawningSystem] " + itemData.m_sName + " has quantity minimum set to more than quantity maximum! Please fix!", LogLevel.ERROR);
+				}
+			}
 		}
 	}
 	
@@ -794,6 +820,8 @@ class CE_ItemSpawningSystem : GameSystem
 		if (!m_aContainerComponents.Contains(component))
 		{
 			m_aContainerComponents.Insert(component);
+			
+			ProcessContainer(component);
 		}	
 	}
 
@@ -914,6 +942,10 @@ class CE_ItemSpawningSystem : GameSystem
 		m_bHaveAreasQueried = queried;
 	}
 }
+
+void CE_AreasQueried();
+typedef func CE_AreasQueried;
+typedef ScriptInvokerBase<CE_AreasQueried> CE_OnAreasQueriedInvoker;
 
 void CE_ItemSpawned(IEntity itemEntity, CE_Item item);
 typedef func CE_ItemSpawned;

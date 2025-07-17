@@ -5,11 +5,14 @@ class CE_WorldValidationComponentClass: SCR_BaseGameModeComponentClass
 
 class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 {
-	[Attribute("5", UIWidgets.EditBox, desc: "Frequency (in seconds) that an item will spawn, LOWER TAKES MORE PERFORMANCE (E.G. If set to 5, an item will attempt to spawn every 5 seconds)", params: "0 inf 1", category: "Item Spawning System")] // default set to 1 second
+	[Attribute("5", UIWidgets.EditBox, desc: "Frequency (in seconds) that an item will spawn, LOWER TAKES MORE PERFORMANCE (E.G. If set to 5, an item will attempt to spawn every 5 seconds)", params: "0 inf 1", category: "Item Spawning System")] // default set to 5 seconds
 	float m_fItemSpawningFrequency;
 	
-	[Attribute("0.5", UIWidgets.EditBox, desc: "Ratio of items the system will aim to spawn compared to spawners (If set to 0.5, items will populate half of the spawners in the world. If set to 1, items will populate all spawners)", params: "0 1 0.1", category: "Item Spawning System")] // default set to 1 second
+	[Attribute("0.25", UIWidgets.EditBox, desc: "Ratio of items the system will aim to spawn compared to spawners (If set to 0.5, items will populate half of the spawners in the world. If set to 1, items will populate all spawners)", params: "0 1 0.1", category: "Item Spawning System")] // default set to 1 second
 	float m_fItemSpawningRatio;
+	
+	[Attribute("0.5", UIWidgets.EditBox, desc: "Chance of a searchable container actually being searchable (If set to 0.5, each searchable container has a %5 potential for being searchable, gets randomly decided each server restart. If set to 1, searchable container has a %100 chance of being searchable)", params: "0 1 0.1", category: "Item Spawning System")] // default set to 1 second
+	protected float m_fSearchableContainerChance;
 	
 	protected bool 											m_bProcessed 			= false;							// has world been processed?
 	
@@ -103,5 +106,12 @@ class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 	CE_ItemDataConfig GetItemDataConfig()
 	{
 		return m_ItemDataConfig;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Returns the searchable container chance as a float 0 - 1
+	float GetSearchableContainerChance()
+	{
+		return m_fSearchableContainerChance;
 	}
 }
