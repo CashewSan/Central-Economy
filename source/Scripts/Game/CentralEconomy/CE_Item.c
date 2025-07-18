@@ -82,7 +82,7 @@ class CE_Item
 	//! 
 	bool RplSave(ScriptBitWriter writer)
 	{
-		//ItemData.RplSave(writer);
+		ItemData.RplSave(writer);
 		writer.Write(Tiers, 32);
 		writer.Write(Usages, 32);
 		writer.Write(Category, 32);
@@ -95,7 +95,7 @@ class CE_Item
 	//! 
 	bool RplLoad(ScriptBitReader reader)
 	{
-		//ItemData.RplLoad(reader);
+		ItemData.RplLoad(reader);
 		reader.Read(Tiers, 32);
 		reader.Read(Usages, 32);
 		reader.Read(Category, 32);
@@ -108,7 +108,7 @@ class CE_Item
 	//! Extracts relevant properties from an instance of type T into snapshot. Opposite of Inject()
 	static bool Extract(CE_Item prop, ScriptCtx ctx, SSnapSerializerBase snapshot)
 	{
-		//prop.ItemData.Extract(prop.ItemData, ctx, snapshot);
+		prop.ItemData.Extract(prop.ItemData, ctx, snapshot);
 		snapshot.SerializeBytes(prop.Tiers, 4);
 		snapshot.SerializeBytes(prop.Usages, 4);
 		snapshot.SerializeBytes(prop.Category, 4);
@@ -121,7 +121,10 @@ class CE_Item
 	//! Injects relevant properties from snapshot into an instance of type T . Opposite of Extract()
 	static bool Inject(SSnapSerializerBase snapshot, ScriptCtx ctx, CE_Item prop)
 	{
-		//prop.ItemData.Inject(snapshot, ctx, prop.ItemData);
+		if (!prop)
+			return false;
+		
+		prop.ItemData.Inject(snapshot, ctx, prop.ItemData);
 		snapshot.SerializeBytes(prop.Tiers, 4);
 		snapshot.SerializeBytes(prop.Usages, 4);
 		snapshot.SerializeBytes(prop.Category, 4);
@@ -134,7 +137,7 @@ class CE_Item
 	//! Takes snapshot and compresses it into packet. Opposite of Decode()
 	static void Encode(SSnapSerializerBase snapshot, ScriptCtx ctx, ScriptBitSerializer packet)
 	{
-		//ItemData.Encode(snapshot, ctx, packet);
+		ItemData.Encode(snapshot, ctx, packet);
 		snapshot.Serialize(packet, CE_Item.DATA_SIZE_EXCLUDE_ITEMDATA);
 	}
 
@@ -142,24 +145,27 @@ class CE_Item
 	//! Takes packet and decompresses it into snapshot. Opposite of Encode()
 	static bool Decode(ScriptBitSerializer packet, ScriptCtx ctx, SSnapSerializerBase snapshot)
 	{
-		return /*ItemData.Decode(packet, ctx, snapshot)
-			&&*/ snapshot.Serialize(packet, CE_Item.DATA_SIZE_EXCLUDE_ITEMDATA);
+		return ItemData.Decode(packet, ctx, snapshot)
+			&& snapshot.Serialize(packet, CE_Item.DATA_SIZE_EXCLUDE_ITEMDATA);
 	}
 
 	//------------------------------------------------------------------------------------------------
 	//! Compares two snapshots to see whether they are the same or not
 	static bool SnapCompare(SSnapSerializerBase lhs, SSnapSerializerBase rhs, ScriptCtx ctx)
 	{
-		return /*ItemData.SnapCompare(lhs, rhs, ctx)
-			&&*/ lhs.CompareSnapshots(rhs, CE_Item.DATA_SIZE_EXCLUDE_ITEMDATA);
+		return ItemData.SnapCompare(lhs, rhs, ctx)
+			&& lhs.CompareSnapshots(rhs, CE_Item.DATA_SIZE_EXCLUDE_ITEMDATA);
 	}
 
 	//------------------------------------------------------------------------------------------------
 	//! Compares instance and a snapshot to see if any property has changed enough to require a new snapshot
 	static bool PropCompare(CE_Item prop, SSnapSerializerBase snapshot, ScriptCtx ctx)
 	{
-		return /*prop.ItemData.PropCompare(prop.ItemData, snapshot, ctx)
-			&& */snapshot.Compare(prop.Tiers, 4)
+		if (!prop)
+			return false;
+		
+		return prop.ItemData.PropCompare(prop.ItemData, snapshot, ctx)
+			&& snapshot.Compare(prop.Tiers, 4)
 			&& snapshot.Compare(prop.Usages, 4)
 			&& snapshot.Compare(prop.Category, 4)
 			&& snapshot.Compare(prop.AvailableCount, 4);

@@ -10,7 +10,7 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 	
 	protected CE_SearchableContainerComponent 								m_ContainerComponent;												// CE_SearchableContainerComponent corresponding to the searchable container entity
 	
-	protected ref CE_SearchableContainer									m_Container;														// CE_SearchableContainer corresponding to the searchable container entity
+	protected CE_SearchableContainer										m_Container;														// CE_SearchableContainer corresponding to the searchable container entity
 	
 	//------------------------------------------------------------------------------------------------
 	override bool CanBeShownScript(IEntity user)
@@ -37,6 +37,7 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 		if (!m_SpawningSystem)
 			return false;
 		
+		Print("Have areas queried? " + m_SpawningSystem.HaveAreasQueried());
 		
 		// If CE_ItemSpawningSystem has not finished having areas queried
 		if (!m_SpawningSystem.HaveAreasQueried())
@@ -58,6 +59,8 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 		if (!m_ContainerComponent)
 			return false;
 		
+		Print("test: " + m_ContainerComponent.m_bTest);
+		
 		Print(m_ContainerComponent.IsSearchable());
 		
 		if (!m_ContainerComponent.IsSearchable())
@@ -78,8 +81,13 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 		
 		Print(m_Container.GetContainerRplId());
 		
+		Print("Ready for items: " + m_Container.IsReadyForItems());
+		
 		// If container RplId has not been set
 		if (m_Container.GetContainerRplId() == RplId.Invalid())
+			return false;
+		
+		if (!m_Container.IsReadyForItems())
 			return false;
 		
 		return super.CanBeShownScript(user);

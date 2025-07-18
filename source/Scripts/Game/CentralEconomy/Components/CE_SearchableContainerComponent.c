@@ -69,7 +69,7 @@ class CE_SearchableContainerComponent : ScriptComponent
 		if (!m_SpawningSystem)
 			return;
 		
-		m_SpawningSystem.m_OnAreasQueriedInvoker.Insert(OnAreasQueried);
+		m_SpawningSystem.GetOnAreasQueriedInvoker().Insert(OnAreasQueried);
 	}
 	
 	protected void OnAreasQueried()
@@ -85,7 +85,7 @@ class CE_SearchableContainerComponent : ScriptComponent
 		
 		SetIsSearchable(true);
 		
-		Replication.BumpMe();
+		//Replication.BumpMe();
 		
 		HookEvents();
 		
@@ -264,13 +264,6 @@ class CE_SearchableContainerComponent : ScriptComponent
 	//------------------------------------------------------------------------------------------------
 	
 	//------------------------------------------------------------------------------------------------
-	//!
-	void UpdateContainer()
-	{
-		Replication.BumpMe();
-	}
-	
-	//------------------------------------------------------------------------------------------------
 	// GETTERS/SETTERS
 	//------------------------------------------------------------------------------------------------
 	
@@ -281,13 +274,27 @@ class CE_SearchableContainerComponent : ScriptComponent
 		return m_Container;
 	}
 	
+	[RplProp()]
+	bool m_bTest = false;
+	
 	//------------------------------------------------------------------------------------------------
 	//! Sets CE_SearchableContainer corresponding to this component
 	void SetContainer(CE_SearchableContainer container)
 	{
 		m_Container = container;
 		
+		m_bTest = true;
+		
 		Replication.BumpMe();
+		
+		const RplId systemRplId = Replication.FindItemId(this);
+		const RplNode systemRplNode = Replication.FindNode(systemRplId);
+		
+		Print("RplRole: " + systemRplNode.GetRole());
+		
+		if (systemRplNode.GetRole() == RplRole.Authority)
+		{
+		}
 	}
 	
 	//------------------------------------------------------------------------------------------------

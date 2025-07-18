@@ -18,7 +18,7 @@ class CE_ItemSpawningSystem : GameSystem
 	
 	protected ref RandomGenerator 						m_RandomGen						= new RandomGenerator();							// vanilla random generator
 	
-	ref CE_OnAreasQueriedInvoker					m_OnAreasQueriedInvoker			= new CE_OnAreasQueriedInvoker();					// script invoker for when all areas have been queried
+	protected ref CE_OnAreasQueriedInvoker					m_OnAreasQueriedInvoker			= new CE_OnAreasQueriedInvoker();					// script invoker for when all areas have been queried
 	
 	protected float 										m_fTimer							= 0;												// timer for spawning check interval
 	protected float										m_fItemSpawningFrequency			= 0; 											// frequency (in seconds) that an item will spawn
@@ -55,6 +55,8 @@ class CE_ItemSpawningSystem : GameSystem
 		{
 			if(m_WorldValidationComponent.HasWorldProcessed())
 			{
+				m_OnAreasQueriedInvoker.Insert(InitialSpawningPhase);
+				
 				m_fItemSpawningFrequency = m_WorldValidationComponent.m_fItemSpawningFrequency;
 				m_fItemSpawningRatio = m_WorldValidationComponent.m_fItemSpawningRatio;
 				
@@ -176,11 +178,7 @@ class CE_ItemSpawningSystem : GameSystem
 			if (HaveAreasQueried() == false)
 			{
 				SetHaveAreasQueried(true);
-				
-				Print("invoked");
 				m_OnAreasQueriedInvoker.Invoke();
-				
-				Replication.BumpMe();
 			}
 			
 			if (systemRplNode.GetRole() == RplRole.Authority && !m_bInitialSpawningRan)
@@ -189,23 +187,6 @@ class CE_ItemSpawningSystem : GameSystem
 				
 				InitialSpawningPhase();
 			}
-			/*
-			if (m_bContainersProcessed == false)
-			{
-				m_bContainersProcessed = true;
-				
-				if (m_aContainerComponents.IsEmpty())
-					return;
-				
-				Print("Processing Containers");
-				
-				// Loop backwards to avoid index issues if the array is modified during iteration
-				for (int i = m_aContainerComponents.Count() - 1; i >= 0; i--)
-				{
-					ProcessContainer(m_aContainerComponents[i]);
-				}
-			}
-			*/
 		}
 		
 		if (systemRplNode.GetRole() == RplRole.Proxy)
@@ -822,7 +803,7 @@ class CE_ItemSpawningSystem : GameSystem
 			m_aContainerComponents.Insert(component);
 			
 			ProcessContainer(component);
-		}	
+		}
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -940,6 +921,13 @@ class CE_ItemSpawningSystem : GameSystem
 	void SetHaveAreasQueried(bool queried)
 	{
 		m_bHaveAreasQueried = queried;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets CE_OnAreasQueriedInvoker script invoker
+	CE_OnAreasQueriedInvoker GetOnAreasQueriedInvoker()
+	{
+		return m_OnAreasQueriedInvoker;
 	}
 }
 

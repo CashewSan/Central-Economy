@@ -103,6 +103,9 @@ class CE_ItemData
 	//! Injects relevant properties from snapshot into an instance of type T . Opposite of Extract()
 	static bool Inject(SSnapSerializerBase snapshot, ScriptCtx ctx, CE_ItemData prop)
 	{
+		if (!prop)
+			return false;
+		
 		snapshot.SerializeString(prop.m_sName);
 		snapshot.SerializeString(prop.m_sPrefab);
 		snapshot.SerializeBytes(prop.m_vItemRotation, 12);
@@ -152,6 +155,9 @@ class CE_ItemData
 	//! Compares instance and a snapshot to see if any property has changed enough to require a new snapshot
 	static bool PropCompare(CE_ItemData prop, SSnapSerializerBase snapshot, ScriptCtx ctx)
 	{
+		if (!prop)
+			return false;
+		
 		return snapshot.CompareString(prop.m_sName)
 			&& snapshot.CompareString(prop.m_sPrefab)
 			&& snapshot.Compare(prop.m_vItemRotation, 12)
