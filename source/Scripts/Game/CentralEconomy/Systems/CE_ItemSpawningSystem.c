@@ -167,6 +167,9 @@ class CE_ItemSpawningSystem : GameSystem
 		}
 		*/
 		
+		if (systemRplNode.GetRole() == RplRole.Proxy)
+			return;
+		
 		if (GetUsageAreasQueried() >= m_aUsageAreas.Count() 
 		&& GetTierAreasQueried() >= m_aTierAreas.Count())
 		{
@@ -181,16 +184,13 @@ class CE_ItemSpawningSystem : GameSystem
 				m_OnAreasQueriedInvoker.Invoke();
 			}
 			
-			if (systemRplNode.GetRole() == RplRole.Authority && !m_bInitialSpawningRan)
+			if (!m_bInitialSpawningRan)
 			{
 				Print("Initial Spawning");
 				
 				InitialSpawningPhase();
 			}
 		}
-		
-		if (systemRplNode.GetRole() == RplRole.Proxy)
-			return;
 		
 		if (GetItemCount() >= m_iSpawnerRatioCount)
 			return;
@@ -356,18 +356,12 @@ class CE_ItemSpawningSystem : GameSystem
 	//! Takes a CE_SearchableContainerComponent and processes it into a CE_SearchableContainer, as long as it passes certain checks
 	protected void ProcessContainer(notnull CE_SearchableContainerComponent containerComponent)
 	{
-		CE_SearchableContainer container = containerComponent.GetContainer();
-		if (!container)
-		{
-			container = new CE_SearchableContainer();
-		}
-		
 		if (!containerComponent.GetContainerUsage() 
 		|| !containerComponent.GetContainerTier() 
 		|| !containerComponent.GetContainerCategories()
 		|| containerComponent.m_iContainerResetTime == 0)
 		{
-			container.SetReadyForItems(false);
+			containerComponent.SetReadyForItems(false);
 			
 			if (m_aContainerComponents.Contains(containerComponent))
 			{
@@ -380,7 +374,7 @@ class CE_ItemSpawningSystem : GameSystem
 		{
 			Print("[CentralEconomy::CE_ItemSpawningSystem] " + containerComponent + " has a item maximum value less than the item minimum value! Please fix!", LogLevel.ERROR);
 			
-			container.SetReadyForItems(false);
+			containerComponent.SetReadyForItems(false);
 			
 			if (m_aContainerComponents.Contains(containerComponent))
 			{
@@ -391,20 +385,12 @@ class CE_ItemSpawningSystem : GameSystem
 		}
 		else
 		{
-			RplId containerRplId = Replication.FindItemId(containerComponent);
-			
-			if (containerRplId)
-				container.SetContainerRplId(containerRplId);
-			
 			foreach (CE_Item item : containerComponent.GetItemsSpawned())
 			{
-				container.GetItemsSpawned().Insert(item);
+				containerComponent.GetItemsSpawned().Insert(item);
 			}
 			
-			container.SetReadyForItems(containerComponent.IsReadyForItems());
-			container.SetContainerComponent(containerComponent);
-			
-			containerComponent.SetContainer(container);
+			containerComponent.SetReadyForItems(containerComponent.IsReadyForItems());
 		}
 		
 		/*
@@ -506,15 +492,11 @@ class CE_ItemSpawningSystem : GameSystem
 	
 	//------------------------------------------------------------------------------------------------
 	//! Randomly selects a CE_Item from a CE_Item array, and checks for matching attributes against a CE_SearchableContainer
-	array<ref CE_Item> SelectItems(array<ref CE_Item> itemsArray, CE_SearchableContainer container, int min, int max)
+	array<ref CE_Item> SelectItems(array<ref CE_Item> itemsArray, CE_SearchableContainerComponent containerComponent, int min, int max)
 	{
 		if (itemsArray.IsEmpty())
 			return null;
 		
-		if (!container)
-			return null;
-		
-		CE_SearchableContainerComponent containerComponent = container.GetContainerComponentFromRplId(container.GetContainerRplId());
 		if (!containerComponent)
 			return null;
 		
@@ -642,9 +624,8 @@ class CE_ItemSpawningSystem : GameSystem
 	
 	//------------------------------------------------------------------------------------------------
 	//! Tries to spawn the CE_Item to the CE_SearchableContainer
-	void TryToSpawnItems(CE_SearchableContainer container, array<ref CE_Item> itemsArray)
+	void TryToSpawnItems(CE_SearchableContainerComponent containerComp, array<ref CE_Item> itemsArray)
 	{
-		CE_SearchableContainerComponent containerComp = container.GetContainerComponentFromRplId(container.GetContainerRplId());
 		if (!containerComp)
 			return;
 		
@@ -947,7 +928,7 @@ void CE_SpawnerReset(CE_ItemSpawningComponent spawner);
 typedef func CE_SpawnerReset;
 typedef ScriptInvokerBase<CE_SpawnerReset> CE_OnSpawnerResetInvoker;
 
-void CE_ContainerSearched(CE_SearchableContainer container, IEntity userEntity);
+void CE_ContainerSearched(CE_SearchableContainerComponent container, IEntity userEntity);
 typedef func CE_ContainerSearched;
 typedef ScriptInvokerBase<CE_ContainerSearched> CE_OnContainerSearchedInvoker;
 

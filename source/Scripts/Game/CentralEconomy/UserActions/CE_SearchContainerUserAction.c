@@ -10,8 +10,6 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 	
 	protected CE_SearchableContainerComponent 								m_ContainerComponent;												// CE_SearchableContainerComponent corresponding to the searchable container entity
 	
-	protected CE_SearchableContainer										m_Container;														// CE_SearchableContainer corresponding to the searchable container entity
-	
 	//------------------------------------------------------------------------------------------------
 	override bool CanBeShownScript(IEntity user)
 	{
@@ -37,7 +35,7 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 		if (!m_SpawningSystem)
 			return false;
 		
-		Print("Have areas queried? " + m_SpawningSystem.HaveAreasQueried());
+		//Print("Have areas queried? " + m_SpawningSystem.HaveAreasQueried());
 		
 		// If CE_ItemSpawningSystem has not finished having areas queried
 		if (!m_SpawningSystem.HaveAreasQueried())
@@ -59,35 +57,20 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 		if (!m_ContainerComponent)
 			return false;
 		
-		Print("test: " + m_ContainerComponent.m_bTest);
-		
-		Print(m_ContainerComponent.IsSearchable());
+		//Print(m_ContainerComponent.IsSearchable());
 		
 		if (!m_ContainerComponent.IsSearchable())
 			return false;
 		
-		Print(m_ContainerComponent.HasBeenSearched());
+		//Print(m_ContainerComponent.HasBeenSearched());
 		
 		// If target has already been searched
 		if (m_ContainerComponent.HasBeenSearched())
 			return false;
 		
-		// If the CE_SearchableContainerComponent has not been processed into a CE_SearchableContainer
-		m_Container = m_ContainerComponent.GetContainer();
-		Print(m_Container);
+		//Print(m_ContainerComponent.IsReadyForItems());
 		
-		if (!m_Container)
-			return false;
-		
-		Print(m_Container.GetContainerRplId());
-		
-		Print("Ready for items: " + m_Container.IsReadyForItems());
-		
-		// If container RplId has not been set
-		if (m_Container.GetContainerRplId() == RplId.Invalid())
-			return false;
-		
-		if (!m_Container.IsReadyForItems())
+		if (!m_ContainerComponent.IsReadyForItems())
 			return false;
 		
 		return super.CanBeShownScript(user);
@@ -138,17 +121,20 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 		if (!m_ContainerComponent)
 			return false;
 		
+		//Print(m_ContainerComponent.IsSearchable());
+		
+		if (!m_ContainerComponent.IsSearchable())
+			return false;
+		
+		//Print(m_ContainerComponent.HasBeenSearched());
+		
 		// If target has already been searched
 		if (m_ContainerComponent.HasBeenSearched())
 			return false;
 		
-		// If the CE_SearchableContainerComponent has not been processed into a CE_SearchableContainer
-		m_Container = m_ContainerComponent.GetContainer();
-		if (!m_Container)
-			return false;
+		//Print(m_ContainerComponent.IsReadyForItems());
 		
-		// If container RplId has not been set
-		if (m_Container.GetContainerRplId() == RplId.Invalid())
+		if (!m_ContainerComponent.IsReadyForItems())
 			return false;
 		
 		return super.CanBePerformedScript(user);
@@ -175,8 +161,6 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 			m_ContainerComponent = CE_SearchableContainerComponent.Cast(pOwnerEntity.FindComponent(CE_SearchableContainerComponent));
 			if (!m_ContainerComponent)
 				return;
-			
-			m_Container = m_ContainerComponent.GetContainer();
 			
 			SCR_UniversalInventoryStorageComponent ownerStorage = SCR_UniversalInventoryStorageComponent.Cast(pOwnerEntity.FindComponent(SCR_UniversalInventoryStorageComponent));
 			if (!ownerStorage)
@@ -235,12 +219,9 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 		if (!m_ContainerComponent)
 			return;
 		
-		if (m_Container)
-		{
-			m_ContainerComponent.GetContainerSearchedInvoker().Invoke(m_Container, pUserEntity);
-			
-			TryToPopulateStorage(m_Container);
-		}
+		m_ContainerComponent.GetContainerSearchedInvoker().Invoke(m_ContainerComponent, pUserEntity);
+		
+		TryToPopulateStorage(m_ContainerComponent);
 		
 		SCR_InventoryStorageManagerComponent genericInventoryManager =  SCR_InventoryStorageManagerComponent.Cast(pUserEntity.FindComponent( SCR_InventoryStorageManagerComponent ));
 		if (!genericInventoryManager)
@@ -249,9 +230,11 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 		PerformActionInternal(genericInventoryManager, pOwnerEntity, pUserEntity);
 	}
 	
-	protected void TryToPopulateStorage(CE_SearchableContainer container)
+	//------------------------------------------------------------------------------------------------
+	//!
+	protected void TryToPopulateStorage(CE_SearchableContainerComponent containerComp)
 	{
-		if (!container)
+		if (!containerComp)
 			return;
 		
 		World world = GetOwner().GetWorld();
@@ -260,10 +243,6 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 		
 		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
 		if (!m_SpawningSystem)
-			return;
-		
-		CE_SearchableContainerComponent containerComp = container.GetContainerComponentFromRplId(container.GetContainerRplId());
-		if (!containerComp)
 			return;
 		
 		array<ref CE_Item> items = {};
@@ -277,13 +256,13 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 			items = m_SpawningSystem.GetItems();
 		}
 		
-		array<ref CE_Item> itemsSelected = m_SpawningSystem.SelectItems(items, container, containerComp.GetContainerItemMinimum(), containerComp.GetContainerItemMaximum());
+		array<ref CE_Item> itemsSelected = m_SpawningSystem.SelectItems(items, containerComp, containerComp.GetContainerItemMinimum(), containerComp.GetContainerItemMaximum());
 		
 		Print(itemsSelected);
 		
 		if (itemsSelected && !itemsSelected.IsEmpty())
 		{
-			m_SpawningSystem.TryToSpawnItems(container, itemsSelected);
+			m_SpawningSystem.TryToSpawnItems(containerComp, itemsSelected);
 		}
 	}
 	
@@ -358,7 +337,7 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 		return true;
 	}
 	
-	protected override bool HasLocalEffectOnlyScript()
+	override bool HasLocalEffectOnlyScript()
 	{
 		return true;
 	}
