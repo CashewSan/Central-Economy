@@ -223,11 +223,17 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 		
 		TryToPopulateStorage(m_ContainerComponent);
 		
-		SCR_InventoryStorageManagerComponent genericInventoryManager =  SCR_InventoryStorageManagerComponent.Cast(pUserEntity.FindComponent( SCR_InventoryStorageManagerComponent ));
-		if (!genericInventoryManager)
-			return;
+		if (EntityUtils.GetPlayer() == pUserEntity)
+		{
+			SCR_InventoryStorageManagerComponent genericInventoryManager =  SCR_InventoryStorageManagerComponent.Cast(pUserEntity.FindComponent( SCR_InventoryStorageManagerComponent ));
+			if (!genericInventoryManager)
+				return;
+			
+			PerformActionInternal(genericInventoryManager, pOwnerEntity, pUserEntity);
+		}
 		
-		PerformActionInternal(genericInventoryManager, pOwnerEntity, pUserEntity);
+		if (m_StorageItemAttributes)
+			m_StorageItemAttributes.CE_SetVisible(false);
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -275,9 +281,6 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 		
 		manager.SetStorageToOpen(pOwnerEntity);
 		manager.OpenInventory();
-		
-		if (m_StorageItemAttributes)
-			m_StorageItemAttributes.CE_SetVisible(false);
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -337,8 +340,10 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 		return true;
 	}
 	
+	/*
 	override bool HasLocalEffectOnlyScript()
 	{
 		return true;
 	}
+	*/
 }

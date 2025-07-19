@@ -1,6 +1,6 @@
 class CE_Item
 {
-	static const int DATA_SIZE_EXCLUDE_ITEMDATA = 16; // Tiers (4 bytes) + Usages (4 bytes) + Category (4 bytes) + AvailableCount (4 bytes)
+	//static const int DATA_SIZE_EXCLUDE_ITEMDATA = 16; // Tiers (4 bytes) + Usages (4 bytes) + Category (4 bytes) + AvailableCount (4 bytes)
 	
 	protected static CE_ItemData ItemData;
 	protected CE_ELootTier Tiers;
@@ -78,6 +78,7 @@ class CE_Item
 		AvailableCount = availableCount;
 	}
 	
+	/*
 	//------------------------------------------------------------------------------------------------
 	//! 
 	bool RplSave(ScriptBitWriter writer)
@@ -170,4 +171,5 @@ class CE_Item
 			&& snapshot.Compare(prop.Category, 4)
 			&& snapshot.Compare(prop.AvailableCount, 4);
 	}
+	*/
 }

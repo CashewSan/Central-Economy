@@ -27,13 +27,8 @@ class CE_SearchableContainerComponent : ScriptComponent
 	protected CE_ELootTier 								m_Tier; 																		// gets set by the Tier Trigger Area Entity
 	
 	protected bool 										m_bHasConfig 							= false;								// does the searchable container have a custom item data config? (NOT THE UNIVERSAL ONE)
-	
-	/*[RplProp()]*/
 	protected bool 										m_bHasBeenSearched						= false;								// has the container been searched?
-	
-	[RplProp()]
 	protected bool										m_bIsSearchable							= false;								// is the container searchable?
-	
 	protected bool 										m_bWereItemsDespawned 					= false;								// was the items despawned by the system?
 	protected bool										m_bHaveItemsProcessed	;														// have the items of the container been processed? ONLY APPLICABLE IF m_ItemDataConfig IS SET!
 	protected bool										m_bHasContainerReset						= false;								// has the container reset?
@@ -48,10 +43,7 @@ class CE_SearchableContainerComponent : ScriptComponent
 	
 	protected ref array<ref CE_Item>						m_aItems									= new array<ref CE_Item>;				// CE_Item array, items processed from system IF the container has it's own config set (m_ItemDataConfig)
 	protected ref array<ref CE_Item> 						m_aItemsSpawned							= new array<ref CE_Item>;				// CE_Item array that has spawned on the container
-	protected ref array<IEntity> 							m_EntitiesSpawned						= new array<IEntity>;					// IEntity array that has spawned on the container
 	
-	//[RplProp()]
-	//protected ref CE_SearchableContainer					m_Container								/*= new CE_SearchableContainer()*/;		// CE_SearchableContainer corresponding to this CE_SearchableContainerComponent
 	protected ref RandomGenerator 						m_RandomGen								= new RandomGenerator();				// vanilla random generator
 	
 	protected CE_ItemSpawningSystem 						m_SpawningSystem;															// the spawning game system used to control spawning
@@ -219,7 +211,11 @@ class CE_SearchableContainerComponent : ScriptComponent
 	//! Called when container is searched by user action
 	protected void OnContainerSearched(CE_SearchableContainerComponent container, IEntity userEntity)
 	{	
-		Rpc(RpcAsk_SetHasBeenSearched, true);
+		//Rpc(RpcAsk_SetHasBeenSearched, true);
+		
+		m_bHasBeenSearched = true;
+		
+		Replication.BumpMe();
 		
 		ConnectToTimingSystem();
 	}

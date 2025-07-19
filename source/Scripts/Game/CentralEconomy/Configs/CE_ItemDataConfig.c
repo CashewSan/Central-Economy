@@ -37,6 +37,7 @@ class CE_ItemData
 	[Attribute("", UIWidgets.Flags, desc: "Which tier(s) will this item spawn in?", enums: ParamEnumArray.FromEnum(CE_ELootTier))]
 	CE_ELootTier m_ItemTiers;
 	
+	/*
 	static const int DATA_SIZE_EXCLUDE_STRINGS = 48;
 	
 	//------------------------------------------------------------------------------------------------
@@ -171,6 +172,7 @@ class CE_ItemData
 			&& snapshot.Compare(prop.m_ItemUsages, 4)
 			&& snapshot.Compare(prop.m_ItemTiers, 4);
 	}
+	*/
 }
 
 [BaseContainerProps(configRoot: true)]
