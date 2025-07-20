@@ -8,16 +8,12 @@ class CE_ItemSpawningSystem : GameSystem
 	*/
 	
 	protected ref array<CE_ItemSpawningComponent> 			m_aSpawnerComponents		 		= new array<CE_ItemSpawningComponent>(); 			// ALL registered spawner components in the world
-	protected ref array<ref CE_Spawner>					m_aSpawners						= new array<ref CE_Spawner>();					// processed CE_ItemSpawningComponent into CE_Spawner
 	protected ref array<CE_SearchableContainerComponent> 	m_aContainerComponents 			= new array<CE_SearchableContainerComponent>(); 	// ALL registered searchable container components in the world
-	
 	protected ref array<ref CE_Item>						m_aItems 						= new array<ref CE_Item>();						// processed CE_ItemData into CE_Item
-	
 	protected ref array<CE_UsageTriggerArea>				m_aUsageAreas					= new array<CE_UsageTriggerArea>();				// usage areas registered to the system
 	protected ref array<CE_TierTriggerArea>				m_aTierAreas						= new array<CE_TierTriggerArea>();				// tier areas registered to the system
 	
 	protected ref RandomGenerator 						m_RandomGen						= new RandomGenerator();							// vanilla random generator
-	
 	protected ref CE_OnAreasQueriedInvoker					m_OnAreasQueriedInvoker			= new CE_OnAreasQueriedInvoker();					// script invoker for when all areas have been queried
 	
 	protected float 										m_fTimer							= 0;												// timer for spawning check interval
@@ -32,7 +28,6 @@ class CE_ItemSpawningSystem : GameSystem
 	[RplProp()]
 	protected bool										m_bHaveAreasQueried				= false;											// have the usage and tier areas finished querying?
 	protected bool										m_bInitialSpawningRan				= false;											// has the system ran it's initial spawning phase?
-	protected bool										m_bContainersProcessed			= false;											// have CE_SearchableContainerComponent's been processed?
 	
 	//------------------------------------------------------------------------------------------------
 	//! On system start
@@ -92,7 +87,13 @@ class CE_ItemSpawningSystem : GameSystem
 				processedSpawnersArray.Insert(spawner);
 			}
 			
-			m_iSpawnerRatioCount = Math.Round(processedSpawnersArray.Count() * m_fItemSpawningRatio);
+			if (processedSpawnersArray.Count() == 1)
+			{
+				m_iSpawnerRatioCount = 1;
+			}
+			else
+				m_iSpawnerRatioCount = Math.Round(processedSpawnersArray.Count() * m_fItemSpawningRatio);
+			
 			int runCount = 0;
 			int failCount = 0;
 			
@@ -173,14 +174,11 @@ class CE_ItemSpawningSystem : GameSystem
 		if (GetUsageAreasQueried() >= m_aUsageAreas.Count() 
 		&& GetTierAreasQueried() >= m_aTierAreas.Count())
 		{
-			/*
-			PrintFormat("Usage Areas Queried: %1 - Total Count: %2", GetUsageAreasQueried(), m_aUsageAreas.Count());
-			PrintFormat("Tier Areas Queried: %1 - Total Count: %2", GetTierAreasQueried(), m_aTierAreas.Count());
-			*/
-			
 			if (HaveAreasQueried() == false)
 			{
 				SetHaveAreasQueried(true);
+				Replication.BumpMe();
+				
 				m_OnAreasQueriedInvoker.Invoke();
 			}
 			
@@ -190,6 +188,9 @@ class CE_ItemSpawningSystem : GameSystem
 				
 				InitialSpawningPhase();
 			}
+			
+			//m_aUsageAreas.Clear();	// no point of keeping in memory once queried since querying only happens once at launch of server
+			//m_aTierAreas.Clear();		// no point of keeping in memory once queried since querying only happens once at launch of server
 		}
 		
 		if (GetItemCount() >= m_iSpawnerRatioCount)
@@ -359,7 +360,7 @@ class CE_ItemSpawningSystem : GameSystem
 		if (!containerComponent.GetContainerUsage() 
 		|| !containerComponent.GetContainerTier() 
 		|| !containerComponent.GetContainerCategories()
-		|| containerComponent.m_iContainerResetTime == 0)
+		|| containerComponent.GetContainerResetTime() == 0)
 		{
 			containerComponent.SetReadyForItems(false);
 			
@@ -400,7 +401,7 @@ class CE_ItemSpawningSystem : GameSystem
 		}
 		*/
 		
-		Print("Processed Container");
+		//Print("Processed Container");
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -612,7 +613,7 @@ class CE_ItemSpawningSystem : GameSystem
 		        }
 			}
 			
-			spawnerComponent.GetItemSpawnedInvoker().Invoke(newEnt, item);
+			spawnerComponent.GetItemSpawnedInvoker().Invoke(newEnt, item, spawner);
 			
 			SetItemCount(GetItemCount() + 1);
 			
@@ -626,6 +627,12 @@ class CE_ItemSpawningSystem : GameSystem
 	//! Tries to spawn the CE_Item to the CE_SearchableContainer
 	void TryToSpawnItems(CE_SearchableContainerComponent containerComp, array<ref CE_Item> itemsArray)
 	{
+		const RplId systemRplId = Replication.FindItemId(this);
+		const RplNode systemRplNode = Replication.FindNode(systemRplId);
+		
+		if (systemRplNode.GetRole() == RplRole.Proxy)
+			return;
+		
 		if (!containerComp)
 			return;
 		
@@ -666,15 +673,31 @@ class CE_ItemSpawningSystem : GameSystem
 				item.SetAvailableCount(item.GetAvailableCount() - 1);
 			*/
 			
+			CE_ItemSpawnableComponent spawnableItem = CE_ItemSpawnableComponent.Cast(newEnt.FindComponent(CE_ItemSpawnableComponent));
+			if (spawnableItem)
+			{
+				spawnableItem.SetWasDepositedByAction(true);
+				spawnableItem.HookDepositEvent();
+			}
+			else
+			{
+				Print("[CentralEconomy::CE_ItemSpawningSystem] THIS ITEM HAS NO CE_ITEMSPAWNABLECOMPONENT!: " + itemData.m_sName, LogLevel.ERROR);
+			}
+			
 			if (!storageManager.CanInsertItemInStorage(newEnt, ownerStorage))
 			{
-				Print("entity deleted");
+				//Print("entity deleted");
 				
 				SCR_EntityHelper.DeleteEntityAndChildren(newEnt);
 			}
 			else
-			{
+			{	
 				storageManager.InsertItem(newEnt, ownerStorage);
+				
+				if (spawnableItem)
+				{
+					spawnableItem.GetItemDepositedInvoker().Invoke(item, containerComp);
+				}
 				
 				item.SetAvailableCount(item.GetAvailableCount() - 1);
 				
@@ -916,13 +939,13 @@ void CE_AreasQueried();
 typedef func CE_AreasQueried;
 typedef ScriptInvokerBase<CE_AreasQueried> CE_OnAreasQueriedInvoker;
 
-void CE_ItemSpawned(IEntity itemEntity, CE_Item item);
-typedef func CE_ItemSpawned;
-typedef ScriptInvokerBase<CE_ItemSpawned> CE_OnItemSpawnedInvoker;
+void CE_ItemSpawnedOnSpawner(IEntity itemEntity, CE_Item item, CE_Spawner spawner);
+typedef func CE_ItemSpawnedOnSpawner;
+typedef ScriptInvokerBase<CE_ItemSpawnedOnSpawner> CE_OnItemSpawnedOnSpawnerInvoker;
 
-void CE_ItemDespawned(IEntity itemEntity, CE_Item item);
-typedef func CE_ItemDespawned;
-typedef ScriptInvokerBase<CE_ItemDespawned> CE_OnItemDespawnedInvoker;
+void CE_ItemDespawnedFromSpawner(IEntity itemEntity, CE_Item item);
+typedef func CE_ItemDespawnedFromSpawner;
+typedef ScriptInvokerBase<CE_ItemDespawnedFromSpawner> CE_OnItemDespawnedFromSpawnerInvoker;
 
 void CE_SpawnerReset(CE_ItemSpawningComponent spawner);
 typedef func CE_SpawnerReset;

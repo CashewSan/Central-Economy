@@ -7,9 +7,11 @@ class CE_ItemSpawnableComponent : ScriptComponent
 {
 	protected ref CE_ItemLifetimeEndedInvoker 				m_OnItemLifetimeEndedInvoker 					= new CE_ItemLifetimeEndedInvoker();	// script invoker for when the item's lifetime has ended
 	protected ref CE_ItemRestockEndedInvoker 				m_OnItemRestockEndedInvoker 					= new CE_ItemRestockEndedInvoker();	// script invoker for when the item's restock time has ended
+	protected ref CE_OnItemDepositedInvoker				m_OnItemDepositedInvoker						= new CE_OnItemDepositedInvoker();	// script invoker for when the item has be deposited into a CE Searchable Container
+	protected ref CE_OnItemSpawnedInvoker					m_OnItemSpawnedInvoker						= new CE_OnItemSpawnedInvoker();	// script invoker for when the item has been spawned on the spawner
 	
 	protected CE_ItemSpawnableSystem 						m_SpawnableSystem;																// the spawnable item game system
-	protected CE_ItemSpawningComponent					m_Spawner;																		// which CE_ItemSpawningComponent does this CE_ItemSpawnableComponent correspond to?
+	protected CE_Spawner									m_Spawner;																		// which CE_ItemSpawningComponent does this CE_ItemSpawnableComponent correspond to?
 	protected ref CE_Item									m_Item;																			// which CE_Item does this CE_ItemSpawnableComponent correspond to?
 	
 	protected int										m_iTotalRestockTime							= 0;									// total restock time (set from the CE_ItemDataConfig)
@@ -19,30 +21,27 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	
 	protected bool										m_bHasRestockEnded							= false;								// has this item's restock ended?
 	protected bool										m_bHasLifetimeEnded							= false;								// has this item's lifetime ended?
-	protected bool										m_bWasItemTaken								= false;								// was item taken and NOT despawned?
-	protected bool										m_bWasSpawnedBySystem							= false;								// was item spawned by CE_ItemSpawningSystem?
+	protected bool										m_bWasItemTaken								= false;								// was item taken from it's spawner or searchable container?
+	
+	[RplProp()]
+	protected bool										m_bWasDepositedByAction						= false;								// was item deposited into CE Searchable Containers by the user action?
 	
 	//------------------------------------------------------------------------------------------------
-	//! Post initialization
-	protected override void OnPostInit(IEntity owner)
+	//! Initializes the deposit event callback
+	void HookDepositEvent()
 	{
-		HookEvents();
+		//Print("TEST: Hooked deposit event");
 		
-		GetGame().GetCallqueue().CallLater(DelayedInit, 1000);
+		m_OnItemDepositedInvoker.Insert(OnItemDeposited);
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Delayed initialization call after component creation
-	protected void DelayedInit()
+	//! Initialize the necessary callbacks for spawning on a spawner
+	void HookSpawningEvents()
 	{
-		if (WasSpawnedBySystem() && !HasRestockEnded())
-			ConnectToItemSpawnableSystem();
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Initialize necessary callbacks
-	protected void HookEvents()
-	{
+		//Print("TEST: Hooked spawning events");
+		
+		m_OnItemSpawnedInvoker.Insert(OnItemSpawned);
 		m_OnItemLifetimeEndedInvoker.Insert(OnLifetimeEnded);
 		m_OnItemRestockEndedInvoker.Insert(OnRestockEnded);
 	}
@@ -51,10 +50,10 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	//! Gets called from the m_SpawnableSystem to handle spawnable item lifetime and restock
 	void Update(int checkInterval)
 	{
-		if (GetTotalLifetime() && GetTotalLifetime() != 0)
+		if (GetTotalLifetime() && GetTotalLifetime() != 0  && !WasItemTaken())
 		{
 			SetCurrentLifetime(Math.ClampInt(GetCurrentLifetime() - checkInterval, 0, GetTotalLifetime()));
-			if (GetCurrentLifetime() == 0 && !HasLifetimeEnded() && !WasItemTaken())
+			if (GetCurrentLifetime() == 0 && !HasLifetimeEnded())
 			{
 				SetHasLifetimeEnded(true);
 				
@@ -109,6 +108,79 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Called when the item is spawned onto a CE_Spawner
+	protected void OnItemSpawned(CE_Item item, CE_Spawner spawner)
+	{
+		//Print("TEST: OnItemSpawned");
+		
+		m_Item = item;
+		m_Spawner = spawner;
+		
+		CE_ItemData itemData = item.GetItemData();
+		if (itemData)
+		{
+			m_iTotalRestockTime = itemData.m_iRestock;
+			m_iCurrentRestockTime = itemData.m_iRestock;
+			m_iTotalLifetime = itemData.m_iLifetime;
+			m_iCurrentLifetime = itemData.m_iLifetime;
+		}
+		
+		InventoryItemComponent itemComponent = InventoryItemComponent.Cast(GetOwner().FindComponent(InventoryItemComponent));
+		if (itemComponent)
+			itemComponent.m_OnParentSlotChangedInvoker.Insert(OnItemTaken);
+		
+		ConnectToItemSpawnableSystem();
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Called when the item is deposited into a CE Searchable Container
+	protected void OnItemDeposited(CE_Item item, CE_SearchableContainerComponent container)
+	{
+		//Print("TEST: OnItemDeposited");
+		
+		InventoryItemComponent itemComponent = InventoryItemComponent.Cast(GetOwner().FindComponent(InventoryItemComponent));
+		if (itemComponent)
+			itemComponent.m_OnParentSlotChangedInvoker.Insert(OnItemTaken);
+		
+		CE_ItemData itemData = item.GetItemData();
+		if (itemData)
+		{
+			m_iTotalRestockTime = itemData.m_iRestock;
+			m_iCurrentRestockTime = itemData.m_iRestock;
+			// won't set lifetime on this because the items will never despawn in a searchable container, only when the container resets will they be despawned
+		}
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Called when the item is taken from a CE Searchable Container or a CE_Spawner
+	protected void OnItemTaken(InventoryStorageSlot oldSlot, InventoryStorageSlot newSlot)
+	{
+		SetWasItemTaken(true);
+		SetTotalLifetime(0);
+		
+		ConnectToItemSpawnableSystem();
+		
+		if (WasDepositedByAction())
+			SetWasDepositedByAction(false); // can no longer be put back into searchable container
+		
+		World world = GetOwner().GetWorld();
+		if (world)
+		{
+			CE_ItemSpawningSystem spawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+			if (spawningSystem)
+			{
+				spawningSystem.SetItemCount(spawningSystem.GetItemCount() - 1);
+			}
+		}
+		
+		InventoryItemComponent itemComponent = InventoryItemComponent.Cast(GetOwner().FindComponent(InventoryItemComponent));
+		if (itemComponent)
+		{
+			itemComponent.m_OnParentSlotChangedInvoker.Remove(OnItemTaken);
+		}
+	}
+	
+	//------------------------------------------------------------------------------------------------
 	//! Calls for disconnect from item spawnable system on deletion of component
 	override void OnDelete(IEntity owner)
 	{
@@ -137,12 +209,32 @@ class CE_ItemSpawnableComponent : ScriptComponent
 		{
 			item.SetAvailableCount(item.GetAvailableCount() + 1);
 			
-			GetSpawner().GetSpawnerResetnvoker().Invoke(GetSpawner());
+			CE_ItemSpawningComponent spawnerComp = GetSpawner().GetSpawningComponent();
+			
+			spawnerComp.GetSpawnerResetnvoker().Invoke(spawnerComp);
 			
 			DisconnectFromItemSpawnableSystem();
 			
 			SCR_EntityHelper.DeleteEntityAndChildren(GetOwner());
 		}
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	// REPLICATION STUFF
+	//------------------------------------------------------------------------------------------------
+	
+	override bool RplSave(ScriptBitWriter writer)
+	{
+		writer.Write(m_bWasDepositedByAction, 1);
+		
+		return true;
+	}
+	
+	override bool RplLoad(ScriptBitReader reader)
+	{
+		reader.Read(m_bWasDepositedByAction, 1);
+		
+		return true;
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -248,6 +340,22 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Was the item deposited into the CE Searchable Container by the user action?
+	bool WasDepositedByAction()
+	{
+		return m_bWasDepositedByAction;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Sets if the item was deposited into the CE Searchable Container by the user action
+	void SetWasDepositedByAction(bool deposited)
+	{
+		m_bWasDepositedByAction = deposited;
+		
+		Replication.BumpMe();
+	}
+	
+	//------------------------------------------------------------------------------------------------
 	//! Gets the CE_Item corresponding to this CE_ItemSpawnableComponent
 	CE_Item GetItem()
 	{
@@ -262,30 +370,30 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Gets the CE_ItemSpawningComponent corresponding to this CE_ItemSpawnableComponent
-	CE_ItemSpawningComponent GetSpawner()
+	//! Gets the CE_Spawner corresponding to this CE_ItemSpawnableComponent
+	CE_Spawner GetSpawner()
 	{
 		return m_Spawner;
 	}
 		
 	//------------------------------------------------------------------------------------------------
-	//! Sets the CE_ItemSpawningComponent corresponding to this CE_ItemSpawnableComponent
-	void SetSpawner(CE_ItemSpawningComponent spawner)
+	//! Sets the CE_Spawner corresponding to this CE_ItemSpawnableComponent
+	void SetSpawner(CE_Spawner spawner)
 	{
 		m_Spawner = spawner;
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Was item spawned by the CE_ItemSpawningSystem?
-	bool WasSpawnedBySystem()
+	//! Gets item deposited invoker
+	CE_OnItemDepositedInvoker GetItemDepositedInvoker()
 	{
-		return m_bWasSpawnedBySystem;
+		return m_OnItemDepositedInvoker;
 	}
-		
+	
 	//------------------------------------------------------------------------------------------------
-	//! Sets if the item was spawned by the CE_ItemSpawningSystem
-	void SetWasSpawnedBySystem(bool spawned)
+	//! Gets item deposited invoker
+	CE_OnItemSpawnedInvoker GetItemSpawnedInvoker()
 	{
-		m_bWasSpawnedBySystem = spawned;
+		return m_OnItemSpawnedInvoker;
 	}
 }

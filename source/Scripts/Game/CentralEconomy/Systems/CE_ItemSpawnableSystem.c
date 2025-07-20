@@ -56,6 +56,10 @@ class CE_ItemSpawnableSystem : GameSystem
 	}
 }
 
+void CE_ItemSpawned(CE_Item item, CE_Spawner spawner);
+typedef func CE_ItemSpawned;
+typedef ScriptInvokerBase<CE_ItemSpawned> CE_OnItemSpawnedInvoker;
+
 void CE_ItemLifetimeEnded(CE_ItemSpawnableComponent itemSpawnable, CE_Item item);
 typedef func CE_ItemLifetimeEnded;
 typedef ScriptInvokerBase<CE_ItemLifetimeEnded> CE_ItemLifetimeEndedInvoker;
@@ -63,3 +67,7 @@ typedef ScriptInvokerBase<CE_ItemLifetimeEnded> CE_ItemLifetimeEndedInvoker;
 void CE_ItemRestockEnded(CE_ItemSpawnableComponent itemSpawnable, CE_Item item);
 typedef func CE_ItemRestockEnded;
 typedef ScriptInvokerBase<CE_ItemRestockEnded> CE_ItemRestockEndedInvoker;
+
+void CE_ItemDeposited(CE_Item item, CE_SearchableContainerComponent container);
+typedef func CE_ItemDeposited;
+typedef ScriptInvokerBase<CE_ItemDeposited> CE_OnItemDepositedInvoker;

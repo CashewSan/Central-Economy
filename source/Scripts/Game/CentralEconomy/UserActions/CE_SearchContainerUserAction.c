@@ -221,6 +221,16 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 		
 		m_ContainerComponent.GetContainerSearchedInvoker().Invoke(m_ContainerComponent, pUserEntity);
 		
+		/*
+		const RplId systemRplId = Replication.FindItemId(m_ContainerComponent);
+		const RplNode systemRplNode = Replication.FindNode(systemRplId);
+		
+		if (systemRplNode.GetRole() == RplRole.Authority)
+		{
+			TryToPopulateStorage(m_ContainerComponent);
+		}
+		*/
+		
 		TryToPopulateStorage(m_ContainerComponent);
 		
 		if (EntityUtils.GetPlayer() == pUserEntity)
@@ -339,11 +349,4 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 		}
 		return true;
 	}
-	
-	/*
-	override bool HasLocalEffectOnlyScript()
-	{
-		return true;
-	}
-	*/
 }
