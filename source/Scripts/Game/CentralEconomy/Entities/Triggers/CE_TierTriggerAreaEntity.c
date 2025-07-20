@@ -15,6 +15,8 @@ class CE_TierTriggerArea : SCR_BaseTriggerEntity
 	//------------------------------------------------------------------------------------------------
 	override void EOnInit(IEntity owner)
 	{	
+		super.EOnInit(owner);
+		
 		if (GetGame().InPlayMode())
 		{
 			GetOnQueryFinished().Insert(GatherSpawnLocations);

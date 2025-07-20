@@ -6,7 +6,7 @@ class CE_ItemSpawningComponentClass : ScriptComponentClass
 class CE_ItemSpawningComponent : ScriptComponent
 {
 	[Attribute(ResourceName.Empty, UIWidgets.Object, "Item data config to be used (If set, universal config through CE_WorldValidationComponent will be ignored!)", "conf", category: "Spawner Data")]
-	ref CE_ItemDataConfig m_ItemDataConfig;
+	protected ref CE_ItemDataConfig m_ItemDataConfig;
 	
 	[Attribute("", UIWidgets.ComboBox, desc: "Which spawn location(s) will this spawner be? (If set, usages set throughout the world will be ignored!)", enums: ParamEnumArray.FromEnum(CE_ELootUsage), category: "Spawner Data")]
 	protected CE_ELootUsage m_ItemUsage;
@@ -15,7 +15,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	protected CE_ELootCategory m_Categories;
 	
 	[Attribute("1800", UIWidgets.EditBox, desc: "Time (in seconds) it takes for the spawner to reset after spawned item was taken from it. Helps prevent loot camping.", params: "10 inf 10", category: "Spawner Data")] // default set to 1800 seconds (30 minutes)
-	int m_iSpawnerResetTime;
+	protected int m_iSpawnerResetTime;
 	
 	protected CE_ELootUsage 								m_Usage; 																			// what is the usage of this spawner component? Can be either m_ItemUsage or set throughout the world
 	protected CE_ELootTier 								m_Tier; 																				// what is the tier of this spawner component?
@@ -185,6 +185,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 		if (itemSpawnable)
 		{
 			itemSpawnable.HookSpawningEvents();
+			itemSpawnable.GetItemSpawnedInvoker().Invoke(item, spawner);
 		}
 		else
 		{
@@ -194,7 +195,6 @@ class CE_ItemSpawningComponent : ScriptComponent
 				Print("[CentralEconomy::CE_ItemSpawningComponent] THIS ITEM HAS NO CE_ITEMSPAWNABLECOMPONENT!: " + itemData.m_sName, LogLevel.ERROR);
 			}
 		}
-			
 		
 		SetReadyForItem(false);
 		SetItemSpawned(item);
@@ -228,21 +228,6 @@ class CE_ItemSpawningComponent : ScriptComponent
 	//! Called when the item is taken
 	protected void OnItemTaken(InventoryStorageSlot oldSlot, InventoryStorageSlot newSlot)
 	{
-		CE_ItemSpawnableComponent itemSpawnable = CE_ItemSpawnableComponent.Cast(GetEntitySpawned().FindComponent(CE_ItemSpawnableComponent));
-		if (itemSpawnable)
-		{
-			itemSpawnable.SetWasItemTaken(true);
-			itemSpawnable.SetTotalLifetime(0);
-		}
-		else
-		{
-			CE_ItemData itemData = GetItemSpawned().GetItemData();
-			if (!itemData)
-				return;
-			
-			Print("[CentralEconomy::CE_ItemSpawningComponent] THIS ITEM HAS NO CE_ITEMSPAWNABLECOMPONENT!: " + itemData.m_sName, LogLevel.ERROR);
-		}
-		
 		World world = GetOwner().GetWorld();
 		if (world)
 		{
@@ -442,10 +427,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	//! Have items of this spawner been processed (only applies if spawner has it's own config set, will return null otherwise)
 	bool HaveItemsProcessed()
 	{
-		if (HasConfig())
-			return m_bHaveItemsProcessed;
-		
-		return null;
+		return m_bHaveItemsProcessed;
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -459,10 +441,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	//! Gets the spawners item data config, if set (if NOT set, will return null)
 	CE_ItemDataConfig GetConfig()
 	{
-		if (m_ItemDataConfig)
-			return m_ItemDataConfig;
-		
-		return null;
+		return m_ItemDataConfig;
 	}
 	
 	//------------------------------------------------------------------------------------------------

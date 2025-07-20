@@ -28,6 +28,7 @@ class CE_ItemSpawningSystem : GameSystem
 	[RplProp()]
 	protected bool										m_bHaveAreasQueried				= false;											// have the usage and tier areas finished querying?
 	protected bool										m_bInitialSpawningRan				= false;											// has the system ran it's initial spawning phase?
+	protected bool										m_bProcessingSpawn				= false;											// is the system currently processing a spawn?
 	
 	//------------------------------------------------------------------------------------------------
 	//! On system start
@@ -52,8 +53,8 @@ class CE_ItemSpawningSystem : GameSystem
 			{
 				m_OnAreasQueriedInvoker.Insert(InitialSpawningPhase);
 				
-				m_fItemSpawningFrequency = m_WorldValidationComponent.m_fItemSpawningFrequency;
-				m_fItemSpawningRatio = m_WorldValidationComponent.m_fItemSpawningRatio;
+				m_fItemSpawningFrequency = m_WorldValidationComponent.GetItemSpawningFrequency();
+				m_fItemSpawningRatio = m_WorldValidationComponent.GetItemSpawningRatio();
 				
 				CE_ItemDataConfig m_Config = m_WorldValidationComponent.GetItemDataConfig();
 				
@@ -116,7 +117,10 @@ class CE_ItemSpawningSystem : GameSystem
 						items = m_aItems;
 					}
 					
-					CE_Item item = SelectItem(items, spawner);
+					CE_Item item;
+					
+					if (!items.IsEmpty())
+						item = SelectItem(items, spawner);
 						
 					if (item && TryToSpawnItem(spawner, item))
 					{
@@ -184,8 +188,6 @@ class CE_ItemSpawningSystem : GameSystem
 			
 			if (!m_bInitialSpawningRan)
 			{
-				Print("Initial Spawning");
-				
 				InitialSpawningPhase();
 			}
 			
@@ -201,9 +203,10 @@ class CE_ItemSpawningSystem : GameSystem
 			float timeSlice = GetWorld().GetFixedTimeSlice();
 			m_fTimer += timeSlice;
 			
-			if (m_fItemSpawningFrequency > 0 && m_fTimer >= m_fItemSpawningFrequency)
+			if (m_fItemSpawningFrequency > 0 && m_fTimer >= m_fItemSpawningFrequency && !m_bProcessingSpawn)
 			{
 				m_fTimer = 0;
+				m_bProcessingSpawn = true;
 				
 				CE_Spawner spawner = SelectSpawner(ProcessSpawners());
 				
@@ -222,13 +225,27 @@ class CE_ItemSpawningSystem : GameSystem
 						items = m_aItems;
 					}
 					
-					CE_Item item = SelectItem(items, spawner);
-					
-					if (item)
-						TryToSpawnItem(spawner, item);
+					if (!items.IsEmpty())
+						GetGame().GetCallqueue().CallLater(DelayedItemSelection, (m_fItemSpawningFrequency * 1000) * 0.25, false, spawner, items); // so if spawning frequency is set to 30 seconds, we multiply it by 1000 (to get 30000ms), then multiply by 0.25 to get a total 7500ms (7.5 seconds)
+					else
+						m_bProcessingSpawn = false;
 				}
+				else
+					m_bProcessingSpawn = false;
 			}
 		}
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Item selection that gets delayed to help split 
+	protected void DelayedItemSelection(CE_Spawner spawner, array<ref CE_Item> items)
+	{
+		CE_Item item = SelectItem(items, spawner);
+					
+		if (item)
+			GetGame().GetCallqueue().CallLater(TryToSpawnItem, (m_fItemSpawningFrequency * 1000) * 0.25, false, spawner, item); // so if spawning frequency is set to 30 seconds, we multiply it by 1000 (to get 30000ms), then multiply by 0.25 to get a total 7500ms (7.5 seconds)
+		else
+			m_bProcessingSpawn = false;
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -323,7 +340,7 @@ class CE_ItemSpawningSystem : GameSystem
 			if (!spawnerComponent.GetSpawnerUsage() 
 			|| !spawnerComponent.GetSpawnerTier() 
 			|| !spawnerComponent.GetSpawnerCategories()
-			|| spawnerComponent.m_iSpawnerResetTime == 0)
+			|| spawnerComponent.GetSpawnerResetTime() == 0)
 			{
 				//Print("[CentralEconomy::CE_ItemSpawningSystem] " + spawnerComponent + " is missing information! Please fix!", LogLevel.ERROR);
 				spawnersToBeProcessed.Remove(0);
@@ -443,9 +460,6 @@ class CE_ItemSpawningSystem : GameSystem
 	//! Randomly selects a CE_Item from a CE_Item array, and checks for matching attributes against a CE_Spawner
 	protected CE_Item SelectItem(array<ref CE_Item> itemsArray, CE_Spawner spawner)
 	{
-		if (itemsArray.IsEmpty())
-			return null;
-		
 		array<ref CE_Item> itemsArrayCopy = {};
 		
 		foreach (CE_Item item : itemsArray)
@@ -548,11 +562,6 @@ class CE_ItemSpawningSystem : GameSystem
 	//! Tries to spawn the CE_Item to the CE_Spawner, returns true if item spawned properly
 	protected bool TryToSpawnItem(CE_Spawner spawner, CE_Item item)
 	{
-		/*
-		if (!Replication.IsServer())
-			return false;
-		*/
-		
 		if (item && spawner)
 		{
 			CE_ItemSpawningComponent spawnerComponent = spawner.GetSpawningComponent();
@@ -562,6 +571,8 @@ class CE_ItemSpawningSystem : GameSystem
 			CE_ItemData itemData = item.GetItemData();
 			if (!itemData)
 				return false;
+			
+			Print(itemData.m_sName);
 			
 			IEntity spawnEntity = spawnerComponent.GetOwner();
 			if (!spawnEntity)
@@ -615,11 +626,13 @@ class CE_ItemSpawningSystem : GameSystem
 			
 			spawnerComponent.GetItemSpawnedInvoker().Invoke(newEnt, item, spawner);
 			
-			SetItemCount(GetItemCount() + 1);
+			m_iItemCount = GetItemCount() + 1;
 			
+			m_bProcessingSpawn = false;
 			return true;
 		}
 		
+		m_bProcessingSpawn = false;
 		return false;
 	}
 	

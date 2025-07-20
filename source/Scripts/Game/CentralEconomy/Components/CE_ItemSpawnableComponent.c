@@ -30,8 +30,6 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	//! Initializes the deposit event callback
 	void HookDepositEvent()
 	{
-		//Print("TEST: Hooked deposit event");
-		
 		m_OnItemDepositedInvoker.Insert(OnItemDeposited);
 	}
 	
@@ -39,8 +37,6 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	//! Initialize the necessary callbacks for spawning on a spawner
 	void HookSpawningEvents()
 	{
-		//Print("TEST: Hooked spawning events");
-		
 		m_OnItemSpawnedInvoker.Insert(OnItemSpawned);
 		m_OnItemLifetimeEndedInvoker.Insert(OnLifetimeEnded);
 		m_OnItemRestockEndedInvoker.Insert(OnRestockEnded);
@@ -52,10 +48,10 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	{
 		if (GetTotalLifetime() && GetTotalLifetime() != 0  && !WasItemTaken())
 		{
-			SetCurrentLifetime(Math.ClampInt(GetCurrentLifetime() - checkInterval, 0, GetTotalLifetime()));
+			m_iCurrentLifetime = Math.ClampInt(GetCurrentLifetime() - checkInterval, 0, GetTotalLifetime());
 			if (GetCurrentLifetime() == 0 && !HasLifetimeEnded())
 			{
-				SetHasLifetimeEnded(true);
+				m_bHasLifetimeEnded = true;
 				
 				m_OnItemLifetimeEndedInvoker.Invoke(this, GetItem());
 			}
@@ -65,10 +61,10 @@ class CE_ItemSpawnableComponent : ScriptComponent
 		
 		if (GetTotalRestockTime() && GetTotalRestockTime() != 0 && WasItemTaken())
 		{ 
-			SetCurrentRestockTime(Math.ClampInt(GetCurrentRestockTime() - checkInterval, 0, GetTotalRestockTime()));
+			m_iCurrentRestockTime = Math.ClampInt(GetCurrentRestockTime() - checkInterval, 0, GetTotalRestockTime());
 			if (GetCurrentRestockTime() == 0 && !HasRestockEnded())
 			{
-				SetHasRestockEnded(true);
+				m_bHasRestockEnded = true;
 				
 				m_OnItemRestockEndedInvoker.Invoke(this, GetItem());
 			}
@@ -111,8 +107,6 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	//! Called when the item is spawned onto a CE_Spawner
 	protected void OnItemSpawned(CE_Item item, CE_Spawner spawner)
 	{
-		//Print("TEST: OnItemSpawned");
-		
 		m_Item = item;
 		m_Spawner = spawner;
 		
@@ -136,8 +130,6 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	//! Called when the item is deposited into a CE Searchable Container
 	protected void OnItemDeposited(CE_Item item, CE_SearchableContainerComponent container)
 	{
-		//Print("TEST: OnItemDeposited");
-		
 		InventoryItemComponent itemComponent = InventoryItemComponent.Cast(GetOwner().FindComponent(InventoryItemComponent));
 		if (itemComponent)
 			itemComponent.m_OnParentSlotChangedInvoker.Insert(OnItemTaken);
@@ -155,13 +147,13 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	//! Called when the item is taken from a CE Searchable Container or a CE_Spawner
 	protected void OnItemTaken(InventoryStorageSlot oldSlot, InventoryStorageSlot newSlot)
 	{
-		SetWasItemTaken(true);
-		SetTotalLifetime(0);
+		m_bWasItemTaken = true;
+		m_iTotalLifetime = 0;
 		
 		ConnectToItemSpawnableSystem();
 		
 		if (WasDepositedByAction())
-			SetWasDepositedByAction(false); // can no longer be put back into searchable container
+			m_bWasDepositedByAction = false; // can no longer be put back into searchable container
 		
 		World world = GetOwner().GetWorld();
 		if (world)
@@ -209,9 +201,13 @@ class CE_ItemSpawnableComponent : ScriptComponent
 		{
 			item.SetAvailableCount(item.GetAvailableCount() + 1);
 			
-			CE_ItemSpawningComponent spawnerComp = GetSpawner().GetSpawningComponent();
+			if (GetSpawner())
+			{
+				CE_ItemSpawningComponent spawnerComp = GetSpawner().GetSpawningComponent();
 			
-			spawnerComp.GetSpawnerResetnvoker().Invoke(spawnerComp);
+				if (spawnerComp)
+					spawnerComp.GetSpawnerResetnvoker().Invoke(spawnerComp);
+			}
 			
 			DisconnectFromItemSpawnableSystem();
 			

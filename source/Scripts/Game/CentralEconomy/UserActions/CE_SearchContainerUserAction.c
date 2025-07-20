@@ -18,6 +18,18 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 		if (!owner)
 			return false;
 		
+		// If the entity has a storage component
+		SCR_UniversalInventoryStorageComponent ownerStorage = SCR_UniversalInventoryStorageComponent.Cast(owner.FindComponent(SCR_UniversalInventoryStorageComponent));
+		if (!ownerStorage)
+			return false;
+		
+		m_StorageItemAttributes = SCR_ItemAttributeCollection.Cast(ownerStorage.GetAttributes());
+		
+		if (m_StorageItemAttributes)
+		{
+			m_StorageUIInfo = m_StorageItemAttributes.GetUIInfo();
+		}
+		
 		// If target is destroyed
 		SCR_DamageManagerComponent targetDamageManager = SCR_DamageManagerComponent.Cast(owner.FindComponent(SCR_DamageManagerComponent));
 		if (targetDamageManager)
@@ -35,41 +47,24 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 		if (!m_SpawningSystem)
 			return false;
 		
-		//Print("Have areas queried? " + m_SpawningSystem.HaveAreasQueried());
-		
 		// If CE_ItemSpawningSystem has not finished having areas queried
 		if (!m_SpawningSystem.HaveAreasQueried())
 			return false;
-		
-		SCR_UniversalInventoryStorageComponent ownerStorage = SCR_UniversalInventoryStorageComponent.Cast(owner.FindComponent(SCR_UniversalInventoryStorageComponent));
-		if (!ownerStorage)
-			return false;
-		
-		m_StorageItemAttributes = SCR_ItemAttributeCollection.Cast(ownerStorage.GetAttributes());
-		
-		if (m_StorageItemAttributes)
-		{
-			m_StorageUIInfo = m_StorageItemAttributes.GetUIInfo();
-		}
 		
 		// If target does not have searchable container component
 		m_ContainerComponent = CE_SearchableContainerComponent.Cast(owner.FindComponent(CE_SearchableContainerComponent));
 		if (!m_ContainerComponent)
 			return false;
 		
-		//Print(m_ContainerComponent.IsSearchable());
-		
+		// If target container is searchable
 		if (!m_ContainerComponent.IsSearchable())
 			return false;
 		
-		//Print(m_ContainerComponent.HasBeenSearched());
-		
-		// If target has already been searched
+		// If target container has already been searched
 		if (m_ContainerComponent.HasBeenSearched())
 			return false;
 		
-		//Print(m_ContainerComponent.IsReadyForItems());
-		
+		// If target container is ready for items
 		if (!m_ContainerComponent.IsReadyForItems())
 			return false;
 		
@@ -84,6 +79,18 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 		if (!owner)
 			return false;
 		
+		// If the entity has a storage component
+		SCR_UniversalInventoryStorageComponent ownerStorage = SCR_UniversalInventoryStorageComponent.Cast(owner.FindComponent(SCR_UniversalInventoryStorageComponent));
+		if (!ownerStorage)
+			return false;
+		
+		m_StorageItemAttributes = SCR_ItemAttributeCollection.Cast(ownerStorage.GetAttributes());
+		
+		if (m_StorageItemAttributes)
+		{
+			m_StorageUIInfo = m_StorageItemAttributes.GetUIInfo();
+		}
+		
 		// If target is destroyed
 		SCR_DamageManagerComponent targetDamageManager = SCR_DamageManagerComponent.Cast(owner.FindComponent(SCR_DamageManagerComponent));
 		if (targetDamageManager)
@@ -105,35 +112,20 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 		if (!m_SpawningSystem.HaveAreasQueried())
 			return false;
 		
-		SCR_UniversalInventoryStorageComponent ownerStorage = SCR_UniversalInventoryStorageComponent.Cast(owner.FindComponent(SCR_UniversalInventoryStorageComponent));
-		if (!ownerStorage)
-			return false;
-		
-		m_StorageItemAttributes = SCR_ItemAttributeCollection.Cast(ownerStorage.GetAttributes());
-		
-		if (m_StorageItemAttributes)
-		{
-			m_StorageUIInfo = m_StorageItemAttributes.GetUIInfo();
-		}
-		
 		// If target does not have searchable container component
 		m_ContainerComponent = CE_SearchableContainerComponent.Cast(owner.FindComponent(CE_SearchableContainerComponent));
 		if (!m_ContainerComponent)
 			return false;
 		
-		//Print(m_ContainerComponent.IsSearchable());
-		
+		// If target container is searchable
 		if (!m_ContainerComponent.IsSearchable())
 			return false;
 		
-		//Print(m_ContainerComponent.HasBeenSearched());
-		
-		// If target has already been searched
+		// If target container has already been searched
 		if (m_ContainerComponent.HasBeenSearched())
 			return false;
 		
-		//Print(m_ContainerComponent.IsReadyForItems());
-		
+		// If target container is ready for items
 		if (!m_ContainerComponent.IsReadyForItems())
 			return false;
 		
@@ -143,8 +135,6 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 	//------------------------------------------------------------------------------------------------
 	override void Init(IEntity pOwnerEntity, GenericComponent pManagerComponent)
 	{
-		super.Init(pOwnerEntity, pManagerComponent);
-		
 		if (GetGame().InPlayMode())
 		{
 			if (!pOwnerEntity)
@@ -205,8 +195,6 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 	//------------------------------------------------------------------------------------------------
 	override void PerformAction(IEntity pOwnerEntity, IEntity pUserEntity)
 	{	
-		super.PerformAction(pOwnerEntity, pUserEntity);
-		
 		World world = pOwnerEntity.GetWorld();
 		if (!world)
 			return;
@@ -220,16 +208,6 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 			return;
 		
 		m_ContainerComponent.GetContainerSearchedInvoker().Invoke(m_ContainerComponent, pUserEntity);
-		
-		/*
-		const RplId systemRplId = Replication.FindItemId(m_ContainerComponent);
-		const RplNode systemRplNode = Replication.FindNode(systemRplId);
-		
-		if (systemRplNode.GetRole() == RplRole.Authority)
-		{
-			TryToPopulateStorage(m_ContainerComponent);
-		}
-		*/
 		
 		TryToPopulateStorage(m_ContainerComponent);
 		
@@ -283,6 +261,7 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Internal action to open open player's inventory menu
 	protected void PerformActionInternal(SCR_InventoryStorageManagerComponent manager, IEntity pOwnerEntity, IEntity pUserEntity)
 	{
 		CharacterVicinityComponent vicinity = CharacterVicinityComponent.Cast(pUserEntity.FindComponent(CharacterVicinityComponent));

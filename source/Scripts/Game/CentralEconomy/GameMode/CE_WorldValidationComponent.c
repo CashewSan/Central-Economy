@@ -5,13 +5,16 @@ class CE_WorldValidationComponentClass: SCR_BaseGameModeComponentClass
 
 class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 {
-	[Attribute("5", UIWidgets.EditBox, desc: "Frequency (in seconds) that an item will spawn, LOWER TAKES MORE PERFORMANCE (E.G. If set to 5, an item will attempt to spawn every 5 seconds)", params: "0 inf 1", category: "Item Spawning System")] // default set to 5 seconds
-	float m_fItemSpawningFrequency;
+	[Attribute(ResourceName.Empty, UIWidgets.FileNamePicker, desc: "testing purposes only", params: "conf", category: "Item Spawning System")]
+	protected ResourceName m_testConfig;
 	
-	[Attribute("0.25", UIWidgets.EditBox, desc: "Ratio of items the system will aim to spawn compared to spawners (If set to 0.5, items will populate half of the spawners in the world. If set to 1, items will populate all spawners)", params: "0 1 0.1", category: "Item Spawning System")] // default set to 1 second
-	float m_fItemSpawningRatio;
+	[Attribute("30", UIWidgets.EditBox, desc: "Frequency (in seconds) that an item will spawn, LOWER TAKES MORE PERFORMANCE (E.G. If set to 5, an item will attempt to spawn every 5 seconds)", params: "0 inf 1", category: "Item Spawning System")] // default set to 30 seconds
+	protected float m_fItemSpawningFrequency;
 	
-	[Attribute("0.5", UIWidgets.EditBox, desc: "Chance of a searchable container actually being searchable (If set to 0.5, each searchable container has a %5 potential for being searchable, gets randomly decided each server restart. If set to 1, searchable container has a %100 chance of being searchable)", params: "0 1 0.1", category: "Item Spawning System")] // default set to 1 second
+	[Attribute("0.25", UIWidgets.EditBox, desc: "Ratio of items the system will aim to spawn compared to spawners (If set to 0.5, items will populate half of the spawners in the world. If set to 1, items will populate all spawners)", params: "0 1 0.1", category: "Item Spawning System")] // default set to 0.25
+	protected float m_fItemSpawningRatio;
+	
+	[Attribute("0.5", UIWidgets.EditBox, desc: "Chance of a searchable container actually being searchable (If set to 0.5, each searchable container has a %5 potential for being searchable, gets randomly decided each server restart. If set to 1, searchable container has a %100 chance of being searchable)", params: "0 1 0.1", category: "Item Spawning System")] // default set to 0.5
 	protected float m_fSearchableContainerChance;
 	
 	protected bool 											m_bProcessed 			= false;							// has world been processed?
@@ -38,9 +41,18 @@ class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 			}
 			else
 			{
-				Resource holder = BaseContainerTools.LoadContainer(m_sDb);
+				if (m_testConfig)
+				{
+					Resource holder = BaseContainerTools.LoadContainer(m_testConfig);
+					
+					m_ItemDataConfig = CE_ItemDataConfig.Cast(BaseContainerTools.CreateInstanceFromContainer(holder.GetResource().ToBaseContainer()));
+				}
+				else
+				{
+					Resource holder = BaseContainerTools.LoadContainer(m_sDb);
 				
-				m_ItemDataConfig = CE_ItemDataConfig.Cast(BaseContainerTools.CreateInstanceFromContainer(holder.GetResource().ToBaseContainer()));
+					m_ItemDataConfig = CE_ItemDataConfig.Cast(BaseContainerTools.CreateInstanceFromContainer(holder.GetResource().ToBaseContainer()));
+				}
 				
 				if (!m_ItemDataConfig || !m_ItemDataConfig.m_ItemData)
 				{
@@ -113,5 +125,19 @@ class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 	float GetSearchableContainerChance()
 	{
 		return m_fSearchableContainerChance;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Returns the item spawning frequency
+	float GetItemSpawningFrequency()
+	{
+		return m_fItemSpawningFrequency;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Returns the item spawning ratio
+	float GetItemSpawningRatio()
+	{
+		return m_fItemSpawningRatio;
 	}
 }
