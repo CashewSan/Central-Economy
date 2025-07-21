@@ -2,6 +2,7 @@ CE_UsageTriggerArea {
  ID "626B3E2B5F4D86A9"
  components {
   RplComponent "{626B3E2B5F4D86A2}" {
+   Enabled 0
   }
   Hierarchy "{65D33507DCA09BC5}" {
   }

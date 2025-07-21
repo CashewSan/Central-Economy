@@ -25,6 +25,14 @@ SCR_DestructibleBuildingEntity : "{322D245123EEDC90}Prefabs/Structures/Houses/Vi
     }
    }
   }
+  GenericEntity {
+   ID "5E02603012A31423"
+   {
+    GenericEntity {
+     ID "5AF2BE3A0901B631"
+    }
+   }
+  }
  }
 }
 CE_TierTriggerArea : "{B91017820A9D1F10}Prefabs/Areas/Tiers/TierArea_Tier2.et" {

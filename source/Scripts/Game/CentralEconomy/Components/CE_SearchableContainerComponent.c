@@ -14,7 +14,7 @@ class CE_SearchableContainerComponent : ScriptComponent
 	[Attribute("", UIWidgets.Flags, desc: "Which category of items do you want to spawn here?", enums: ParamEnumArray.FromEnum(CE_ELootCategory), category: "Container Data")]
 	protected CE_ELootCategory m_Categories;
 	
-	[Attribute("1800", UIWidgets.EditBox, desc: "Time (in seconds) it takes for the container to reset after it was initially searched. Helps prevent loot camping.", params: "10 inf 10", category: "Container Data")] // default set to 1800 seconds (30 minutes)
+	[Attribute("3600", UIWidgets.EditBox, desc: "Time (in seconds) it takes for the container to reset after it was initially searched. Helps prevent loot camping.", params: "10 inf 10", category: "Container Data")] // default set to 1800 seconds (30 minutes)
 	protected int m_iContainerResetTime;
 	
 	[Attribute("0", UIWidgets.EditBox, desc: "Minimum amount of items you want this searchable container to potentially spawn.", params: "0 inf 1", category: "Container Data")] // default set to 0
@@ -34,7 +34,6 @@ class CE_SearchableContainerComponent : ScriptComponent
 	[RplProp()]
 	protected bool										m_bIsSearchable							= false;								// is the container searchable?
 	protected bool										m_bHaveItemsProcessed	;														// have the items of the container been processed? ONLY APPLICABLE IF m_ItemDataConfig IS SET!
-	protected bool										m_bHasContainerReset						= false;								// has the container reset?
 	protected bool										m_bHasUsage								= false;								// does the container have a usage set through the component? Not set from the Usage Trigger Area Entities!
 	protected bool 										m_bReadyForItems 						= true;								// is the container ready for items to be spawned in it?
 	
@@ -56,19 +55,19 @@ class CE_SearchableContainerComponent : ScriptComponent
 	//! Event on post initiailization
 	protected override void OnPostInit(IEntity owner)
 	{
+		super.OnPostInit(owner);
+		
 		owner.ClearFlags(EntityFlags.STATIC);
 		
-		World world = GetOwner().GetWorld();
-		if (!world)
-			return;
-		
-		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+		m_SpawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(GetOwner());
 		if (!m_SpawningSystem)
 			return;
 		
 		m_SpawningSystem.GetOnAreasQueriedInvoker().Insert(OnAreasQueried);
 	}
 	
+	//------------------------------------------------------------------------------------------------
+	//! Called when usage and tier areas are done querying
 	protected void OnAreasQueried()
 	{
 		CE_WorldValidationComponent m_WorldValidationComponent = CE_WorldValidationComponent.GetInstance();
@@ -101,7 +100,7 @@ class CE_SearchableContainerComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Tick method
+	//! Gets called from the m_TimingSystem to control container reset
 	void Update(int checkInterval)
 	{
 		m_iCurrentContainerResetTime = Math.ClampInt(GetCurrentContainerResetTime() - checkInterval, 0, GetContainerResetTime());
@@ -125,11 +124,7 @@ class CE_SearchableContainerComponent : ScriptComponent
 	//! Connects to item spawning system and registers this component
 	protected void ConnectToItemSpawningSystem()
 	{
-		World world = GetOwner().GetWorld();
-		if (!world)
-			return;
-		
-		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+		m_SpawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(GetOwner());
 		if (!m_SpawningSystem)
 			return;
 		
@@ -140,11 +135,7 @@ class CE_SearchableContainerComponent : ScriptComponent
 	//! Disonnects from item spawning system and unregisters this component
 	protected void DisconnectFromItemSpawningSystem()
 	{
-		World world = GetOwner().GetWorld();
-		if (!world)
-			return;
-		
-		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+		m_SpawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(GetOwner());
 		if (!m_SpawningSystem)
 			return;
 
@@ -155,11 +146,7 @@ class CE_SearchableContainerComponent : ScriptComponent
 	//! Connects to item spawning system and registers this component
 	protected void ConnectToTimingSystem()
 	{
-		World world = GetOwner().GetWorld();
-		if (!world)
-			return;
-		
-		m_TimingSystem = CE_ContainerTimingSystem.Cast(world.FindSystem(CE_ContainerTimingSystem));
+		m_TimingSystem = CE_ContainerTimingSystem.GetByEntityWorld(GetOwner());
 		if (!m_TimingSystem)
 			return;
 		
@@ -170,11 +157,7 @@ class CE_SearchableContainerComponent : ScriptComponent
 	//! Disonnects from item spawning system and unregisters this component
 	protected void DisconnectFromTimingSystem()
 	{
-		World world = GetOwner().GetWorld();
-		if (!world)
-			return;
-		
-		m_TimingSystem = CE_ContainerTimingSystem.Cast(world.FindSystem(CE_ContainerTimingSystem));
+		m_TimingSystem = CE_ContainerTimingSystem.GetByEntityWorld(GetOwner());
 		if (!m_TimingSystem)
 			return;
 
@@ -191,11 +174,7 @@ class CE_SearchableContainerComponent : ScriptComponent
 			
 			m_bHasConfig = true;
 			
-			World world = GetOwner().GetWorld();
-			if (!world)
-				return;
-			
-			m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+			m_SpawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(GetOwner());
 			if (!m_SpawningSystem)
 				return;
 			
@@ -204,7 +183,7 @@ class CE_SearchableContainerComponent : ScriptComponent
 				m_aItems.Insert(item);
 			}
 			
-			m_bHaveItemsProcessed = false;
+			m_bHaveItemsProcessed = true;
 		}
 		else
 			Print("[CentralEconomy::CE_SearchableContainerComponent] NO ITEM DATA CONFIG FOUND!", LogLevel.ERROR); // this should realistically never happen
@@ -216,8 +195,6 @@ class CE_SearchableContainerComponent : ScriptComponent
 	//! Called when container is searched by user action
 	protected void OnContainerSearched(CE_SearchableContainerComponent container, IEntity userEntity)
 	{	
-		//Rpc(RpcAsk_SetHasBeenSearched, true);
-		
 		m_bHasBeenSearched = true;
 		
 		Replication.BumpMe();
@@ -229,15 +206,11 @@ class CE_SearchableContainerComponent : ScriptComponent
 	//! Called when container resets
 	protected void OnContainerReset(CE_SearchableContainerComponent container)
 	{
-		IEntity containerEntity = container.GetOwner();
-		if (containerEntity)
-			return;
-		
-		SCR_InventoryStorageManagerComponent storageManager = SCR_InventoryStorageManagerComponent.Cast(containerEntity.FindComponent(SCR_InventoryStorageManagerComponent));
+		SCR_InventoryStorageManagerComponent storageManager = SCR_InventoryStorageManagerComponent.Cast(GetOwner().FindComponent(SCR_InventoryStorageManagerComponent));
 		if (!storageManager)
 			return;
 		
-		SCR_UniversalInventoryStorageComponent ownerStorage = SCR_UniversalInventoryStorageComponent.Cast(containerEntity.FindComponent(SCR_UniversalInventoryStorageComponent));
+		SCR_UniversalInventoryStorageComponent ownerStorage = SCR_UniversalInventoryStorageComponent.Cast(GetOwner().FindComponent(SCR_UniversalInventoryStorageComponent));
 		if (!ownerStorage)
 			return;
 		
@@ -253,13 +226,14 @@ class CE_SearchableContainerComponent : ScriptComponent
 			}
 		}
 		
-		m_bHasContainerReset = false;
 		m_bHasBeenSearched = false;
 		
 		//DisconnectFromItemSpawningSystem();
 		DisconnectFromTimingSystem();
 		
 		m_iCurrentContainerResetTime = GetContainerResetTime();
+		
+		Replication.BumpMe();
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -287,14 +261,14 @@ class CE_SearchableContainerComponent : ScriptComponent
 	//------------------------------------------------------------------------------------------------
 	
 	//------------------------------------------------------------------------------------------------
-	//! Is the spawner ready for an item to be spawned on it?
+	//! Is the container ready for an item to be spawned on it?
 	bool IsReadyForItems()
 	{
 		return m_bReadyForItems;
 	}
 		
 	//------------------------------------------------------------------------------------------------
-	//! Sets if the spawner is ready for an item to be spawned on it
+	//! Sets if the container is ready for an item to be spawned on it
 	void SetReadyForItems(bool ready)
 	{
 		m_bReadyForItems = ready;
@@ -427,20 +401,6 @@ class CE_SearchableContainerComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Has the container reset?
-	bool HasContainerReset()
-	{
-		return m_bHasContainerReset;
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Sets if the container has been reset
-	void SetHasContainerReset(bool reset)
-	{
-		m_bHasContainerReset = reset;
-	}
-	
-	//------------------------------------------------------------------------------------------------
 	//! Gets the container item spawn minimum
 	int GetContainerItemMinimum()
 	{
@@ -462,7 +422,7 @@ class CE_SearchableContainerComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Gets CE_Item spawned on the spawning component
+	//! Gets CE_Item spawned on the container component
 	array<ref CE_Item> GetItemsSpawned()
 	{
 		return m_aItemsSpawned;

@@ -13,6 +13,12 @@ class CE_ItemSpawnableSystem : GameSystem
 	//! Tick method, handles timing for the spawnables
 	override event protected void OnUpdate(ESystemPoint point)
 	{
+		const RplId systemRplId = Replication.FindItemId(this);
+		const RplNode systemRplNode = Replication.FindNode(systemRplId);
+		
+		if (systemRplNode.GetRole() == RplRole.Proxy)
+			return;
+		
 		float timeSlice = GetWorld().GetFixedTimeSlice();
 
 		m_fTimer += timeSlice;
@@ -32,6 +38,17 @@ class CE_ItemSpawnableSystem : GameSystem
 			
 			spawnableComp.Update(m_fCheckFrequency);
 		}
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Returns instance of system within the entity's world
+	static CE_ItemSpawnableSystem GetByEntityWorld(IEntity entity)
+	{
+		World world = entity.GetWorld();
+		if (!world)
+			return null;
+
+		return CE_ItemSpawnableSystem.Cast(world.FindSystem(CE_ItemSpawnableSystem));
 	}
 
 	//------------------------------------------------------------------------------------------------

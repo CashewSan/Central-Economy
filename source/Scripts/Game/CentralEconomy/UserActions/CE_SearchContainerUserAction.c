@@ -38,12 +38,8 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 				return false;
 		}
 		
-		World world = owner.GetWorld();
-		if (!world)
-			return false;
-		
-		// If no CE_ItemSpawningSystem
-		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+		// If no spawning system
+		m_SpawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(GetOwner());
 		if (!m_SpawningSystem)
 			return false;
 		
@@ -99,12 +95,8 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 				return false;
 		}
 		
-		World world = owner.GetWorld();
-		if (!world)
-			return false;
-		
-		// If no CE_ItemSpawningSystem
-		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+		// If no spawning system
+		m_SpawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(GetOwner());
 		if (!m_SpawningSystem)
 			return false;
 		
@@ -140,11 +132,7 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 			if (!pOwnerEntity)
 				return;
 			
-			World world = pOwnerEntity.GetWorld();
-			if (!world)
-				return;
-			
-			m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+			m_SpawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(pOwnerEntity);
 			if (!m_SpawningSystem)
 				return;
 			
@@ -195,11 +183,7 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 	//------------------------------------------------------------------------------------------------
 	override void PerformAction(IEntity pOwnerEntity, IEntity pUserEntity)
 	{	
-		World world = pOwnerEntity.GetWorld();
-		if (!world)
-			return;
-		
-		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+		m_SpawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(pOwnerEntity);
 		if (!m_SpawningSystem)
 			return;
 		
@@ -231,11 +215,7 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 		if (!containerComp)
 			return;
 		
-		World world = GetOwner().GetWorld();
-		if (!world)
-			return;
-		
-		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+		m_SpawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(GetOwner());
 		if (!m_SpawningSystem)
 			return;
 		
@@ -251,8 +231,6 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 		}
 		
 		array<ref CE_Item> itemsSelected = m_SpawningSystem.SelectItems(items, containerComp, containerComp.GetContainerItemMinimum(), containerComp.GetContainerItemMaximum());
-		
-		Print(itemsSelected);
 		
 		if (itemsSelected && !itemsSelected.IsEmpty())
 		{

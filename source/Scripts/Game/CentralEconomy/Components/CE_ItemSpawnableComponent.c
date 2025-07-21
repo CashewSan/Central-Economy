@@ -8,7 +8,7 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	protected ref CE_ItemLifetimeEndedInvoker 				m_OnItemLifetimeEndedInvoker 					= new CE_ItemLifetimeEndedInvoker();	// script invoker for when the item's lifetime has ended
 	protected ref CE_ItemRestockEndedInvoker 				m_OnItemRestockEndedInvoker 					= new CE_ItemRestockEndedInvoker();	// script invoker for when the item's restock time has ended
 	protected ref CE_OnItemDepositedInvoker				m_OnItemDepositedInvoker						= new CE_OnItemDepositedInvoker();	// script invoker for when the item has be deposited into a CE Searchable Container
-	protected ref CE_OnItemSpawnedInvoker					m_OnItemSpawnedInvoker						= new CE_OnItemSpawnedInvoker();	// script invoker for when the item has been spawned on the spawner
+	protected ref CE_OnItemSpawnedInvoker					m_OnItemSpawnedInvoker						= new CE_OnItemSpawnedInvoker();		// script invoker for when the item has been spawned on the spawner
 	
 	protected CE_ItemSpawnableSystem 						m_SpawnableSystem;																// the spawnable item game system
 	protected CE_Spawner									m_Spawner;																		// which CE_ItemSpawningComponent does this CE_ItemSpawnableComponent correspond to?
@@ -77,11 +77,7 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	//! Connects to item spawnable system and registers this component
 	protected void ConnectToItemSpawnableSystem()
 	{
-		World world = GetOwner().GetWorld();
-		if (!world)
-			return;
-		
-		m_SpawnableSystem = CE_ItemSpawnableSystem.Cast(world.FindSystem(CE_ItemSpawnableSystem));
+		m_SpawnableSystem = CE_ItemSpawnableSystem.GetByEntityWorld(GetOwner());
 		if (!m_SpawnableSystem)
 			return;
 		
@@ -92,11 +88,7 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	//! Disonnects from item spawning system and unregisters this component
 	protected void DisconnectFromItemSpawnableSystem()
 	{
-		World world = GetOwner().GetWorld();
-		if (!world)
-			return;
-		
-		m_SpawnableSystem = CE_ItemSpawnableSystem.Cast(world.FindSystem(CE_ItemSpawnableSystem));
+		m_SpawnableSystem = CE_ItemSpawnableSystem.GetByEntityWorld(GetOwner());
 		if (!m_SpawnableSystem)
 			return;
 
@@ -113,10 +105,10 @@ class CE_ItemSpawnableComponent : ScriptComponent
 		CE_ItemData itemData = item.GetItemData();
 		if (itemData)
 		{
-			m_iTotalRestockTime = itemData.m_iRestock;
-			m_iCurrentRestockTime = itemData.m_iRestock;
-			m_iTotalLifetime = itemData.m_iLifetime;
-			m_iCurrentLifetime = itemData.m_iLifetime;
+			m_iTotalRestockTime = itemData.GetRestock();
+			m_iCurrentRestockTime = itemData.GetRestock();
+			m_iTotalLifetime = itemData.GetLifetime();
+			m_iCurrentLifetime = itemData.GetLifetime();
 		}
 		
 		InventoryItemComponent itemComponent = InventoryItemComponent.Cast(GetOwner().FindComponent(InventoryItemComponent));
@@ -124,6 +116,12 @@ class CE_ItemSpawnableComponent : ScriptComponent
 			itemComponent.m_OnParentSlotChangedInvoker.Insert(OnItemTaken);
 		
 		ConnectToItemSpawnableSystem();
+		
+		SCR_GarbageSystem garbageManager = SCR_GarbageSystem.GetByEntityWorld(GetOwner());
+		if (!garbageManager)
+			return;
+
+		garbageManager.UpdateBlacklist(GetOwner(), true);
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -137,10 +135,16 @@ class CE_ItemSpawnableComponent : ScriptComponent
 		CE_ItemData itemData = item.GetItemData();
 		if (itemData)
 		{
-			m_iTotalRestockTime = itemData.m_iRestock;
-			m_iCurrentRestockTime = itemData.m_iRestock;
+			m_iTotalRestockTime = itemData.GetRestock();
+			m_iCurrentRestockTime = itemData.GetRestock();
 			// won't set lifetime on this because the items will never despawn in a searchable container, only when the container resets will they be despawned
 		}
+		
+		SCR_GarbageSystem garbageManager = SCR_GarbageSystem.GetByEntityWorld(GetOwner());
+		if (!garbageManager)
+			return;
+
+		garbageManager.UpdateBlacklist(GetOwner(), true);
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -170,6 +174,12 @@ class CE_ItemSpawnableComponent : ScriptComponent
 		{
 			itemComponent.m_OnParentSlotChangedInvoker.Remove(OnItemTaken);
 		}
+		
+		SCR_GarbageSystem garbageManager = SCR_GarbageSystem.GetByEntityWorld(GetOwner());
+		if (!garbageManager)
+			return;
+
+		garbageManager.UpdateBlacklist(GetOwner(), false);
 	}
 	
 	//------------------------------------------------------------------------------------------------

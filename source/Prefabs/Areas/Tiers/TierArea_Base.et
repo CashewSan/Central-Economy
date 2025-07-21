@@ -2,6 +2,7 @@ CE_TierTriggerArea {
  ID "626B3E2C8F1E5053"
  components {
   RplComponent "{626B3E2C8F1E508D}" {
+   Enabled 0
   }
   Hierarchy "{65D335071B261A5B}" {
   }

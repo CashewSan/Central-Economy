@@ -21,7 +21,6 @@ class CE_ItemSpawningComponent : ScriptComponent
 	protected CE_ELootTier 								m_Tier; 																				// what is the tier of this spawner component?
 	
 	protected bool 										m_bHasConfig 							= false;										// does the spawner have a config set in the component?
-	protected bool										m_bHasSpawnerReset						= true;										// has the spawner reset?
 	protected bool 										m_bReadyForItem 							= true;										// has item spawned on the spawner?
 	protected bool										m_bHaveItemsProcessed	;																// have the items of the spawner been processed? ONLY APPLICABLE IF m_ItemDataConfig IS SET!
 	protected bool										m_bHasUsage								= false;										// does the spawner have a usage set through the component?
@@ -43,12 +42,14 @@ class CE_ItemSpawningComponent : ScriptComponent
 	//! Post initialization
 	protected override void OnPostInit(IEntity owner)
 	{
+		super.OnPostInit(owner);
+		
 		HookEvents();
 		
 		if (m_ItemUsage)
 		{
 			m_bHasUsage = true;
-			SetSpawnerUsage(m_ItemUsage);
+			m_Usage = m_ItemUsage;
 		}
 		
 		if (m_ItemDataConfig)
@@ -61,11 +62,13 @@ class CE_ItemSpawningComponent : ScriptComponent
 	//! Gets called from the m_TimingSystem to control spawner reset
 	void Update(int checkInterval)
 	{
-		SetCurrentSpawnerResetTime(Math.ClampInt(GetCurrentSpawnerResetTime() - checkInterval, 0, GetSpawnerResetTime()));
-		if (GetCurrentSpawnerResetTime() == 0 && !HasSpawnerReset())
+		m_iCurrentSpawnerResetTime = Math.ClampInt(GetCurrentSpawnerResetTime() - checkInterval, 0, GetSpawnerResetTime());
+		if (GetCurrentSpawnerResetTime() == 0)
 		{
 			m_OnSpawnerResetInvoker.Invoke(this);
 		}
+		
+		//Print("Timer: " + GetCurrentSpawnerResetTime());
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -81,11 +84,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	//! Connects to item spawning system and registers this spawner
 	void ConnectToItemSpawningSystem()
 	{
-		World world = GetOwner().GetWorld();
-		if (!world)
-			return;
-		
-		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+		m_SpawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(GetOwner());
 		if (!m_SpawningSystem)
 			return;
 		
@@ -96,11 +95,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	//! Disonnects from item spawning system and unregisters this spawner
 	protected void DisconnectFromItemSpawningSystem()
 	{
-		World world = GetOwner().GetWorld();
-		if (!world)
-			return;
-		
-		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+		m_SpawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(GetOwner());
 		if (!m_SpawningSystem)
 			return;
 
@@ -115,13 +110,9 @@ class CE_ItemSpawningComponent : ScriptComponent
 		{
 			m_aItems	= new array<ref CE_Item>;
 
-			SetHasConfig(true);
+			m_bHasConfig = true;
 			
-			World world = GetOwner().GetWorld();
-			if (!world)
-				return;
-			
-			m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+			m_SpawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(GetOwner());
 			if (!m_SpawningSystem)
 				return;
 			
@@ -130,7 +121,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 				m_aItems.Insert(item);
 			}
 			
-			SetHaveItemsProcessed(false);
+			m_bHaveItemsProcessed = true;
 		}
 		else
 			Print("[CentralEconomy::CE_ItemSpawningComponent] NO ITEM DATA CONFIG FOUND!", LogLevel.ERROR); // this should realistically never happen
@@ -192,25 +183,20 @@ class CE_ItemSpawningComponent : ScriptComponent
 			CE_ItemData itemData = item.GetItemData();
 			if (itemData)
 			{
-				Print("[CentralEconomy::CE_ItemSpawningComponent] THIS ITEM HAS NO CE_ITEMSPAWNABLECOMPONENT!: " + itemData.m_sName, LogLevel.ERROR);
+				Print("[CentralEconomy::CE_ItemSpawningComponent] THIS ITEM HAS NO CE_ITEMSPAWNABLECOMPONENT!: " + itemData.GetName(), LogLevel.ERROR);
 			}
 		}
 		
-		SetReadyForItem(false);
-		SetItemSpawned(item);
-		SetCurrentSpawnerResetTime(m_iSpawnerResetTime);
-		SetEntitySpawned(itemEntity);
-		SetHasSpawnerReset(false);
+		m_bReadyForItem = false;
+		m_ItemSpawned = item;
+		m_iCurrentSpawnerResetTime = m_iSpawnerResetTime;
+		m_EntitySpawned = itemEntity;
 		
 		InventoryItemComponent itemComponent = InventoryItemComponent.Cast(itemEntity.FindComponent(InventoryItemComponent));
 		if (itemComponent)
 			itemComponent.m_OnParentSlotChangedInvoker.Insert(OnItemTaken);
 		
-		World world = GetOwner().GetWorld();
-		if (!world)
-			return;
-		
-		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+		m_SpawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(GetOwner());
 		if (m_SpawningSystem)
 		{
 			m_SpawningSystem.UnregisterSpawner(this);
@@ -228,14 +214,10 @@ class CE_ItemSpawningComponent : ScriptComponent
 	//! Called when the item is taken
 	protected void OnItemTaken(InventoryStorageSlot oldSlot, InventoryStorageSlot newSlot)
 	{
-		World world = GetOwner().GetWorld();
-		if (world)
+		m_TimingSystem = CE_SpawnerTimingSystem.GetByEntityWorld(GetOwner());
+		if (m_TimingSystem)
 		{
-			m_TimingSystem = CE_SpawnerTimingSystem.Cast(world.FindSystem(CE_SpawnerTimingSystem));
-			if (m_TimingSystem)
-			{
-				m_TimingSystem.RegisterSpawner(this);
-			}
+			m_TimingSystem.RegisterSpawner(this);
 		}
 	}
 	
@@ -243,27 +225,21 @@ class CE_ItemSpawningComponent : ScriptComponent
 	//! Called when spawner resets
 	protected void OnSpawnerReset(CE_ItemSpawningComponent spawner)
 	{
-		SetEntitySpawned(null);
-		SetItemSpawned(null);
-		SetReadyForItem(true);
+		m_EntitySpawned = null;
+		m_ItemSpawned = null;
+		m_bReadyForItem = true;
 		
-		World world = GetOwner().GetWorld();
-		if (!world)
-			return;
-		
-		m_TimingSystem = CE_SpawnerTimingSystem.Cast(world.FindSystem(CE_SpawnerTimingSystem));
+		m_TimingSystem = CE_SpawnerTimingSystem.GetByEntityWorld(GetOwner());
 		if (m_TimingSystem)
 		{
 			m_TimingSystem.UnregisterSpawner(this);
 		}
 		
-		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+		m_SpawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(GetOwner());
 		if (m_SpawningSystem)
 		{
 			m_SpawningSystem.RegisterSpawner(this);
 		}
-		
-		SetHasSpawnerReset(true);
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -386,20 +362,6 @@ class CE_ItemSpawningComponent : ScriptComponent
 	int GetSpawnerResetTime()
 	{
 		return m_iSpawnerResetTime;
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Has the spawner been reset?
-	bool HasSpawnerReset()
-	{
-		return m_bHasSpawnerReset;
-	}
-		
-	//------------------------------------------------------------------------------------------------
-	//! Sets if the spawner has been reset
-	void SetHasSpawnerReset(bool reset)
-	{
-		m_bHasSpawnerReset = reset;
 	}
 	
 	//------------------------------------------------------------------------------------------------

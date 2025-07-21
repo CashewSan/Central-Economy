@@ -8,7 +8,7 @@ class CE_TierTriggerArea : SCR_BaseTriggerEntity
 	[Attribute(ResourceName.Empty, uiwidget: UIWidgets.ComboBox, desc: "Which tier is this area?", enums: ParamEnumArray.FromEnum(CE_ELootTier), category: "Spawn Data")]
 	protected CE_ELootTier m_Tier;
 	
-	ref array<IEntity> m_aSpawnLocationsInside = {};
+	protected ref array<IEntity> m_aSpawnLocationsInside = {};
 	
 	protected CE_ItemSpawningSystem m_SpawningSystem;
 	
@@ -72,11 +72,7 @@ class CE_TierTriggerArea : SCR_BaseTriggerEntity
 		
 		if (spawnerSetCount >= spawnerCount)
 		{
-			World world = GetWorld();
-			if (!world)
-				return;
-			
-			m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+			m_SpawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(this);
 			if (!m_SpawningSystem)
 				return;
 			
@@ -94,11 +90,7 @@ class CE_TierTriggerArea : SCR_BaseTriggerEntity
 	//! Connects to item spawning system and registers this area
 	protected void ConnectToItemSpawningSystem()
 	{
-		World world = GetWorld();
-		if (!world)
-			return;
-		
-		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+		m_SpawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(this);
 		if (!m_SpawningSystem)
 			return;
 		
@@ -109,11 +101,7 @@ class CE_TierTriggerArea : SCR_BaseTriggerEntity
 	//! Disonnects from item spawning system and unregisters this area
 	protected void DisconnectFromItemSpawningSystem()
 	{
-		World world = GetWorld();
-		if (!world)
-			return;
-		
-		m_SpawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+		m_SpawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(this);
 		if (!m_SpawningSystem)
 			return;
 

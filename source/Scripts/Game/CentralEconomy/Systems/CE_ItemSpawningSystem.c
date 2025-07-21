@@ -180,7 +180,7 @@ class CE_ItemSpawningSystem : GameSystem
 		{
 			if (HaveAreasQueried() == false)
 			{
-				SetHaveAreasQueried(true);
+				m_bHaveAreasQueried = true;
 				Replication.BumpMe();
 				
 				m_OnAreasQueriedInvoker.Invoke();
@@ -191,8 +191,8 @@ class CE_ItemSpawningSystem : GameSystem
 				InitialSpawningPhase();
 			}
 			
-			//m_aUsageAreas.Clear();	// no point of keeping in memory once queried since querying only happens once at launch of server
-			//m_aTierAreas.Clear();		// no point of keeping in memory once queried since querying only happens once at launch of server
+			m_aUsageAreas.Clear();	// no point of keeping in memory once queried since querying only happens once at launch of server
+			m_aTierAreas.Clear();		// no point of keeping in memory once queried since querying only happens once at launch of server
 		}
 		
 		if (GetItemCount() >= m_iSpawnerRatioCount)
@@ -255,37 +255,37 @@ class CE_ItemSpawningSystem : GameSystem
 		array<ref CE_Item> itemsProcessed = {};
 		array<ref CE_ItemData> itemDataToBeProcessed = {};
 		
-		if (config && config.m_ItemData)
+		if (config && config.GetItemDataArray())
 		{	
-			foreach (CE_ItemData itemData : config.m_ItemData)
+			foreach (CE_ItemData itemData : config.GetItemDataArray())
 			{
 				itemDataToBeProcessed.Insert(itemData)
 			}
 			
 			int itemCount = itemDataToBeProcessed.Count();
 			
-			for (int i = 0, maxCount = Math.Min(itemCount, config.m_ItemData.Count()); i < maxCount; i++)
+			for (int i = 0, maxCount = Math.Min(itemCount, config.GetItemDataArray().Count()); i < maxCount; i++)
 			{
 				CE_ItemData itemData = itemDataToBeProcessed[0];
 				
-				if (!itemData.m_sName 
-				|| !itemData.m_sPrefab 
-				|| !itemData.m_iNominal 
-				|| !itemData.m_iMinimum 
-				|| !itemData.m_iLifetime 
-				|| !itemData.m_iRestock 
-				|| !itemData.m_ItemCategory 
-				|| !itemData.m_ItemUsages 
-				|| !itemData.m_ItemTiers)
+				if (!itemData.GetName() 
+				|| !itemData.GetPrefab() 
+				|| !itemData.GetNominal()
+				|| !itemData.GetMinimum() 
+				|| !itemData.GetLifetime() 
+				|| !itemData.GetRestock() 
+				|| !itemData.GetCategory() 
+				|| !itemData.GetUsages() 
+				|| !itemData.GetTiers())
 				{
-					Print("[CentralEconomy::CE_ItemSpawningSystem] " + itemData.m_sName + " is missing information! Please fix!", LogLevel.ERROR);
+					Print("[CentralEconomy::CE_ItemSpawningSystem] " + itemData.GetName() + " is missing information! Please fix!", LogLevel.ERROR);
 					itemDataToBeProcessed.Remove(0);
 					itemCount--;
 					continue;
 				}
-				else if (itemData.m_iNominal < itemData.m_iMinimum)
+				else if (itemData.GetNominal() < itemData.GetMinimum())
 				{
-					Print("[CentralEconomy::CE_ItemSpawningSystem] " + itemData.m_sName + " has a nominal value less than the minimum value! Please fix!", LogLevel.ERROR);
+					Print("[CentralEconomy::CE_ItemSpawningSystem] " + itemData.GetName() + " has a nominal value less than the minimum value! Please fix!", LogLevel.ERROR);
 					itemDataToBeProcessed.Remove(0);
 					itemCount--;
 					continue;
@@ -295,10 +295,10 @@ class CE_ItemSpawningSystem : GameSystem
 					CE_Item item = new CE_Item();
 					
 					item.SetItemData(itemData);
-					item.SetTiers(itemData.m_ItemTiers);
-					item.SetUsages(itemData.m_ItemUsages);
-					item.SetCategory(itemData.m_ItemCategory);
-					item.SetAvailableCount(m_RandomGen.RandIntInclusive(itemData.m_iMinimum, itemData.m_iNominal));
+					item.SetTiers(itemData.GetTiers());
+					item.SetUsages(itemData.GetUsages());
+					item.SetCategory(itemData.GetCategory());
+					item.SetAvailableCount(m_RandomGen.RandIntInclusive(itemData.GetMinimum(), itemData.GetNominal()));
 					
 					if (!itemsProcessed.Contains(item))
 					{
@@ -477,16 +477,12 @@ class CE_ItemSpawningSystem : GameSystem
 		for (int i = 0; i < itemsArrayCopy.Count(); i++)
 		{
 			int randomIndex = m_RandomGen.RandInt(0, itemsArrayCopy.Count());
-			if (!randomIndex)
-				return null;
 			
 			CE_Item itemSelected = itemsArrayCopy[randomIndex];
 			if (!itemSelected)
 				return null;
 			
 			int itemCount = itemSelected.GetAvailableCount();
-			if (!itemCount)
-				return null;
 			
 			if (itemSelected.GetTiers() & spawnerComponent.GetSpawnerTier() 
 			&& itemSelected.GetUsages() & spawnerComponent.GetSpawnerUsage() 
@@ -572,8 +568,6 @@ class CE_ItemSpawningSystem : GameSystem
 			if (!itemData)
 				return false;
 			
-			Print(itemData.m_sName);
-			
 			IEntity spawnEntity = spawnerComponent.GetOwner();
 			if (!spawnEntity)
 				return false;
@@ -581,14 +575,14 @@ class CE_ItemSpawningSystem : GameSystem
 			vector m_WorldTransform[4];
 			spawnEntity.GetWorldTransform(m_WorldTransform);
 			
-			if (itemData.m_vItemRotation != vector.Zero)
-				Math3D.AnglesToMatrix(itemData.m_vItemRotation, m_WorldTransform);
+			if (itemData.GetRotation() != vector.Zero)
+				Math3D.AnglesToMatrix(itemData.GetRotation(), m_WorldTransform);
 			
 			EntitySpawnParams params();
 			m_WorldTransform[3][1] = m_WorldTransform[3][1] + 0.025; // to not make item be in the ground
 			params.Transform = m_WorldTransform;
 			
-			Resource m_Resource = Resource.Load(itemData.m_sPrefab);
+			Resource m_Resource = Resource.Load(itemData.GetPrefab());
 			if (!m_Resource)
 				return false;
 			
@@ -599,16 +593,16 @@ class CE_ItemSpawningSystem : GameSystem
 			item.SetAvailableCount(item.GetAvailableCount() - 1);
 			
 			// if quantities are set greater than -1 within the item data config
-			if (itemData.m_iQuantityMinimum > -1 
-			&& itemData.m_iQuantityMaximum > -1)
+			if (itemData.GetQuantityMinimum() > -1 
+			&& itemData.GetQuantityMaximum() > -1)
 			{
 				// making sure quantity maximum is not less than quantity minimum
-				if (itemData.m_iQuantityMinimum <= itemData.m_iQuantityMaximum)
+				if (itemData.GetQuantityMinimum() <= itemData.GetQuantityMaximum())
 				{
-					SetQuantities(newEnt, itemData.m_iQuantityMinimum, itemData.m_iQuantityMaximum);
+					SetQuantities(newEnt, itemData.GetQuantityMinimum(), itemData.GetQuantityMaximum());
 				}
 				else // else you get this error in console
-					Print("[CentralEconomy::CE_ItemSpawningSystem] " + itemData.m_sName + " has quantity minimum set to more than quantity maximum! Please fix!", LogLevel.ERROR);
+					Print("[CentralEconomy::CE_ItemSpawningSystem] " + itemData.GetName() + " has quantity minimum set to more than quantity maximum! Please fix!", LogLevel.ERROR);
 			}
 			
 			// if item is ACTUALLY a vehicle
@@ -673,7 +667,7 @@ class CE_ItemSpawningSystem : GameSystem
 			EntitySpawnParams params();
 			params.Transform = worldTransform;
 			
-			Resource resource = Resource.Load(itemData.m_sPrefab);
+			Resource resource = Resource.Load(itemData.GetPrefab());
 			if (!resource)
 				return;
 			
@@ -694,7 +688,7 @@ class CE_ItemSpawningSystem : GameSystem
 			}
 			else
 			{
-				Print("[CentralEconomy::CE_ItemSpawningSystem] THIS ITEM HAS NO CE_ITEMSPAWNABLECOMPONENT!: " + itemData.m_sName, LogLevel.ERROR);
+				Print("[CentralEconomy::CE_ItemSpawningSystem] THIS ITEM HAS NO CE_ITEMSPAWNABLECOMPONENT!: " + itemData.GetName(), LogLevel.ERROR);
 			}
 			
 			if (!storageManager.CanInsertItemInStorage(newEnt, ownerStorage))
@@ -715,16 +709,16 @@ class CE_ItemSpawningSystem : GameSystem
 				item.SetAvailableCount(item.GetAvailableCount() - 1);
 				
 				// if quantities are set greater than -1 within the item data config
-				if (itemData.m_iQuantityMinimum > -1 
-				&& itemData.m_iQuantityMaximum > -1)
+				if (itemData.GetQuantityMinimum() > -1 
+				&& itemData.GetQuantityMaximum() > -1)
 				{
 					// making sure quantity maximum is not less than quantity minimum
-					if (itemData.m_iQuantityMinimum <= itemData.m_iQuantityMaximum)
+					if (itemData.GetQuantityMinimum() <= itemData.GetQuantityMaximum())
 					{
-						SetQuantities(newEnt, itemData.m_iQuantityMinimum, itemData.m_iQuantityMaximum);
+						SetQuantities(newEnt, itemData.GetQuantityMinimum(), itemData.GetQuantityMaximum());
 					}
 					else // else you get this error in console
-						Print("[CentralEconomy::CE_ItemSpawningSystem] " + itemData.m_sName + " has quantity minimum set to more than quantity maximum! Please fix!", LogLevel.ERROR);
+						Print("[CentralEconomy::CE_ItemSpawningSystem] " + itemData.GetName() + " has quantity minimum set to more than quantity maximum! Please fix!", LogLevel.ERROR);
 				}
 			}
 		}
@@ -735,12 +729,8 @@ class CE_ItemSpawningSystem : GameSystem
 	protected void SetQuantities(IEntity ent, int quantMin, int quantMax)
 	{
 		float randomFloat = Math.RandomIntInclusive(quantMin, quantMax) / 100; // convert it to a decimal to be multiplied later on
-		if (!randomFloat)
-			return;
 		
 		float quantity = Math.Round(randomFloat * 10) / 10;
-		if (!quantity)
-			return;
 		
 		ResourceName prefabName = ent.GetPrefabData().GetPrefabName();
 		
@@ -771,7 +761,20 @@ class CE_ItemSpawningSystem : GameSystem
 		}
 	}
 	
-	// GameSystem stuff
+	//------------------------------------------------------------------------------------------------
+	// GAMESYSTEM STUFF
+	//------------------------------------------------------------------------------------------------
+	
+	//------------------------------------------------------------------------------------------------
+	//! Returns instance of system within the entity's world
+	static CE_ItemSpawningSystem GetByEntityWorld(IEntity entity)
+	{
+		World world = entity.GetWorld();
+		if (!world)
+			return null;
+
+		return CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+	}
 	
 	//------------------------------------------------------------------------------------------------
 	//! Registers spawning component
@@ -783,18 +786,6 @@ class CE_ItemSpawningSystem : GameSystem
 		if (!m_aSpawnerComponents.Contains(component))
 		{
 			m_aSpawnerComponents.Insert(component);
-			
-			if (component.HasConfig() && !component.HaveItemsProcessed())
-			{
-				array<ref CE_Item> itemsArray = component.GetItems();
-				
-				foreach (CE_Item item : ProcessItemData(component.GetConfig()))
-				{
-					itemsArray.Insert(item);
-				}
-				
-				component.SetHaveItemsProcessed(true);
-			}
 		}
 	}
 

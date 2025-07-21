@@ -1,56 +1,56 @@
 class CE_Spawner
 {
-	protected CE_ItemSpawningComponent SpawningComponent;
-	protected CE_Item ItemSpawned;
-	protected bool ReadyForItem;
+	protected CE_ItemSpawningComponent m_SpawningComponent;
+	protected CE_Item m_ItemSpawned;
+	protected bool m_ReadyForItem;
 	
 	//------------------------------------------------------------------------------------------------
 	void CE_Spawner(CE_ItemSpawningComponent spawningComponent, CE_Item itemSpawned, bool readyForItem)
 	{
-		SpawningComponent = spawningComponent;
-		ItemSpawned = itemSpawned;
-		ReadyForItem = readyForItem;
+		m_SpawningComponent = spawningComponent;
+		m_ItemSpawned = itemSpawned;
+		m_ReadyForItem = readyForItem;
 	}
 	
 	//------------------------------------------------------------------------------------------------
 	//! Returns the CE_ItemSpawningComponent corresponding to this CE_Spawner
 	CE_ItemSpawningComponent GetSpawningComponent()
 	{
-		return SpawningComponent;
+		return m_SpawningComponent;
 	}
 	
 	//------------------------------------------------------------------------------------------------
 	//! Sets the CE_ItemSpawningComponent corresponding to this CE_Spawner
 	void SetSpawningComponent(CE_ItemSpawningComponent spawningComponent)
 	{
-		SpawningComponent = spawningComponent;
+		m_SpawningComponent = spawningComponent;
 	}
 	
 	//------------------------------------------------------------------------------------------------
 	//! Returns the CE_Item corresponding to this CE_Spawner
 	CE_Item GetItemSpawned()
 	{
-		return ItemSpawned;
+		return m_ItemSpawned;
 	}
 	
 	//------------------------------------------------------------------------------------------------
 	//! Sets the CE_Item corresponding to this CE_Spawner
 	void SetItemSpawned(CE_Item itemSpawned)
 	{
-		ItemSpawned = itemSpawned;
+		m_ItemSpawned = itemSpawned;
 	}
 	
 	//------------------------------------------------------------------------------------------------
 	//! Returns if the CE_Spawner is ready for an item to be spawned
 	bool IsReadyForItem()
 	{
-		return ReadyForItem;
+		return m_ReadyForItem;
 	}
 	
 	//------------------------------------------------------------------------------------------------
 	//! Sets if the CE_Spawner is ready for an item to be spawned
 	void SetReadyForItem(bool readyForItem)
 	{
-		ReadyForItem = readyForItem;
+		m_ReadyForItem = readyForItem;
 	}
 }
