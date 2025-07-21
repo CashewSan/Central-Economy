@@ -84,25 +84,25 @@ The CE_WorldValidationComponent has 3 attribute parameters that you can adjust i
 
 ## HOW IT WORKS
 Here's how CentralEconomy works:
-  1.) Upon server initilization, Usage and Tier Trigger Areas will query for each spawner and searchable container within them and set their respective usage and tier values.
-  2.) The CE_ItemSpawningSystem (the brains of CentralEconomy), upon being enabled via script, starts processing the CE_ItemData.conf's CE_ItemData into CE_Items (custom class to contain all necessary item attributes for spawning).
+  - Upon server initilization, Usage and Tier Trigger Areas will query for each spawner and searchable container within them and set their respective usage and tier values.
+  - The CE_ItemSpawningSystem (the brains of CentralEconomy), upon being enabled via script, starts processing the CE_ItemData.conf's CE_ItemData into CE_Items (custom class to contain all necessary item attributes for spawning).
     - Upon this point, if you have errors with an item in your config, error logs will start to appear stating it.
-  3.) Once the trigger areas are done querying and setting variables, a script invoker is called to the CE_ItemSpawningSystem to then activate the Initial Spawning Phase.
+  - Once the trigger areas are done querying and setting variables, a script invoker is called to the CE_ItemSpawningSystem to then activate the Initial Spawning Phase.
     - The Initial Spawning Phase does a MASS item spawning to a specific spawner count (based on the Item Spawning Ratio set in CE_WorldValidationComponent). Spawners are randomly selected, and then items are chosen based on what's available and if they match the selected spawner's attributes.
-  4.) Upon the finish of the Initial Spawning Phase, periodic spawning starts.
+  - Upon the finish of the Initial Spawning Phase, periodic spawning starts.
     - Periodic spawning will ONLY happen if the spawned item count drops below the total spawner count multiplied by the item spawning ratio set in CE_WorldValidationComponent.
     - With periodic spawning, if there is an available spawner for an item, then the item is queued to be spawned.
     
   (For items spawned to a spawner and NOT a searchable container action)
-  1.) Once an item spawns, it is given a timer (it's lifetime) to be either despawned or taken from the spawner. Additionally, the CE_Item's available count is depleted by one each time it's respective item spawns.
+  - Once an item spawns, it is given a timer (it's lifetime) to be either despawned or taken from the spawner. Additionally, the CE_Item's available count is depleted by one each time it's respective item spawns.
     - If it's lifetime timer reaches 0, it is despawned.
     - If it is taken, it's lifetime timer stops and then it's restock timer starts.
       - Upon the restock timer reaching 0, a single item count is added to the respective CE_Item's available count.
-  2.) Once an item is taken from the spawner, the spawner reset timer starts.
+  - Once an item is taken from the spawner, the spawner reset timer starts.
     - Once the spawner reset timer reaches 0, the spawner is available to have an item be spawned on it again.
     
   (For items spawned to a searchable container action)
-  1.) Once an item spawns, instead of relying on the item's lifetime to be despawned, it relies on the searchable container's reset time (set to 3600 seconds by defaul, or 1 hour). Additionally, the CE_Item's available count is depleted by one each time it's respective item spawns.
+  - Once an item spawns, instead of relying on the item's lifetime to be despawned, it relies on the searchable container's reset time (set to 3600 seconds by defaul, or 1 hour). Additionally, the CE_Item's available count is depleted by one each time it's respective item spawns.
     - When the searchable container's reset time reaches 0, all the items within the container storage (if any are still within it) are despawned and the container becomes searchable once more.
     - When an item is taken, the item's restock timer starts.
       - Upon the restock timer reaching 0, a single item count is added to the respective CE_Item's available count.
