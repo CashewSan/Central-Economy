@@ -5,4 +5,5 @@ GenericEntity : "{E3DA0DC39C2708DB}Prefabs/Spawners/LootSpawner_Base.et" {
    m_Categories VEHICLES
   }
  }
+ coords -7.499 0.439 4.378
 }

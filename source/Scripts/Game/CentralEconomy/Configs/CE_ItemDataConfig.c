@@ -10,10 +10,10 @@ class CE_ItemData
 	[Attribute("0 0 0", UIWidgets.EditBox, desc: "Euler angles of the item upon spawning (E.G. Weapons are typically x:0 y:0 z:90)")]
 	protected vector m_vItemRotation;
 	
-	[Attribute("2", UIWidgets.EditBox, params: "1 10000", desc: "Ideal amount of spawns of this item around the map")]
+	[Attribute("40", UIWidgets.EditBox, params: "1 10000", desc: "Ideal amount of spawns of this item around the map")]
 	protected int m_iNominal;
 	
-	[Attribute("1", UIWidgets.EditBox, params: "1 10000", desc: "Minimum amount of spawns of this item around the map **SHOULD BE THE SAME OR LESS THAN THE NOMINAL VALUE**")]
+	[Attribute("30", UIWidgets.EditBox, params: "1 10000", desc: "Minimum amount of spawns of this item around the map **SHOULD BE THE SAME OR LESS THAN THE NOMINAL VALUE**")]
 	protected int m_iMinimum;
 	
 	[Attribute("14400", UIWidgets.EditBox, params: "0 3888000", desc: "Length of time (in seconds) item can stay on at a spawner before despawning")]

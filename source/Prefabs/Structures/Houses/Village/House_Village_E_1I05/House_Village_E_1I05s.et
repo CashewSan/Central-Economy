@@ -16,7 +16,7 @@ SCR_DestructibleBuildingEntity : "{3F0D1AD613E9785F}Prefabs/Structures/Houses/Vi
    }
    {
     ID "62B90C0A9EA00978"
-    coords -9.779 -0 1.569
+    coords -9.779 0 1.569
    }
   }
   GenericEntity : "{52CAE20AC033CBED}Prefabs/Spawners/LootSpawner_Food.et" {
@@ -30,6 +30,10 @@ SCR_DestructibleBuildingEntity : "{3F0D1AD613E9785F}Prefabs/Structures/Houses/Vi
    BoxMins -13.5 -1 -6
    BoxMaxs 13.5 9 5.5
    DrawShape 0
+  }
+  GenericEntity : "{EF5366EC75D39FF9}Prefabs/Spawners/LootSpawner_Vehicles.et" {
+   ID "65EB47EF03AE2E1F"
+   coords -8.472 0 -1.006
   }
  }
 }

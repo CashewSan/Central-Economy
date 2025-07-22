@@ -18,5 +18,9 @@ SCR_DestructibleBuildingEntity : "{E35EA41864A3B0ED}Prefabs/Structures/Industria
    BoxMaxs 17 7.5 8.5
    DrawShape 0
   }
+  GenericEntity : "{EF5366EC75D39FF9}Prefabs/Spawners/LootSpawner_Vehicles.et" {
+   ID "65EB47E9D28C2EB1"
+   coords -13.226 0.05 2.016
+  }
  }
 }

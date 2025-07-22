@@ -2,8 +2,6 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et
  ID "F0DBA538AC2A0552"
  components {
   CE_SearchableContainerComponent "{65B3215F3863EF8F}" {
-   m_ItemDataConfig CE_ItemDataConfig "{65B3215C527932B2}" : "{53797B7384D823B5}Configs/CE_MedicalItemsData.conf" {
-   }
    m_ContainerUsage MEDIC
    m_Categories TOOLS
    m_iContainerItemMaximum 2

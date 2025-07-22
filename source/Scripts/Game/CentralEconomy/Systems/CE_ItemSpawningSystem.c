@@ -58,6 +58,9 @@ class CE_ItemSpawningSystem : GameSystem
 				
 				CE_ItemDataConfig m_Config = m_WorldValidationComponent.GetItemDataConfig();
 				
+				if (!m_aItems.IsEmpty())
+					m_aItems.Clear();
+				
 				m_aItems = ProcessItemData(m_Config);
 			}
 			else

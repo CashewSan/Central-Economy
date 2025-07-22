@@ -1,0 +1,14 @@
+CE_TierTriggerArea : "{61B87E437314014C}Prefabs/Areas/Tiers/TierArea_Tier4.et" {
+ coords 150.203 1 135.027
+ TriggerShapeType Sphere
+ SphereRadius 12
+ DrawShape 1
+}
+GenericEntity : "{6DB87D990DE17E27}Prefabs/Spawners/LootSpawner_Vehicles_Air.et" {
+ components {
+  CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
+   m_ItemUsage MILITARY
+  }
+ }
+ coords 150.177 1 134.973
+}

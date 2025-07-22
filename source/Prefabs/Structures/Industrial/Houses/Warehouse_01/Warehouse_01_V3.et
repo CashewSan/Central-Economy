@@ -4,7 +4,7 @@ SCR_DestructibleBuildingEntity : "{E35EA41864A3B0ED}Prefabs/Structures/Industria
   $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
    {
     ID "62B90C1CFB690319"
-    coords 10.931 0.05 2.291
+    coords 10.931 0.05 3.76
    }
    {
     ID "62B90C1CFB690363"
@@ -17,6 +17,10 @@ SCR_DestructibleBuildingEntity : "{E35EA41864A3B0ED}Prefabs/Structures/Industria
    BoxMins -21 -2 -8.5
    BoxMaxs 17 7.5 8.5
    DrawShape 0
+  }
+  GenericEntity : "{EF5366EC75D39FF9}Prefabs/Spawners/LootSpawner_Vehicles.et" {
+   ID "65EB47E9E5667017"
+   coords 10.058 0.05 -0.156
   }
  }
 }

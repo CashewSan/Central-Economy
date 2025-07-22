@@ -1,43 +1,9 @@
-SCR_DestructibleBuildingEntity : "{322D245123EEDC90}Prefabs/Structures/Houses/Village/House_Village_E_1I01/House_Village_E_1I01_V2.et" {
- coords 174.91 0 155.281
- {
-  GenericEntity {
-   ID "62B90C07999AEC52"
-   components {
-    RplComponent "{645F746B5AA158CA}" {
-     Streamable Disabled
-    }
-   }
-  }
-  GenericEntity {
-   ID "62B90C07999AEC5F"
-   components {
-    RplComponent "{645F746B5AA158CA}" {
-     Streamable Disabled
-    }
-   }
-  }
-  GenericEntity {
-   ID "62B90C07999AECA7"
-   components {
-    RplComponent "{645F746B5AA158CA}" {
-     Streamable Disabled
-    }
-   }
-  }
-  GenericEntity {
-   ID "5E02603012A31423"
-   {
-    GenericEntity {
-     ID "5AF2BE3A0901B631"
-    }
-   }
-  }
- }
+SCR_DestructibleBuildingEntity : "{38A5F3E4578087AB}Prefabs/Structures/Houses/Town/House_Town_E_2I01/House_Town_E_2I01.et" {
+ coords 190.039 -0 155.147
 }
 CE_TierTriggerArea : "{B91017820A9D1F10}Prefabs/Areas/Tiers/TierArea_Tier2.et" {
- coords 174.857 1 155.138
+ coords 190.916 1 155.138
  TriggerShapeType Sphere
- SphereRadius 10
+ SphereRadius 25
  DrawShape 1
 }

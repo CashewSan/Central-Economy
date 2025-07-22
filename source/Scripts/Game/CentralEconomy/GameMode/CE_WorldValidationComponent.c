@@ -16,7 +16,7 @@ class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 	[Attribute("0.25", UIWidgets.EditBox, desc: "Ratio of items the system will aim to spawn compared to spawners (If set to 0.5, items will populate half of the spawners in the world. If set to 1, items will populate all spawners)", params: "0 1 0.1", category: "Item Spawning System")] // default set to 0.25
 	protected float m_fItemSpawningRatio;
 	
-	[Attribute("0.5", UIWidgets.EditBox, desc: "Chance of a searchable container actually being searchable (If set to 0.5, each searchable container has a %50 potential for being searchable, gets randomly decided each server restart. If set to 1, searchable container has a %100 chance of being searchable)", params: "0 1 0.1", category: "Item Spawning System")] // default set to 0.5
+	[Attribute("0.25", UIWidgets.EditBox, desc: "Chance of a searchable container actually being searchable (If set to 0.25, each searchable container has a %25 potential for being searchable, gets randomly decided each server restart. If set to 1, searchable container has a %100 chance of being searchable)", params: "0 1 0.1", category: "Item Spawning System")] // default set to 0.25
 	protected float m_fSearchableContainerChance;
 	
 	protected bool 											m_bProcessed 			= false;							// has world been processed?
