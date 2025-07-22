@@ -69,18 +69,21 @@ The CE_WorldValidationComponent has 3 attribute parameters that you can adjust i
 - Searchable Container Chance
   - Chance that a searchable container entity will actually be searchable. Set as a 0 - 1 percentage, so if set as 0.5, a container entity has a %50 chance upon initialization to be searchable.
   - Higher values *shouldn't* effect performance too much, but it will cause more searchable container entities to be available in the world and need to be processed, so take that as you will.
-  - Default value is 0.5 (%50)
+  - Default value is 0.25 (%25)
   - Whether a container entity is searchable or not is determined randomly upon each server start. So one container entity that was searchable may not be searchable the next restart.
 
 ### Things to Keep in Mind
-- On Everon, there are roughly 4750 spawn points. This means if you want ALL spawners to have a item spawned at them, you'll want more than that (~4750) in the combined total of item nominal values.
+- On Everon, there are roughly 5000 spawn points. From testing, this means if you want ALL spawners to have a item spawned at them, you'll want about 10x that spawner count in the combined total of item nominal values.
   - I **DON'T** recommend to have ALL spawners be able to spawn an item (having item spawning ratio set to 1) and then additionally having that many item nominals. It's heavy on performance.
-  - I **DO** recommend having a total item nominal value comparable to the spawner count multiplied by your item spawning ratio. So if you have a 0.25 item spawning ratio, 4750 multiplied by 0.25 is ~1188 spawners, so you'd want about a 1200 total value of item nominals.
+  - I **DO** recommend having a total item nominal value comparable to the spawner count multiplied by your item spawning ratio. So if you have a 0.25 item spawning ratio, ~5000 multiplied by 0.25 is ~1250 spawners, so if 10x'ing that value, you'd want about a ~12500 total value of item nominals.
+  - This is all theoretical from my hours of testing. If you find you want a less total item nominal, then go for it. I'm just saying how I saw it go smoothly with running around and finding loot and searching containers. With a low total item nominal, I saw that there wasn't enough items to be processed.
+    - This of course could be remedied with setting high nominal counts to low tier items, and then setting low nominal counts to high tier items. But for default showcase purposes, this is how I have it setup as plug and play.
 - If running [Enfusion Persistence Framework](https://reforger.armaplatform.com/workshop/5D6EBC81EB1842EF-EnfusionPersistenceFramework) additionally with Central Economy:
   - You should additionally run the [CentralEconomy EPF Compatibility mod](https://reforger.armaplatform.com/workshop/64601621C028A690-CentralEconomy-EPF) to have intended behavior. With running it, for items spawned by the system, if they're still on a spawner as of last server shutdown, they will not persist to next server start.
     - This is to help with performance with persistence, as loading hundreds and setting all their variables to match last session is performance intensive. Maybe it'll change with vanilla persistence when that finally gets introduced.
-  - Not running the CentralEconomy EPF Compatibility mod will cause unexpected behaviors when also running Enfusion Persistence Framework.
-- You WILL neeed to adjust the nominal and minimum values for each item in the CE_ItemData.conf, otherwise it'll be a poor experience as everything by default has an equal chance of spawning in their respective locations.
+  - Not running the CentralEconomy EPF Compatibility mod will cause unintended behaviors when also running Enfusion Persistence Framework.
+- For a better experience, you **WILL** need to adjust the nominal and minimum values for each item in the CE_ItemData.conf, otherwise it'll be a poor experience as everything by default has an equal amount of minimum and nominal values (for showcasing purposes).
+  - I don't provide a universal best-experience-possible config by default because it absolutely depends on what *you* are looking for in loot spawning. So that's why, for the most part, I leave it up to you. I've just done most of the work already.
 
 ## HOW IT WORKS
 ###  Here's how CentralEconomy works:
@@ -121,7 +124,7 @@ The CE_WorldValidationComponent has 3 attribute parameters that you can adjust i
   - This is also due to the lack of diversity in the CE_ItemData.conf. But also, double-check your nominal and minimum numbers compared to comparable items.
 - Logs post "RESOURCES (E): Wrong GUID/name for resource @"{0000000000000000}$profile:/CentralEconomy/CE_ItemData.conf" in property "m_sDb"" upon server boot or Workbench load.
   - Safe to ignore, means nothing as long as the CE_ItemData.conf is loading fine. If the CE_ItemData.conf is not loading fine, you'll typically see other errors in logs stating it.
-- Configs made before the major rewrite show blank.
+- Configs made before the original major rewrite show blank.
   - Open it in a text editor, like Notepad, and change CE_LootSpawningConfig on the first line to **CE_ItemDataConfig**, save the file, then reload it into workbench.
 
 **IF YOU EXPERIENCE ANY BUGS OR ISSUES, PLEASE REPORT THEM IN [ISSUES](https://github.com/CashewSan/Central-Economy/issues) HERE ON GITHUB OR DIRECTLY TO ME IN THE [ARMA DISCORD](https://discord.com/channels/105462288051380224/1301291009635909664) @CASHEWSAN**
