@@ -64,7 +64,7 @@ The CE_WorldValidationComponent has 3 attribute parameters that you can adjust i
   - **LOWER VALUES ARE HARDER ON PERFORMANCE**
   - Default value is 30 seconds
 - Item Spawning Ratio
-  - Ratio of items the system to try to spawn compared to spawners in the world (not including searchable containers). Set as a 0 - 1 percentage, so if set as 0.25, only %25 of the total spawner count (~4750 spawners) will have an item spawned on it at a time.
+  - Ratio of items the system to try to spawn compared to spawners in the world (not including searchable containers). Set as a 0 - 1 percentage, so if set as 0.25, only %25 of the total spawner count (~5000 spawners) will have an item spawned on it at a time.
   - **HIGHER VALUES ARE HARDER ON PERFORMANCE**
   - Default value is 0.25 (%25)
 - Searchable Container Chance
