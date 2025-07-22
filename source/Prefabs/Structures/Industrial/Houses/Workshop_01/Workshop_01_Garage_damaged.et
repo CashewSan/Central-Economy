@@ -1,9 +1,9 @@
-SCR_DestructibleBuildingEntity : "{A43A100E3C377DB2}Prefabs/Structures/Core/Building_Base.et" {
+SCR_DestructibleBuildingEntity : "{85C6B051DE85112B}Prefabs/Structures/Industrial/Houses/Workshop_01/Workshop_01_Garage_base.et" {
  ID "F0DBA538AC2A0552"
  {
   GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
    ID "62B90C1C21410668"
-   coords 0.048 0.19 -0.837
+   coords -2.385 0.19 -1.091
   }
   CE_UsageTriggerArea : "{8CE81A62EF61ED50}Prefabs/Areas/Usages/UsageArea_Industrial.et" {
    ID "62B90C1C21410606"
@@ -11,6 +11,15 @@ SCR_DestructibleBuildingEntity : "{A43A100E3C377DB2}Prefabs/Structures/Core/Buil
    BoxMins -4.5 -2 -3.5
    BoxMaxs 4.5 4 3.5
    DrawShape 0
+  }
+  GenericEntity : "{EF5366EC75D39FF9}Prefabs/Spawners/LootSpawner_Vehicles.et" {
+   ID "65EB47E8149EC9FE"
+   components {
+    CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
+     m_ItemUsage TOWN
+    }
+   }
+   coords -0.005 0.19 -0.2
   }
  }
 }

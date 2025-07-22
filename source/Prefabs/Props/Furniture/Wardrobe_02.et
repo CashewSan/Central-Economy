@@ -3,6 +3,7 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et
  components {
   CE_SearchableContainerComponent "{65B559EBD2FFE461}" {
    m_Categories CLOTHING
+   m_iContainerItemMinimum 0
    m_iContainerItemMaximum 4
   }
   SCR_UniversalInventoryStorageComponent "{65B559EBC238D667}" {
@@ -26,6 +27,7 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et
     m_bStackable 0
     m_bRefundable 0
    }
+   StoragePurpose 1
    UseCapacityCoefficient 0
    MaxCumulativeVolume 1000000
    MaxItemSize 40 40 40

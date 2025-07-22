@@ -4,8 +4,10 @@ GenericEntity {
   CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
   }
   RplComponent "{645F746B5AA158CA}" {
+   Enabled 0
   }
-  Hierarchy "{645F746B47AAF38C}" {
+  Hierarchy "{65D33545653F23BF}" {
+   Enabled 0
   }
  }
  coords 115.106 1.001 159.53

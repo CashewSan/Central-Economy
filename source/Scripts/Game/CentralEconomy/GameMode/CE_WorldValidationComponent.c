@@ -5,8 +5,19 @@ class CE_WorldValidationComponentClass: SCR_BaseGameModeComponentClass
 
 class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 {
-	[Attribute("1", UIWidgets.EditBox, desc: "Frequency (in seconds) that an item will spawn, LOWER TAKES MORE PERFORMANCE (E.G. If set to 1, an item will spawn every 1 second)", category: "Item Spawning System")] // default set to 1 second
-	float m_iItemSpawningRate;
+	/*
+	[Attribute(ResourceName.Empty, UIWidgets.FileNamePicker, desc: "testing purposes only", params: "conf", category: "Item Spawning System")]
+	protected ResourceName m_testConfig;
+	*/
+	
+	[Attribute("30", UIWidgets.EditBox, desc: "Frequency (in seconds) that an item will spawn, LOWER TAKES MORE PERFORMANCE (E.G. If set to 5, an item will attempt to spawn every 5 seconds)", params: "0 inf 1", category: "Item Spawning System")] // default set to 30 seconds
+	protected float m_fItemSpawningFrequency;
+	
+	[Attribute("0.25", UIWidgets.EditBox, desc: "Ratio of items the system will aim to spawn compared to spawners (If set to 0.5, items will populate half of the spawners in the world. If set to 1, items will populate all spawners)", params: "0 1 0.1", category: "Item Spawning System")] // default set to 0.25
+	protected float m_fItemSpawningRatio;
+	
+	[Attribute("0.25", UIWidgets.EditBox, desc: "Chance of a searchable container actually being searchable (If set to 0.25, each searchable container has a %25 potential for being searchable, gets randomly decided each server restart. If set to 1, searchable container has a %100 chance of being searchable)", params: "0 1 0.1", category: "Item Spawning System")] // default set to 0.25
+	protected float m_fSearchableContainerChance;
 	
 	protected bool 											m_bProcessed 			= false;							// has world been processed?
 	
@@ -20,7 +31,7 @@ class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 	override void OnWorldPostProcess(World world)
 	{
 		super.OnWorldPostProcess(world);
-		SetWorldProcessed(true);
+		m_bProcessed = true;
 		
 		if (Replication.IsServer()) // only create the config or load config if you're the server
 		{
@@ -34,52 +45,22 @@ class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 			{
 				Resource holder = BaseContainerTools.LoadContainer(m_sDb);
 				
-				m_ItemDataConfig = CE_ItemDataConfig.Cast(BaseContainerTools.CreateInstanceFromContainer(holder.GetResource().ToBaseContainer()));
+				if (holder)
+					m_ItemDataConfig = CE_ItemDataConfig.Cast(BaseContainerTools.CreateInstanceFromContainer(holder.GetResource().ToBaseContainer()));
 				
-				if (!m_ItemDataConfig || !m_ItemDataConfig.m_ItemData)
+				if (!m_ItemDataConfig || !m_ItemDataConfig.GetItemDataArray())
 				{
 					Print("[CentralEconomy::CE_WorldValidationComponent] CE_ItemData.conf can not be found! This is typically located in your server's profile folder, please resolve!", LogLevel.ERROR);
 					return;
 				}
 				
-				if (m_ItemDataConfig.m_ItemData.IsEmpty())
+				if (m_ItemDataConfig.GetItemDataArray().IsEmpty())
 				{
 					Print("[CentralEconomy::CE_WorldValidationComponent] CE_ItemData.conf is empty! This is located in your server's profile folder, please resolve!", LogLevel.ERROR);
 					return;
 				}
 			}
 		}
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Gets the instance of the CE_WorldValidationComponent
-	static CE_WorldValidationComponent GetInstance()
-	{
-		if (GetGame().GetGameMode())
-			return CE_WorldValidationComponent.Cast(GetGame().GetGameMode().FindComponent(CE_WorldValidationComponent));
-		else
-			return null;
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Has world been processed?
-	bool HasWorldProcessed()
-	{
-		return m_bProcessed;
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Sets if the world has been processed
-	void SetWorldProcessed(bool processed)
-	{
-		m_bProcessed = processed;
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Gets item data config
-	CE_ItemDataConfig GetItemDataConfig()
-	{
-		return m_ItemDataConfig;
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -99,9 +80,59 @@ class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 			
 			Resource holder = BaseContainerTools.CreateContainerFromInstance(obj);
 			
-			BaseContainerTools.SaveContainer(holder.GetResource().ToBaseContainer(), m_sDb);
+			if (holder && m_sDb)
+				BaseContainerTools.SaveContainer(holder.GetResource().ToBaseContainer(), m_sDb);
 			
-			Print("[CentralEconomy] CE_ItemData.conf created! Please add items to config and then restart server!");
+			Print("[CentralEconomy] CE_ItemData.conf created in your server profile folder! Please add items to config and then restart server!", LogLevel.WARNING);
 		}
 	}
-};
+	
+	//------------------------------------------------------------------------------------------------
+	// GETTERS/SETTERS
+	//------------------------------------------------------------------------------------------------
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets the instance of the CE_WorldValidationComponent
+	static CE_WorldValidationComponent GetInstance()
+	{
+		if (GetGame().GetGameMode())
+			return CE_WorldValidationComponent.Cast(GetGame().GetGameMode().FindComponent(CE_WorldValidationComponent));
+		else
+			return null;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Has world been processed?
+	bool HasWorldProcessed()
+	{
+		return m_bProcessed;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets the universal item data config
+	CE_ItemDataConfig GetItemDataConfig()
+	{
+		return m_ItemDataConfig;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Returns the searchable container chance as a float 0 - 1
+	float GetSearchableContainerChance()
+	{
+		return m_fSearchableContainerChance;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Returns the item spawning frequency
+	float GetItemSpawningFrequency()
+	{
+		return m_fItemSpawningFrequency;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Returns the item spawning ratio
+	float GetItemSpawningRatio()
+	{
+		return m_fItemSpawningRatio;
+	}
+}

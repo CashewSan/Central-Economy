@@ -31,5 +31,9 @@ SCR_DestructibleBuildingEntity : "{79CE8730C95EFD23}Prefabs/Structures/Houses/Vi
    BoxMaxs 12.5 9 5.25
    DrawShape 0
   }
+  GenericEntity : "{EF5366EC75D39FF9}Prefabs/Spawners/LootSpawner_Vehicles.et" {
+   ID "65EB47ECD3CA799F"
+   coords 8.042 0 0.738
+  }
  }
 }

@@ -1,0 +1,162 @@
+$grp GenericEntity : "{6DB87D990DE17E27}Prefabs/Spawners/LootSpawner_Vehicles_Air.et" {
+ {
+  components {
+   CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
+    m_ItemUsage MILITARY
+   }
+  }
+  coords 7471.606 164.562 4335.412
+ }
+ {
+  components {
+   CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
+    m_ItemUsage MILITARY
+   }
+  }
+  coords 7464.336 164.562 4311.569
+ }
+ {
+  components {
+   CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
+    m_ItemUsage MILITARY
+   }
+  }
+  coords 7539.356 2.359 6685.711
+ }
+ {
+  components {
+   CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
+    m_ItemUsage MILITARY
+   }
+  }
+  coords 7733.636 13.744 8142.813
+ }
+ {
+  components {
+   CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
+    m_ItemUsage MILITARY
+   }
+  }
+  coords 3919.711 15.308 8461.29
+ }
+ {
+  components {
+   CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
+    m_ItemUsage MILITARY
+   }
+  }
+  coords 3904.485 15.312 8437.232
+ }
+ {
+  components {
+   CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
+    m_ItemUsage MILITARY
+   }
+  }
+  coords 4952.824 28.273 11937.488
+ }
+ {
+  components {
+   CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
+    m_ItemUsage MILITARY
+   }
+  }
+  coords 4880.034 28.595 11930.694
+ }
+ {
+  components {
+   CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
+    m_ItemUsage MILITARY
+   }
+  }
+  coords 4881.31 28.594 11900.398
+ }
+ {
+  components {
+   CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
+    m_ItemUsage TOWN
+   }
+  }
+  coords 4881.263 28.594 11858.787
+ }
+ {
+  components {
+   CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
+    m_ItemUsage TOWN
+   }
+  }
+  coords 4880.325 28.595 11821.764
+ }
+ {
+  components {
+   CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
+    m_ItemUsage TOWN
+   }
+  }
+  coords 4880.791 28.592 11791.966
+ }
+ {
+  components {
+   CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
+    m_ItemUsage TOWN
+   }
+  }
+  coords 4470.827 1.533 11118.725
+ }
+ {
+  components {
+   CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
+    m_ItemUsage TOWN
+   }
+  }
+  coords 4308.968 1.125 9529.45
+ }
+ {
+  components {
+   CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
+    m_ItemUsage TOWN
+   }
+  }
+  coords 1072.312 2.76 6040.285
+ }
+ {
+  components {
+   CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
+    m_ItemUsage TOWN
+   }
+  }
+  coords 4940.513 2.188 3885.995
+ }
+ {
+  components {
+   CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
+    m_ItemUsage TOWN
+   }
+  }
+  coords 10145.787 2.578 1541.221
+ }
+ {
+  components {
+   CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
+    m_ItemUsage TOWN
+   }
+  }
+  coords 10166.101 2.47 1488.257
+ }
+ {
+  components {
+   CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
+    m_ItemUsage TOWN
+   }
+  }
+  coords 4545.029 155.885 6839.503
+ }
+ {
+  components {
+   CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
+    m_ItemUsage TOWN
+   }
+  }
+  coords 5135.156 175.821 7044.877
+ }
+}

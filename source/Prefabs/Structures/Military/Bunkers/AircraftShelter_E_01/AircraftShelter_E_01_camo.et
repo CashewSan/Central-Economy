@@ -8,11 +8,11 @@ SCR_DestructibleBuildingEntity : "{CA7778B914D3A9FC}Prefabs/Structures/Military/
    }
    {
     ID "62B90C2611A7161E"
-    coords 5.113 -0 -25.214
+    coords 5.113 0 -25.214
    }
    {
     ID "62B90C2611A71637"
-    coords 5.186 -0 -4.839
+    coords 5.186 0 -4.839
    }
    {
     ID "62B90C2611A717D1"
@@ -25,6 +25,10 @@ SCR_DestructibleBuildingEntity : "{CA7778B914D3A9FC}Prefabs/Structures/Military/
    BoxMins -23 -3 -50
    BoxMaxs 23 11 2
    DrawShape 0
+  }
+  GenericEntity : "{EF5366EC75D39FF9}Prefabs/Spawners/LootSpawner_Vehicles.et" {
+   ID "65EB47E8E90AA3D5"
+   coords 0.106 -0 -12.384
   }
  }
 }
