@@ -5,12 +5,16 @@ modded class SCR_OpenStorageAction : SCR_InventoryAction
 	//------------------------------------------------------------------------------------------------
 	override bool CanBeShownScript(IEntity user)
 	{
+		IEntity owner = GetOwner();
+		if (!owner)
+			return false;
+		
 		// If target has searchable container component
-		CE_SearchableContainerComponent targetSearchableContainer = CE_SearchableContainerComponent.Cast(GetOwner().FindComponent(CE_SearchableContainerComponent));
+		CE_SearchableContainerComponent targetSearchableContainer = CE_SearchableContainerComponent.Cast(owner.FindComponent(CE_SearchableContainerComponent));
 		if (targetSearchableContainer)
 		{
 			// If target does not have a loot category
-			if (!targetSearchableContainer.m_Categories)
+			if (!targetSearchableContainer.GetContainerCategories())
 				return false;
 			
 			// If target has already been searched
@@ -18,7 +22,7 @@ modded class SCR_OpenStorageAction : SCR_InventoryAction
 				return false;
 			
 			// If target is destroyed
-			SCR_DamageManagerComponent targetDamageManager = SCR_DamageManagerComponent.Cast(GetOwner().FindComponent(SCR_DamageManagerComponent));
+			SCR_DamageManagerComponent targetDamageManager = SCR_DamageManagerComponent.Cast(owner.FindComponent(SCR_DamageManagerComponent));
 			if (targetDamageManager)
 			{
 				if (targetDamageManager.IsDestroyed())
@@ -32,12 +36,16 @@ modded class SCR_OpenStorageAction : SCR_InventoryAction
 	//------------------------------------------------------------------------------------------------
 	override bool CanBePerformedScript(IEntity user)
 	{
+		IEntity owner = GetOwner();
+		if (!owner)
+			return false;
+		
 		// If target does not have searchable container component
-		CE_SearchableContainerComponent targetSearchableContainer = CE_SearchableContainerComponent.Cast(GetOwner().FindComponent(CE_SearchableContainerComponent));
+		CE_SearchableContainerComponent targetSearchableContainer = CE_SearchableContainerComponent.Cast(owner.FindComponent(CE_SearchableContainerComponent));
 		if (targetSearchableContainer)
 		{
 			// If target does not have a loot category
-			if (!targetSearchableContainer.m_Categories)
+			if (!targetSearchableContainer.GetContainerCategories())
 				return false;
 			
 			// If target has already been searched
@@ -45,7 +53,7 @@ modded class SCR_OpenStorageAction : SCR_InventoryAction
 				return false;
 			
 			// If target is destroyed
-			SCR_DamageManagerComponent targetDamageManager = SCR_DamageManagerComponent.Cast(GetOwner().FindComponent(SCR_DamageManagerComponent));
+			SCR_DamageManagerComponent targetDamageManager = SCR_DamageManagerComponent.Cast(owner.FindComponent(SCR_DamageManagerComponent));
 			if (targetDamageManager)
 			{
 				if (targetDamageManager.IsDestroyed())
@@ -81,8 +89,12 @@ modded class SCR_OpenStorageAction : SCR_InventoryAction
 	{
 		super.OnActionStart(pUserEntity);
 		
+		IEntity owner = GetOwner();
+		if (!owner)
+			return;
+		
 		// If target has searchable container component
-		CE_SearchableContainerComponent targetSearchableContainer = CE_SearchableContainerComponent.Cast(GetOwner().FindComponent(CE_SearchableContainerComponent));
+		CE_SearchableContainerComponent targetSearchableContainer = CE_SearchableContainerComponent.Cast(owner.FindComponent(CE_SearchableContainerComponent));
 		if (targetSearchableContainer)
 		{
 			if (m_StorageItemAttributes)

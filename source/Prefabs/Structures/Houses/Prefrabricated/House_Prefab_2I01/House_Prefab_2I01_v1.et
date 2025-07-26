@@ -1,10 +1,10 @@
-SCR_DestructibleBuildingEntity : "{7B848786FAA52728}Prefabs/Structures/Houses/Prefrabricated/House_Prefab_2I01/House_Prefab_2I01_base.et" {
+SCR_DestructibleBuildingEntity : "{7B848786FAA52728}Prefabs/Structures/Houses/Prefabricated/House_Prefab_2I01/House_Prefab_2I01_base.et" {
  ID "F0DBA538AC2A0552"
  {
   $grp GenericEntity : "{43BD18E7A529D663}Prefabs/Spawners/LootSpawner_Randomized.et" {
    {
     ID "62B8101EEFAA36F6"
-    coords -2.994 -0 3.158
+    coords -2.994 0 3.158
    }
    {
     ID "62B8101EEFAA3964"
@@ -16,7 +16,7 @@ SCR_DestructibleBuildingEntity : "{7B848786FAA52728}Prefabs/Structures/Houses/Pr
    }
    {
     ID "62B8101EEFAA3977"
-    coords 4.083 0 -1.044
+    coords 3.088 0 -2.2
    }
   }
   GenericEntity : "{52CAE20AC033CBED}Prefabs/Spawners/LootSpawner_Food.et" {
@@ -30,6 +30,10 @@ SCR_DestructibleBuildingEntity : "{7B848786FAA52728}Prefabs/Structures/Houses/Pr
    BoxMins -6.5 -1 -6
    BoxMaxs 7.5 11 7
    DrawShape 0
+  }
+  GenericEntity : "{EF5366EC75D39FF9}Prefabs/Spawners/LootSpawner_Vehicles.et" {
+   ID "65EB47ED82443127"
+   coords 4.164 0 1.103
   }
  }
 }

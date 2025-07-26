@@ -1,14 +1,24 @@
 class CE_SpawnerTimingSystem : GameSystem
 {
-	protected ref array<CE_ItemSpawningComponent> 			m_aSpawnerComponents 			= {}; 			// spawner components registered
+	/* 
+		Handles CE_ItemSpawningComponent timings
+	*/
 	
-	protected float 										m_fTimer						= 0;				// current timer count
-	protected float										m_fCheckInterval				= 1; 			// how often the system will check (in seconds)
+	protected ref array<CE_ItemSpawningComponent> 			m_aSpawnerComponents 			= new array<CE_ItemSpawningComponent>; 			// array of CE_ItemSpawningComponents registered to this system
+	
+	protected float 										m_fTimer						= 0;												// timer for check frequency
+	protected const float									m_fCheckInterval				= 1; 											// how often (in seconds) the system will update CE_ItemSpawningComponents
 	
 	//------------------------------------------------------------------------------------------------
-	//! Tick method, currently set to control timer for spawner resets every n seconds
+	//! Tick method, handles updates for CE_ItemSpawningComponents
 	override event protected void OnUpdate(ESystemPoint point)
 	{
+		const RplId systemRplId = Replication.FindItemId(this);
+		const RplNode systemRplNode = Replication.FindNode(systemRplId);
+		
+		if (systemRplNode.GetRole() == RplRole.Proxy)
+			return;
+		
 		float timeSlice = GetWorld().GetFixedTimeSlice();
 		
 		m_fTimer += timeSlice;
@@ -31,11 +41,10 @@ class CE_SpawnerTimingSystem : GameSystem
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Gets the system instance
-	static CE_SpawnerTimingSystem GetInstance()
+	//! Returns instance of system within the entity's world
+	static CE_SpawnerTimingSystem GetByEntityWorld(IEntity entity)
 	{
-		World world = GetGame().GetWorld();
-
+		World world = entity.GetWorld();
 		if (!world)
 			return null;
 
@@ -43,7 +52,7 @@ class CE_SpawnerTimingSystem : GameSystem
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Registers spawning component
+	//! Registers spawner component
 	void RegisterSpawner(notnull CE_ItemSpawningComponent component)
 	{
 		if (!IsEnabled())
@@ -54,7 +63,7 @@ class CE_SpawnerTimingSystem : GameSystem
 	}
 
 	//------------------------------------------------------------------------------------------------
-	//! Unregisters spawning component
+	//! Unregisters spawner component
 	void UnregisterSpawner(notnull CE_ItemSpawningComponent component)
 	{
 		m_aSpawnerComponents.RemoveItem(component);

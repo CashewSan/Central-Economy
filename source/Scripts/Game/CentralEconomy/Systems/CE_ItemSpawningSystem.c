@@ -1,242 +1,757 @@
 class CE_ItemSpawningSystem : GameSystem
 {
-	protected ref array<ref CE_ItemData>					m_aItemData						= new array<ref CE_ItemData>;						// CE_ItemData array, item data gets inserted from config item data
-	protected ref array<ref CE_ItemData>					m_aSpawnedItems 					= new array<ref CE_ItemData>; 					// items that have spawned in the world
-	protected ref array<CE_ItemSpawningComponent> 			m_aSpawnerComponents 				= new array<CE_ItemSpawningComponent>; 			// initial pull of ALL item spawning components in the world
-	protected ref array<CE_SearchableContainerComponent> 	m_aContainerComponents 			= new array<CE_SearchableContainerComponent>; 		// initial pull of ALL searchable container components in the world
-	protected ref array<CE_ItemSpawningComponent> 			m_aComponentsWithoutItem 			= new array<CE_ItemSpawningComponent>; 			// Spawner components WITHOUT an item spawned
-	protected ref array<CE_ItemSpawningComponent> 			m_aComponentsWithItem 			= new array<CE_ItemSpawningComponent>; 			// Spawner components WITH an item spawned
-	protected ref map<ref CE_ItemData, string>				m_aItemsNotRestockReady 			= new map<ref CE_ItemData, string>;				// items whose restocking timer has not ended
-	protected ref array<ref CE_Item>						m_aItems							= new array<ref CE_Item>;							// CE_Item array, gets filled after item validation
+	/* 
+		To keep this brief, this is the brains of CentralEconomy. Handles all item & spawner processing, and then spawning items to spawners
 	
-	protected CE_WorldValidationComponent 					m_WorldValidationComponent;														// component added to world's gamemode for verification
-	protected CE_ItemDataConfig							m_Config;
-	protected ref RandomGenerator 						m_randomGen 						= new RandomGenerator();							// vanilla random generator
-
-	protected bool 										m_bWorldProcessed				= false;											// has the world been processed?
+		Enjoy!
+			- Cashew
+	*/
+	
+	protected ref array<CE_ItemSpawningComponent> 			m_aSpawnerComponents		 		= new array<CE_ItemSpawningComponent>(); 			// ALL registered spawner components in the world
+	protected ref array<CE_SearchableContainerComponent> 	m_aContainerComponents 			= new array<CE_SearchableContainerComponent>(); 	// ALL registered searchable container components in the world
+	protected ref array<ref CE_Item>						m_aItems 						= new array<ref CE_Item>();						// processed CE_ItemData into CE_Item
+	protected ref array<CE_UsageTriggerArea>				m_aUsageAreas					= new array<CE_UsageTriggerArea>();				// usage areas registered to the system
+	protected ref array<CE_TierTriggerArea>				m_aTierAreas						= new array<CE_TierTriggerArea>();				// tier areas registered to the system
+	
+	protected ref RandomGenerator 						m_RandomGen						= new RandomGenerator();							// vanilla random generator
+	protected ref CE_OnAreasQueriedInvoker					m_OnAreasQueriedInvoker			= new CE_OnAreasQueriedInvoker();					// script invoker for when all areas have been queried
 	
 	protected float 										m_fTimer							= 0;												// timer for spawning check interval
-	protected float 										m_fContainerResetTimer			= 0;												// timer for spawner reset
-	protected float										m_fCheckInterval					= 0; 											// how often the item spawning system will run (in seconds)
-	protected const float									m_fSpawnerResetCheckInterval		= 10;											// how often the system will check for spawner reset
-	protected const float									m_fContainerResetCheckInterval	= 10;											// how often the system will check for spawner reset
+	protected float										m_fItemSpawningFrequency			= 0; 											// frequency (in seconds) that an item will spawn
+	protected float										m_fItemSpawningRatio				= 0;												// ratio of items the system will aim to spawn compared to spawners
 	
-	protected int										m_iSpawnedItemCount				= 0;												// count for spawned items, used to track when check interval changes
-	protected int										m_iSortedItemsLimit				= 2000;											// sorted items count limit (basically, how many items can a spawner potentially sort and choose from to spawn)
+	protected int										m_iItemCount						= 0;												// count of items currently on a spawner
+	protected int										m_iSpawnerRatioCount				= 0;												// count of spawners multiplied by the m_fItemSpawningRatio
+	protected int										m_iUsageAreasQueried				= 0;												// count of usage areas queried
+	protected int										m_iTierAreasQueried				= 0;												// count of tier areas queried
 	
-	//------------------------------------------------------------------------------------------------
-	//! Calls DelayedInit() upon initialization of the system
-	override void OnInit()
-	{
-		DelayedInit();
-	}
+	[RplProp()]
+	protected bool										m_bHaveAreasQueried				= false;											// have the usage and tier areas finished querying?
+	protected bool										m_bInitialSpawningRan				= false;											// has the system ran it's initial spawning phase?
+	protected bool										m_bProcessingSpawn				= false;											// is the system currently processing a spawn?
 	
 	//------------------------------------------------------------------------------------------------
-	//! Tick method, currently set to start spawning process of an item every n seconds
-	override event protected void OnUpdate(ESystemPoint point)
+	//! On system start
+	override void OnStarted()
 	{
-		float timeSlice = GetWorld().GetFixedTimeSlice();
+		super.OnStarted();
 		
-		if (!m_aSpawnerComponents.IsEmpty())
-		{
-			if (m_fCheckInterval == 0)
-				return;
-			else
-			{
-				m_fTimer += timeSlice;
-				
-				if (m_fTimer >= m_fCheckInterval)
-				{
-					m_fTimer = 0;
-					
-					if (m_bWorldProcessed && m_Config)
-					{
-						SelectSpawnerAndItem();
-					}
-					else
-						GetGame().GetCallqueue().CallLater(DelayedInit, 100, false);
-				}
-			}
-		}
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Delayed initialization, sets the m_WorldValidationComponent, sets m_WorldProcessed as true if found, and starts the process of spawning
-	protected void DelayedInit()
-	{
-		if(GetGame().InPlayMode())
+		const RplId systemRplId = Replication.FindItemId(this);
+		const RplNode systemRplNode = Replication.FindNode(systemRplId);
+		
+		if (systemRplNode.GetRole() == RplRole.Proxy)
+			return;
+		
+		CE_WorldValidationComponent m_WorldValidationComponent;
+		
+		if (GetGame().InPlayMode())
 			m_WorldValidationComponent = CE_WorldValidationComponent.GetInstance();
 		
-		if(m_WorldValidationComponent)
+		if (m_WorldValidationComponent)
 		{
 			if(m_WorldValidationComponent.HasWorldProcessed())
-			{	
-				//Print("World processed!");
+			{
+				m_OnAreasQueriedInvoker.Insert(InitialSpawningPhase);
 				
-				m_bWorldProcessed = true;
+				m_fItemSpawningFrequency = m_WorldValidationComponent.GetItemSpawningFrequency();
+				m_fItemSpawningRatio = m_WorldValidationComponent.GetItemSpawningRatio();
 				
-				if (m_WorldValidationComponent.m_iItemSpawningRate)
-					m_fCheckInterval = m_WorldValidationComponent.m_iItemSpawningRate;
-				else
-					m_fCheckInterval = 1.0;
+				CE_ItemDataConfig m_Config = m_WorldValidationComponent.GetItemDataConfig();
 				
-				m_Config = m_WorldValidationComponent.GetItemDataConfig();
-						
-				if (m_Config)
-				{
-					m_aItemData.Clear();
-					
-					foreach (CE_ItemData itemData : m_Config.m_ItemData)
-					{
-						m_aItemData.Insert(itemData);
-					}
-					
-					GetGame().GetCallqueue().CallLater(SetItemsArray, 200);
-				}
+				if (!m_aItems.IsEmpty())
+					m_aItems.Clear();
+				
+				m_aItems = ProcessItemData(m_Config);
 			}
 			else
 			{
-				Print("[CentralEconomy::CE_ItemSpawnSystem] CE_WorldValidationComponent HAS NOT BEEN PROCESSED!", LogLevel.ERROR);
+				Print("[CentralEconomy::CE_ItemSpawningSystem] CE_WorldValidationComponent HAS NOT BEEN PROCESSED!", LogLevel.ERROR);
 				return;
 			}
 		}
 		else
 		{
-			Print("[CentralEconomy::CE_ItemSpawnSystem] YOU'RE MISSING CE_WorldValidationComponent IN YOUR GAMEMODE!", LogLevel.ERROR);
+			Print("[CentralEconomy::CE_ItemSpawningSystem] YOU'RE MISSING CE_WorldValidationComponent IN YOUR GAMEMODE!", LogLevel.ERROR);
 			return;
 		}
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Sets the items array from universal config
-	protected void SetItemsArray()
+	//! Handles the initial spawning phase, is called when all usage and tier areas have been queried
+	protected void InitialSpawningPhase()
 	{
-		m_aItems = GenerateItemsFromUniversalConfig();
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Selects a randomized spawner component to try to spawn an item at, and requests the randomized item to be spawned
-	protected void SelectSpawnerAndItem()
-	{
-		int index;
-		
-		if (m_aComponentsWithoutItem.Count() > 1)
-			index = m_randomGen.RandInt(0, m_aComponentsWithoutItem.Count());
-		else if (m_aComponentsWithoutItem.Count() == 1)
-			index = 0;
-		else
-			return;
-		
-		if (m_aComponentsWithoutItem.IsEmpty() || !m_aComponentsWithoutItem[index] || m_aComponentsWithoutItem[index] && m_aComponentsWithoutItem[index].HasItemSpawned())
-			return;
-		else
+		if (m_aItems && !m_aItems.IsEmpty())
 		{
-			CE_ItemData item;
+			m_bInitialSpawningRan = true;
 			
-			if (m_aComponentsWithoutItem[index].HasSpawnerConfig())
-				item = m_aComponentsWithoutItem[index].RequestItemToSpawnFromSpawnerConfig();
+			array<ref CE_Spawner> processedSpawnersArray = {};
+			
+			foreach (CE_Spawner spawner : ProcessSpawners())
+			{
+				processedSpawnersArray.Insert(spawner);
+			}
+			
+			if (processedSpawnersArray.Count() == 1)
+			{
+				m_iSpawnerRatioCount = 1;
+			}
 			else
-				item = m_aComponentsWithoutItem[index].GetItemToSpawnFromUniversalConfig();
+				m_iSpawnerRatioCount = Math.Round(processedSpawnersArray.Count() * m_fItemSpawningRatio);
 			
-			if (item)
-				TryToSpawnItem(m_aComponentsWithoutItem[index], item);
+			int runCount = 0;
+			int failCount = 0;
+			
+			while (runCount < m_iSpawnerRatioCount && failCount < processedSpawnersArray.Count())
+			{
+				CE_Spawner spawner = SelectSpawner(processedSpawnersArray);
+				
+				if (spawner)
+				{
+					array<ref CE_Item> items = {};
+					
+					CE_ItemSpawningComponent spawningComponent = spawner.GetSpawningComponent();
+					
+					if (spawningComponent && spawningComponent.HasConfig() && spawningComponent.HaveItemsProcessed())
+					{
+						items = spawningComponent.GetItems();
+					}
+					else
+					{
+						items = m_aItems;
+					}
+					
+					CE_Item item;
+					
+					if (!items.IsEmpty())
+						item = SelectItem(items, spawner);
+						
+					if (item && TryToSpawnItem(spawner, item))
+					{
+						processedSpawnersArray.RemoveItem(spawner);
+						runCount++;
+					}
+					else
+					{
+						failCount++;
+						continue;
+					}
+				}
+				else	
+				{
+					failCount++;
+					continue;
+				}
+			}
+		}
+	}
+	
+	//float m_fTestTimer = 0;
+	//float m_fTestFrequency = 5;
+	
+	//------------------------------------------------------------------------------------------------
+	//! Tick method, handles timing for spawning
+	override event protected void OnUpdate(ESystemPoint point)
+	{	
+		super.OnUpdate(point);
+		
+		if (point != ESystemPoint.FixedFrame)
+			return;
+		
+		const RplId systemRplId = Replication.FindItemId(this);
+		const RplNode systemRplNode = Replication.FindNode(systemRplId);
+		
+		/*
+		float testTimeSlice = GetWorld().GetFixedTimeSlice();
+		m_fTestTimer += testTimeSlice;
+		
+		if (m_fTestTimer >= m_fTestFrequency)
+		{
+			m_fTestTimer = 0;
+			
+			PrintFormat("Usage Areas Queried: %1 - Total Count: %2", GetUsageAreasQueried(), m_aUsageAreas.Count());
+			PrintFormat("Tier Areas Queried: %1 - Total Count: %2", GetTierAreasQueried(), m_aTierAreas.Count());
+			
+			Print("Item Count: " + GetItemCount());
+		}
+		*/
+		
+		if (systemRplNode.GetRole() == RplRole.Proxy)
+			return;
+		
+		if (GetUsageAreasQueried() >= m_aUsageAreas.Count() 
+		&& GetTierAreasQueried() >= m_aTierAreas.Count())
+		{
+			if (HaveAreasQueried() == false)
+			{
+				m_bHaveAreasQueried = true;
+				Replication.BumpMe();
+				
+				m_OnAreasQueriedInvoker.Invoke();
+			}
+			
+			if (!m_bInitialSpawningRan)
+			{
+				InitialSpawningPhase();
+			}
+			
+			m_aUsageAreas.Clear();	// no point of keeping in memory once queried since querying only happens once at launch of server
+			m_aTierAreas.Clear();		// no point of keeping in memory once queried since querying only happens once at launch of server
+		}
+		
+		if (GetItemCount() >= m_iSpawnerRatioCount)
+			return;
+		
+		if (m_aItems && !m_aItems.IsEmpty() && m_bInitialSpawningRan)
+		{
+			float timeSlice = GetWorld().GetFixedTimeSlice();
+			m_fTimer += timeSlice;
+			
+			if (m_fItemSpawningFrequency > 0 && m_fTimer >= m_fItemSpawningFrequency && !m_bProcessingSpawn)
+			{
+				m_fTimer = 0;
+				m_bProcessingSpawn = true;
+				
+				CE_Spawner spawner = SelectSpawner(ProcessSpawners());
+				
+				if (spawner)
+				{
+					array<ref CE_Item> items = {};
+					
+					CE_ItemSpawningComponent spawningComponent = spawner.GetSpawningComponent();
+					
+					if (spawningComponent && spawningComponent.HasConfig() && spawningComponent.HaveItemsProcessed())
+					{
+						items = spawningComponent.GetItems();
+					}
+					else
+					{
+						items = m_aItems;
+					}
+					
+					if (!items.IsEmpty())
+						GetGame().GetCallqueue().CallLater(DelayedItemSelection, (m_fItemSpawningFrequency * 1000) * 0.25, false, spawner, items); // so if spawning frequency is set to 30 seconds, we multiply it by 1000 (to get 30000ms), then multiply by 0.25 to get a total 7500ms (7.5 seconds)
+					else
+						m_bProcessingSpawn = false;
+				}
+				else
+					m_bProcessingSpawn = false;
+			}
 		}
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Tries to spawn the item
-	void TryToSpawnItem(CE_ItemSpawningComponent spawner, CE_ItemData item)
+	//! Item selection that gets delayed to help split 
+	protected void DelayedItemSelection(CE_Spawner spawner, array<ref CE_Item> items)
 	{
-		if (!Replication.IsServer())
-			return;
+		CE_Item item = SelectItem(items, spawner);
+					
+		if (item)
+			GetGame().GetCallqueue().CallLater(TryToSpawnItem, (m_fItemSpawningFrequency * 1000) * 0.25, false, spawner, item); // so if spawning frequency is set to 30 seconds, we multiply it by 1000 (to get 30000ms), then multiply by 0.25 to get a total 7500ms (7.5 seconds)
+		else
+			m_bProcessingSpawn = false;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Takes the config and processes each item data into a CE_Item, as long as they pass certains checks
+	array<ref CE_Item> ProcessItemData(CE_ItemDataConfig config)
+	{	
+		array<ref CE_Item> itemsProcessed = {};
+		array<ref CE_ItemData> itemDataToBeProcessed = {};
 		
-		if (spawner.HasItemSpawned())
-		{		
+		if (config && config.GetItemDataArray())
+		{	
+			foreach (CE_ItemData itemData : config.GetItemDataArray())
+			{
+				itemDataToBeProcessed.Insert(itemData)
+			}
+			
+			int itemCount = itemDataToBeProcessed.Count();
+			
+			for (int i = 0, maxCount = Math.Min(itemCount, config.GetItemDataArray().Count()); i < maxCount; i++)
+			{
+				CE_ItemData itemData = itemDataToBeProcessed[0];
+				
+				if (!itemData.GetName() 
+				|| !itemData.GetPrefab() 
+				|| !itemData.GetNominal()
+				|| !itemData.GetMinimum() 
+				|| !itemData.GetLifetime() 
+				|| !itemData.GetRestock() 
+				|| !itemData.GetCategory() 
+				|| !itemData.GetUsages() 
+				|| !itemData.GetTiers())
+				{
+					Print("[CentralEconomy::CE_ItemSpawningSystem] " + itemData.GetName() + " is missing information! Please fix!", LogLevel.ERROR);
+					itemDataToBeProcessed.Remove(0);
+					itemCount--;
+					continue;
+				}
+				else if (itemData.GetNominal() < itemData.GetMinimum())
+				{
+					Print("[CentralEconomy::CE_ItemSpawningSystem] " + itemData.GetName() + " has a nominal value less than the minimum value! Please fix!", LogLevel.ERROR);
+					itemDataToBeProcessed.Remove(0);
+					itemCount--;
+					continue;
+				}
+				else
+				{
+					CE_Item item = new CE_Item();
+					
+					item.SetItemData(itemData);
+					item.SetTiers(itemData.GetTiers());
+					item.SetUsages(itemData.GetUsages());
+					item.SetCategory(itemData.GetCategory());
+					item.SetAvailableCount(m_RandomGen.RandIntInclusive(itemData.GetMinimum(), itemData.GetNominal()));
+					
+					if (!itemsProcessed.Contains(item))
+					{
+						itemsProcessed.Insert(item);
+					}
+				}
+				
+				itemDataToBeProcessed.Remove(0);
+				itemCount--;
+			}
+			
+			return itemsProcessed;
+		}
+		
+		return null;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Takes each CE_ItemSpawningComponent and processes them into a CE_Spawner, as long as they pass certain checks
+	protected array<ref CE_Spawner> ProcessSpawners()
+	{
+		array<ref CE_Spawner> spawnersProcessed = {};
+		array<CE_ItemSpawningComponent> spawnersToBeProcessed = {};
+		
+		spawnersToBeProcessed.Copy(m_aSpawnerComponents);
+		
+		int spawnerCount = spawnersToBeProcessed.Count();
+		
+		for (int i = 0, maxCount = Math.Min(spawnerCount, m_aSpawnerComponents.Count()); i < maxCount; i++)
+		{
+			CE_ItemSpawningComponent spawnerComponent = spawnersToBeProcessed[0];
+			if (!spawnerComponent)
+			{
+				spawnersToBeProcessed.Remove(0);
+				spawnerCount--;
+				continue;
+			}
+			
+			if (!spawnerComponent.GetSpawnerUsage() 
+			|| !spawnerComponent.GetSpawnerTier() 
+			|| !spawnerComponent.GetSpawnerCategories()
+			|| spawnerComponent.GetSpawnerResetTime() == 0)
+			{
+				//Print("[CentralEconomy::CE_ItemSpawningSystem] " + spawnerComponent + " is missing information! Please fix!", LogLevel.ERROR);
+				spawnersToBeProcessed.Remove(0);
+				spawnerCount--;
+				
+				if (m_aSpawnerComponents.Contains(spawnerComponent))
+				{
+					m_aSpawnerComponents.RemoveItem(spawnerComponent); // if missing info, just remove permanently
+				}
+				
+				continue;
+			}
+			else
+			{
+				CE_Spawner spawner = new CE_Spawner(spawnerComponent, spawnerComponent.GetItemSpawned(), spawnerComponent.IsReadyForItem());
+				
+				if (!spawnersProcessed.Contains(spawner))
+				{
+					spawnersProcessed.Insert(spawner);
+				}
+			}
+			
+			spawnersToBeProcessed.Remove(0);
+			spawnerCount--;
+		}
+		
+		return spawnersProcessed;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Takes a CE_SearchableContainerComponent and processes it into a CE_SearchableContainer, as long as it passes certain checks
+	protected void ProcessContainer(notnull CE_SearchableContainerComponent containerComponent)
+	{
+		if (!containerComponent.GetContainerUsage() 
+		|| !containerComponent.GetContainerTier() 
+		|| !containerComponent.GetContainerCategories()
+		|| containerComponent.GetContainerResetTime() == 0)
+		{
+			containerComponent.SetReadyForItems(false);
+			
+			if (m_aContainerComponents.Contains(containerComponent))
+			{
+				m_aContainerComponents.RemoveItem(containerComponent);
+			}
+			
 			return;
 		}
-		else if (item)
+		else if (containerComponent.GetContainerItemMinimum() > containerComponent.GetContainerItemMaximum())
 		{
-			//spawner.SetItemSpawned(item);
+			Print("[CentralEconomy::CE_ItemSpawningSystem] " + containerComponent + " has a item maximum value less than the item minimum value! Please fix!", LogLevel.ERROR);
 			
-			IEntity spawnEntity = spawner.GetOwner();
+			containerComponent.SetReadyForItems(false);
+			
+			if (m_aContainerComponents.Contains(containerComponent))
+			{
+				m_aContainerComponents.RemoveItem(containerComponent);
+			}
+			
+			return;
+		}
+		else
+		{
+			foreach (CE_Item item : containerComponent.GetItemsSpawned())
+			{
+				containerComponent.GetItemsSpawned().Insert(item);
+			}
+			
+			containerComponent.SetReadyForItems(containerComponent.IsReadyForItems());
+		}
+		
+		/*
+		if (m_aContainerComponents.Contains(containerComponent))
+		{
+			m_aContainerComponents.RemoveItem(containerComponent); // remove as they're not really worth to be kept in memory? They only gotta process once, and then rest is handle through useraction
+		}
+		*/
+		
+		//Print("Processed Container");
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Randomly selects a CE_Spawner from a CE_Spawner array, and checks if it's ready for an item
+	protected CE_Spawner SelectSpawner(array<ref CE_Spawner> spawnersArray)
+	{
+		if (spawnersArray.IsEmpty())
+			return null;
+		
+		array<ref CE_Spawner> spawnerArrayCopy = {};
+		
+		foreach (CE_Spawner spawner : spawnersArray)
+		{
+			spawnerArrayCopy.Insert(spawner);
+		}
+		
+		for (int i = 0; i < spawnerArrayCopy.Count(); i++)
+		{
+			int randomIndex = m_RandomGen.RandInt(0, spawnerArrayCopy.Count());
+			
+			CE_Spawner spawnerSelected = spawnerArrayCopy[randomIndex];
+			
+			if (spawnerSelected.IsReadyForItem()
+			&& !spawnerSelected.GetItemSpawned())
+			{
+				return spawnerSelected;
+			}
+			else
+			{
+				spawnerArrayCopy.RemoveItem(spawnerSelected);
+				continue;
+			}
+		}
+		
+		return null;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Randomly selects a CE_Item from a CE_Item array, and checks for matching attributes against a CE_Spawner
+	protected CE_Item SelectItem(array<ref CE_Item> itemsArray, CE_Spawner spawner)
+	{
+		array<ref CE_Item> itemsArrayCopy = {};
+		
+		foreach (CE_Item item : itemsArray)
+		{
+			itemsArrayCopy.Insert(item);
+		}
+		
+		if (itemsArrayCopy.IsEmpty())
+			return null;
+		
+		CE_ItemSpawningComponent spawnerComponent = spawner.GetSpawningComponent();
+		if (!spawnerComponent)
+			return null;
+		
+		for (int i = 0; i < itemsArrayCopy.Count(); i++)
+		{
+			int randomIndex = m_RandomGen.RandInt(0, itemsArrayCopy.Count());
+			
+			CE_Item itemSelected = itemsArrayCopy[randomIndex];
+			if (!itemSelected)
+				return null;
+			
+			int itemCount = itemSelected.GetAvailableCount();
+			
+			if (itemSelected.GetTiers() & spawnerComponent.GetSpawnerTier() 
+			&& itemSelected.GetUsages() & spawnerComponent.GetSpawnerUsage() 
+			&& itemSelected.GetCategory() & spawnerComponent.GetSpawnerCategories()
+			&& itemCount > 0)
+			{
+				return itemSelected;
+			}
+			else
+			{
+				itemsArrayCopy.RemoveItem(itemSelected);
+				continue;
+			}
+		}
+		
+		return null;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Randomly selects a CE_Item from a CE_Item array, and checks for matching attributes against a CE_SearchableContainer
+	array<ref CE_Item> SelectItems(array<ref CE_Item> itemsArray, CE_SearchableContainerComponent containerComponent, int min, int max)
+	{
+		if (itemsArray.IsEmpty())
+			return null;
+		
+		if (!containerComponent)
+			return null;
+		
+		int itemsCount = m_RandomGen.RandIntInclusive(min, max);
+		if (itemsCount == 0)
+			return null;
+		
+		array<ref CE_Item> itemsArrayCopy = {};
+		array<ref CE_Item> itemsSelected = {};
+		
+		foreach (CE_Item item : itemsArray)
+		{
+			itemsArrayCopy.Insert(item);
+		}
+		
+		if (itemsArrayCopy.IsEmpty())
+			return null;
+		
+		while (itemsSelected.Count() < itemsCount && itemsArrayCopy.Count() != 0)
+		{
+			int randomIndex = m_RandomGen.RandInt(0, itemsArrayCopy.Count());
+			
+			CE_Item itemSelected = itemsArrayCopy[randomIndex];
+			if (!itemSelected)
+				continue;
+			
+			if (itemSelected.GetAvailableCount() > 0
+			&& itemSelected.GetTiers() & containerComponent.GetContainerTier() 
+			&& itemSelected.GetUsages() & containerComponent.GetContainerUsage() 
+			&& itemSelected.GetCategory() & containerComponent.GetContainerCategories())
+			{
+				itemsSelected.Insert(itemSelected);
+			}
+			else
+			{
+				itemsArrayCopy.RemoveItem(itemSelected);
+				continue;
+			}
+		}
+		
+		if (	itemsSelected.IsEmpty())
+			return null;
+		else
+			return itemsSelected;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Tries to spawn the CE_Item to the CE_Spawner, returns true if item spawned properly
+	protected bool TryToSpawnItem(CE_Spawner spawner, CE_Item item)
+	{
+		if (item && spawner)
+		{
+			CE_ItemSpawningComponent spawnerComponent = spawner.GetSpawningComponent();
+			if (!spawnerComponent)
+				return false;
+			
+			CE_ItemData itemData = item.GetItemData();
+			if (!itemData)
+				return false;
+			
+			IEntity spawnEntity = spawnerComponent.GetOwner();
 			if (!spawnEntity)
-				return;
+				return false;
 		
 			vector m_WorldTransform[4];
 			spawnEntity.GetWorldTransform(m_WorldTransform);
 			
-			if (item.m_vItemRotation != vector.Zero)
-				Math3D.AnglesToMatrix(item.m_vItemRotation, m_WorldTransform);
+			if (itemData.GetRotation() != vector.Zero)
+				Math3D.AnglesToMatrix(itemData.GetRotation(), m_WorldTransform);
 			
 			EntitySpawnParams params();
 			m_WorldTransform[3][1] = m_WorldTransform[3][1] + 0.025; // to not make item be in the ground
 			params.Transform = m_WorldTransform;
 			
-			Resource m_Resource = Resource.Load(item.m_sPrefab);
+			Resource m_Resource = Resource.Load(itemData.GetPrefab());
 			if (!m_Resource)
-				return;
+				return false;
 			
-			IEntity newEnt = GetGame().SpawnEntityPrefab(m_Resource, GetGame().GetWorld(), params);
+			IEntity newEnt = GetGame().SpawnEntityPrefab(m_Resource, spawnEntity.GetWorld(), params);
 			if (!newEnt)
-				return;
+				return false;
 			
+			item.SetAvailableCount(item.GetAvailableCount() - 1);
 			
-			//newEnt.SetYawPitchRoll(item.m_vItemRotation + spawnEntity.GetYawPitchRoll()); // broken as of 1.3
-			//SCR_EntityHelper.SnapToGround(newEnt); // puts item halfway into ground
-			
-			SetItemQuantity(newEnt, item.m_iQuantityMinimum, item.m_iQuantityMaximum);
-			
-			GetSpawnedItems().Insert(item);
-			//ResetStallTimer();
-			SetSpawnedItemCount(GetSpawnedItemCount() + 1);
-			
-			GetComponentsWithItem().Insert(spawner);
-			GetComponentsWithoutItem().RemoveItem(spawner);
-			
-			// if item is a vehicle, or at least categorized as one (vehicles don't have a hierarchy component, so adding as child doesn't work)
-			if (item.m_ItemCategory == CE_ELootCategory.VEHICLES
-			|| item.m_ItemCategory == CE_ELootCategory.VEHICLES_SEA
-			|| item.m_ItemCategory == CE_ELootCategory.VEHICLES_AIR)
+			// if quantities are set greater than -1 within the item data config
+			if (itemData.GetQuantityMinimum() > -1 
+			&& itemData.GetQuantityMaximum() > -1)
 			{
-				// Vehicle enter/leave event
-		        EventHandlerManagerComponent eventHandler = EventHandlerManagerComponent.Cast(newEnt.FindComponent(EventHandlerManagerComponent));
+				// making sure quantity maximum is not less than quantity minimum
+				if (itemData.GetQuantityMinimum() <= itemData.GetQuantityMaximum())
+				{
+					SetQuantities(newEnt, itemData.GetQuantityMinimum(), itemData.GetQuantityMaximum());
+				}
+				else // else you get this error in console
+					Print("[CentralEconomy::CE_ItemSpawningSystem] " + itemData.GetName() + " has quantity minimum set to more than quantity maximum! Please fix!", LogLevel.ERROR);
+			}
+			
+			// if item is ACTUALLY a vehicle
+			Vehicle vehicle = Vehicle.Cast(newEnt);
+			if (vehicle)
+			{
+				// vehicle enter/leave event
+		        EventHandlerManagerComponent eventHandler = EventHandlerManagerComponent.Cast(vehicle.FindComponent(EventHandlerManagerComponent));
 		        if (eventHandler)
 		        {
-		           	eventHandler.RegisterScriptHandler("OnCompartmentEntered", this, spawner.OnVehicleActivated, true, false);
-					eventHandler.RegisterScriptHandler("OnCompartmentLeft", this, spawner.OnVehicleDeactivated, true, false);
+		           	eventHandler.RegisterScriptHandler("OnCompartmentEntered", this, spawnerComponent.OnVehicleActivated, true, false);
+					eventHandler.RegisterScriptHandler("OnCompartmentLeft", this, spawnerComponent.OnVehicleDeactivated, true, false);
 		        }
 			}
 			
-			spawner.GetItemSpawnedInvoker().Invoke(newEnt, item);
+			spawnerComponent.GetItemSpawnedInvoker().Invoke(newEnt, item, spawner);
+			
+			m_iItemCount = GetItemCount() + 1;
+			
+			m_bProcessingSpawn = false;
+			return true;
+		}
+		
+		m_bProcessingSpawn = false;
+		return false;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Tries to spawn the CE_Item to the CE_SearchableContainer
+	void TryToSpawnItems(CE_SearchableContainerComponent containerComp, array<ref CE_Item> itemsArray)
+	{
+		const RplId systemRplId = Replication.FindItemId(this);
+		const RplNode systemRplNode = Replication.FindNode(systemRplId);
+		
+		if (systemRplNode.GetRole() == RplRole.Proxy)
+			return;
+		
+		if (!containerComp)
+			return;
+		
+		IEntity containerEntity = containerComp.GetOwner();
+		if (!containerEntity)
+			return;
+		
+		SCR_InventoryStorageManagerComponent storageManager = SCR_InventoryStorageManagerComponent.Cast(containerEntity.FindComponent(SCR_InventoryStorageManagerComponent));
+		if (!storageManager)
+			return;
+		
+		SCR_UniversalInventoryStorageComponent ownerStorage = SCR_UniversalInventoryStorageComponent.Cast(containerEntity.FindComponent(SCR_UniversalInventoryStorageComponent));
+		if (!ownerStorage)
+			return;
+		
+		foreach (CE_Item item: itemsArray)
+		{
+			CE_ItemData itemData = item.GetItemData();
+			if (!itemData)
+				continue;
+			
+			vector worldTransform[4];
+			containerEntity.GetWorldTransform(worldTransform);
+			
+			EntitySpawnParams params();
+			params.Transform = worldTransform;
+			
+			Resource resource = Resource.Load(itemData.GetPrefab());
+			if (!resource)
+				return;
+			
+			IEntity newEnt = GetGame().SpawnEntityPrefab(resource, containerEntity.GetWorld(), params);
+			if (!newEnt)
+				return;
+			
+			/*
+			if (storageManager.TrySpawnPrefabToStorage(itemData.m_sPrefab, ownerStorage))
+				item.SetAvailableCount(item.GetAvailableCount() - 1);
+			*/
+			
+			CE_ItemSpawnableComponent spawnableItem = CE_ItemSpawnableComponent.Cast(newEnt.FindComponent(CE_ItemSpawnableComponent));
+			if (spawnableItem)
+			{
+				spawnableItem.SetWasDepositedByAction(true);
+				spawnableItem.HookDepositEvent();
+			}
+			else
+			{
+				Print("[CentralEconomy::CE_ItemSpawningSystem] THIS ITEM HAS NO CE_ITEMSPAWNABLECOMPONENT!: " + itemData.GetName(), LogLevel.ERROR);
+			}
+			
+			if (!storageManager.CanInsertItemInStorage(newEnt, ownerStorage))
+			{
+				//Print("entity deleted");
+				
+				SCR_EntityHelper.DeleteEntityAndChildren(newEnt);
+			}
+			else
+			{	
+				storageManager.InsertItem(newEnt, ownerStorage);
+				
+				if (spawnableItem)
+				{
+					spawnableItem.GetItemDepositedInvoker().Invoke(item, containerComp);
+				}
+				
+				item.SetAvailableCount(item.GetAvailableCount() - 1);
+				
+				// if quantities are set greater than -1 within the item data config
+				if (itemData.GetQuantityMinimum() > -1 
+				&& itemData.GetQuantityMaximum() > -1)
+				{
+					// making sure quantity maximum is not less than quantity minimum
+					if (itemData.GetQuantityMinimum() <= itemData.GetQuantityMaximum())
+					{
+						SetQuantities(newEnt, itemData.GetQuantityMinimum(), itemData.GetQuantityMaximum());
+					}
+					else // else you get this error in console
+						Print("[CentralEconomy::CE_ItemSpawningSystem] " + itemData.GetName() + " has quantity minimum set to more than quantity maximum! Please fix!", LogLevel.ERROR);
+				}
+			}
 		}
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Performs checks on the new entity to see if it has quantity min and max set above 0, then determines which item type it is to then set quantity of the item (I.E. ammo count in a magazine)
-	protected void SetItemQuantity(IEntity ent, int quantMin, int quantMax)
+	//! Sets the quantities for the item (only applies to weapon magazines/boxes, jerrycans fuel values, and vehicles fuel values)
+	protected void SetQuantities(IEntity ent, int quantMin, int quantMax)
 	{
-		float quantity;
+		float randomFloat = Math.RandomIntInclusive(quantMin, quantMax) / 100; // convert it to a decimal to be multiplied later on
 		
-		if (quantMin > 0 && quantMax > 0)
-		{
-			float randomFloat = Math.RandomIntInclusive(quantMin, quantMax) / 100; // convert it to a decimal to multiplied later on
-			
-			quantity = Math.Round(randomFloat * 10) / 10;
-		}
-		else
-			return;
+		float quantity = Math.Round(randomFloat * 10) / 10;
 		
 		ResourceName prefabName = ent.GetPrefabData().GetPrefabName();
 		
-		if (prefabName.Contains("Magazine_") || prefabName.Contains("Box_"))
+		Vehicle vehicle = Vehicle.Cast(ent);
+		
+		if (prefabName && prefabName.Contains("Magazine_") || prefabName && prefabName.Contains("Box_"))
 		{
 			MagazineComponent magComp = MagazineComponent.Cast(ent.FindComponent(MagazineComponent));
+			if (!magComp)
+				return;
 			
 			magComp.SetAmmoCount(magComp.GetMaxAmmoCount() * quantity);
 		}
-		else if (prefabName.Contains("Jerrycan_"))
+		else if (prefabName && prefabName.Contains("Jerrycan_") || vehicle)
 		{
 			FuelManagerComponent fuelManager = FuelManagerComponent.Cast(ent.FindComponent(FuelManagerComponent));
+			if (!fuelManager)
+				return;
 			
 			array<BaseFuelNode> outNodes = {};
 			
@@ -247,526 +762,23 @@ class CE_ItemSpawningSystem : GameSystem
 				fuelNode.SetFuel(fuelNode.GetMaxFuel() * quantity);
 			}
 		}
-		else
-			return;
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Calls to generate items and calls to get a selected item
-	CE_ItemData GetItemFromSpawnerConfig(array<ref CE_ItemData> itemDataArray, CE_ELootTier tier, CE_ELootUsage usage, CE_ELootCategory category)
-	{
-		if (itemDataArray.IsEmpty())
-		{
-			return null;
-		}
-		
-		array<ref CE_Item> items = GenerateItemsFromSpawnerConfig(itemDataArray, tier, usage, category);
-		
-		if (items.IsEmpty())
-			return null;
-		else
-			return SelectItemFromSpawnerConfig(items);
-	}
+	// GAMESYSTEM STUFF
+	//------------------------------------------------------------------------------------------------
 	
 	//------------------------------------------------------------------------------------------------
-	//! Calls to generate items and calls to get multiple selected items
-	array<CE_ItemData> GetItemsFromContainerConfig(array<ref CE_ItemData> itemDataArray, CE_ELootTier tier, CE_ELootUsage usage, CE_ELootCategory category, int minimum, int maximum)
+	//! Returns instance of system within the entity's world
+	static CE_ItemSpawningSystem GetByEntityWorld(IEntity entity)
 	{
-		if (itemDataArray.IsEmpty())
-		{
-			return null;
-		}
-		
-		array<ref CE_Item> items = GenerateItemsFromSpawnerConfig(itemDataArray, tier, usage, category);
-		
-		if (items.IsEmpty())
-			return null;
-		else
-		{
-			return SelectItemsFromSpawnerConfig(items, minimum, maximum);
-		}
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Calls to generate items and calls to get a selected item
-	CE_ItemData GetItemFromUniversalConfig(CE_ELootTier tier, CE_ELootUsage usage, CE_ELootCategory category)
-	{
-		array<ref CE_Item> sortedItems = {};
-		
-		int m_iSortedItemsCount = 0;
-		
-		bool isLimitReached = false;
-		
-		foreach (CE_Item item : m_aItems)
-		{
-			int index;
-			
-			if (m_aItems.Count() > 1)
-				index = m_randomGen.RandInt(0, m_aItems.Count());
-			else if (m_aItems.Count() == 1)
-				index = 0;
-			else
-				continue;
-			
-			if (!m_aItems[index] || m_aItems[index] && !m_aItems[index].Tiers || m_aItems[index] && !m_aItems[index].Usages || m_aItems[index] && !m_aItems[index].Category)
-				continue;
-			
-			if (m_aItems[index].Tiers & tier 
-			&& m_aItems[index].Usages & usage 
-			&& m_aItems[index].Category & category)
-			{
-				int itemTargetCount = DetermineItemTargetCountFromItem(m_aItems[index]);
-				
-				//Print("Item: " + m_aItems[index].Item.m_sName + ", TargetCount: " + itemTargetCount);
-				
-				if (itemTargetCount > 0)
-				{
-					for (int e = 0; e < itemTargetCount; e++)
-					{
-						sortedItems.Insert(m_aItems[index]);
-						
-						m_iSortedItemsCount = m_iSortedItemsCount + 1;
-						
-						if (m_iSortedItemsCount >= m_iSortedItemsLimit)
-						{
-							//Print("Breaking");
-							m_iSortedItemsCount = 0;
-							isLimitReached = true;
-							break;
-						}
-					}
-					
-				}
-			}
-			if (isLimitReached)
-				break;
-		}
-		
-		if (sortedItems.IsEmpty())
-			return null;
-		else
-			return SelectItemFromUniversalConfig(sortedItems);
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Calls to generate items and calls to get a selected item
-	array<CE_ItemData> GetItemsFromUniversalConfig(CE_ELootTier tier, CE_ELootUsage usage, CE_ELootCategory category, int minimum, int maximum)
-	{
-		array<ref CE_Item> sortedItems = {};
-		
-		int m_iSortedItemsCount = 0;
-		
-		bool isLimitReached = false;
-		
-		foreach (CE_Item item : m_aItems)
-		{
-			int index;
-			
-			if (m_aItems.Count() > 1)
-				index = m_randomGen.RandInt(0, m_aItems.Count());
-			else if (m_aItems.Count() == 1)
-				index = 0;
-			else
-				continue;
-			
-			if (!m_aItems[index] || m_aItems[index] && !m_aItems[index].Tiers || m_aItems[index] && !m_aItems[index].Usages || m_aItems[index] && !m_aItems[index].Category)
-				continue;
-			
-			if (m_aItems[index].Tiers & tier 
-			&& m_aItems[index].Usages & usage 
-			&& m_aItems[index].Category & category)
-			{
-				int itemTargetCount = DetermineItemTargetCountFromItem(m_aItems[index]);
-				
-				//Print("Item: " + m_aItems[index].Item.m_sName + ", TargetCount: " + itemTargetCount);
-				
-				if (itemTargetCount > 0)
-				{
-					for (int e = 0; e < itemTargetCount; e++)
-					{
-						sortedItems.Insert(m_aItems[index]);
-						
-						m_iSortedItemsCount = m_iSortedItemsCount + 1;
-						
-						if (m_iSortedItemsCount >= m_iSortedItemsLimit)
-						{
-							//Print("Breaking");
-							m_iSortedItemsCount = 0;
-							isLimitReached = true;
-							break;
-						}
-					}
-					
-				}
-			}
-			if (isLimitReached)
-				break;
-		}
-		
-		if (sortedItems.IsEmpty())
-			return null;
-		else
-			return SelectItemsFromUniversalConfig(sortedItems, minimum, maximum);
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Generates items and separates item data that has necessary information and corresponds to spawner component attributes
-	protected array<ref CE_Item> GenerateItemsFromSpawnerConfig(array<ref CE_ItemData> items, CE_ELootTier tier, CE_ELootUsage usage, CE_ELootCategory category)
-	{
-		Print(SCR_Enum.GetEnumName(CE_ELootUsage, usage));
-		Print(SCR_Enum.GetEnumName(CE_ELootCategory, category));
-		
-		array<ref CE_Item> itemsToSpawn = {};
-		
-		foreach (CE_ItemData itemData : items)
-		{
-			// basically, if missing any variable besides rotation or quantity min and max
-			if(!itemData.m_sName 
-			|| !itemData.m_sPrefab 
-			|| !itemData.m_iNominal 
-			|| !itemData.m_iMinimum 
-			|| !itemData.m_iLifetime 
-			|| !itemData.m_iRestock 
-			|| !itemData.m_ItemCategory 
-			|| !itemData.m_ItemUsages 
-			|| !itemData.m_ItemTiers)
-			{
-				Print("[CentralEconomy::CE_ItemSpawnSystem] " + itemData.m_sName + " is missing information!", LogLevel.ERROR);
-				continue;
-			}
-			else if (itemData.m_ItemTiers & tier 
-			&& itemData.m_ItemUsages & usage 
-			&& itemData.m_ItemCategory & category) // has matching tier, usage, and category with spawner component
-			{
-				int itemTargetCount = DetermineItemTargetCountFromItemData(itemData, itemData.m_iMinimum, itemData.m_iNominal);
-				
-				//Print("Item: " + itemData.m_sName + ", TargetCount: " + itemTargetCount);
-				
-				if (itemTargetCount != 0)
-				{
-					CE_Item item = new CE_Item(itemData, itemData.m_ItemTiers, itemData.m_ItemUsages, itemData.m_ItemCategory);
-					
-					if (!itemsToSpawn.Contains(item))
-					{
-						for (int i = 0; i < Math.ClampInt(itemTargetCount, 0, itemData.m_iNominal); i++)
-						{
-							itemsToSpawn.Insert(item);
-						}
-					}
-				}
-			}
-		}
-		
-		return itemsToSpawn;
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Generates items and separates item data that has necessary information and corresponds to spawner component attributes
-	protected array<ref CE_Item> GenerateItemsFromUniversalConfig()
-	{
-		array<ref CE_Item> itemsToSpawn = {};
-		
-		foreach (CE_ItemData itemData : m_aItemData)
-		{
-			// basically, if missing any variable besides rotation or quantity min and max
-			if(!itemData.m_sName 
-			|| !itemData.m_sPrefab 
-			|| !itemData.m_iNominal 
-			|| !itemData.m_iMinimum 
-			|| !itemData.m_iLifetime 
-			|| !itemData.m_iRestock 
-			|| !itemData.m_ItemCategory 
-			|| !itemData.m_ItemUsages 
-			|| !itemData.m_ItemTiers)
-			{
-				Print("[CentralEconomy::CE_ItemSpawnSystem] " + itemData.m_sName + " is missing information!", LogLevel.ERROR);
-				continue;
-			}
-			else
-			{	
-				CE_Item item = new CE_Item(itemData, itemData.m_ItemTiers, itemData.m_ItemUsages, itemData.m_ItemCategory);
-					
-				if (!itemsToSpawn.Contains(item))
-				{
-					itemsToSpawn.Insert(item);
-				}
-			}
-		}
-		
-		return itemsToSpawn;
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Determines the item count of based of nominal, minimum, already spawned items, and those not restock ready
-	protected int DetermineItemTargetCountFromItemData(CE_ItemData item, int minimum, int nominal)
-	{
-		//map<ref CE_ItemData, string> itemsNotRestockReady = GetItemsNotRestockReady();
-		//array<ref CE_ItemData> spawnedItems = GetSpawnedItems();
-		
-		int itemCount = 0;
-		
-		// for every item spawned in the world
-		foreach (CE_ItemData spawnedItem : GetSpawnedItems())
-		{
-			string name = spawnedItem.m_sName;
-			
-			// increase item count if there is a name match
-			if (name == item.m_sName)
-			{
-				itemCount = itemCount + 1;
-			}
-		}
-		
-		int targetCount = Math.ClampInt(m_randomGen.RandIntInclusive(minimum, nominal) - itemCount, 0, nominal);
-		
-		for (int i = 0; i < GetItemsNotRestockReady().Count(); i++)
-		{
-			if (GetItemsNotRestockReady().GetKeyByValue(item.m_sName))
-				targetCount = Math.ClampInt(targetCount - 1, 0, nominal);
-		}
-		
-		return Math.ClampInt(targetCount, 0, nominal);
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Determines the item count of based of nominal, minimum, already spawned items, and those not restock ready
-	protected int DetermineItemTargetCountFromItem(CE_Item item)
-	{
-		//map<ref CE_ItemData, string> itemsNotRestockReady = GetItemsNotRestockReady();
-		//array<ref CE_ItemData> spawnedItems = GetSpawnedItems();
-		
-		int itemCount = 0;
-		
-		CE_ItemData itemData = item.Item;
-		
-		// for every item spawned in the world
-		foreach (CE_ItemData spawnedItem : GetSpawnedItems())
-		{
-			string name = spawnedItem.m_sName;
-			
-			// increase item count if there is a name match
-			if (name == itemData.m_sName)
-			{
-				itemCount = itemCount + 1;
-			}
-		}
-		
-		int targetCount = Math.ClampInt(m_randomGen.RandIntInclusive(itemData.m_iMinimum, itemData.m_iNominal) - itemCount, 0, itemData.m_iNominal);
-		
-		for (int i = 0; i < GetItemsNotRestockReady().Count(); i++)
-		{
-			if (GetItemsNotRestockReady().GetKeyByValue(itemData.m_sName))
-				targetCount = Math.ClampInt(targetCount - 1, 0, itemData.m_iNominal);
-		}
-		
-		return Math.ClampInt(targetCount, 0, itemData.m_iNominal);
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Selects item from itemArray, chooses it based on probability algorithm
-	protected CE_ItemData SelectItemFromSpawnerConfig(array<ref CE_Item> itemArray)
-	{
-		if(itemArray.IsEmpty())
-			return null;
-		
-		CE_ItemData itemData;
-		
-		//Print(itemArray.Count());
-		
-		map<CE_Item, int> counts = new map<CE_Item, int>;
-		
-		int probabilityTotal = 0;
-		
-		for (int i = 0; i < itemArray.Count(); i++)
-		{
-			if (itemArray.Contains(itemArray[i]))
-			{
-				counts[itemArray[i]] = counts[itemArray[i]] + 1;
-			}
-			else
-			{	
-				counts[itemArray[i]] = 1;
-			}
-			
-			probabilityTotal += counts.Get(itemArray[i]);
-		}
-		
-		foreach (CE_Item item : itemArray)
-		{
-			if (Probability(counts.Get(item), probabilityTotal))
-			{
-				itemData = item.Item;
-				break;
-			}
-		}
-		
-		//Print("Probability Total: " + probabilityTotal);
-		
-		return itemData;
-    }
-	
-	//------------------------------------------------------------------------------------------------
-	//! Selects multiple items from itemArray, chooses it based on probability algorithm
-	protected array<CE_ItemData> SelectItemsFromSpawnerConfig(array<ref CE_Item> itemArray, int minimum, int maximum)
-	{
-		if(itemArray.IsEmpty())
-			return null;
-		
-		array<CE_ItemData> itemDatas = {};
-		
-		//Print(itemArray.Count());
-		
-		int randomCount = m_randomGen.RandIntInclusive(minimum, maximum);
-		
-		for (int a = 0; a < randomCount; a++)
-		{
-			map<CE_Item, int> counts = new map<CE_Item, int>;
-			
-			int probabilityTotal = 0;
-			
-			for (int i = 0; i < itemArray.Count(); i++)
-			{
-				if (itemArray.Contains(itemArray[i]))
-				{
-					counts[itemArray[i]] = counts[itemArray[i]] + 1;
-				}
-				else
-				{	
-					counts[itemArray[i]] = 1;
-				}
-				
-				probabilityTotal += counts.Get(itemArray[i]);
-			}
-			
-			foreach (CE_Item item : itemArray)
-			{
-				if (Probability(counts.Get(item), probabilityTotal))
-				{
-					itemDatas.Insert(item.Item);
-					break;
-				}
-			}
-		}
-		
-		//Print("Probability Total: " + probabilityTotal);
-		
-		return itemDatas;
-    }
-	
-	//------------------------------------------------------------------------------------------------
-	//! Selects item from itemArray, chooses it based on probability algorithm
-	protected CE_ItemData SelectItemFromUniversalConfig(array<ref CE_Item> itemArray)
-	{
-		if(itemArray.IsEmpty())
-			return null;
-
-		//Print("Matching Item Count: " + itemArray.Count());
-		
-		map<CE_Item, int> counts = new map<CE_Item, int>;
-		
-		int probabilityTotal = 0;
-		
-		for (int i = 0; i < itemArray.Count(); i++)
-		{
-			if (itemArray.Contains(itemArray[i]))
-			{
-				counts[itemArray[i]] = counts[itemArray[i]] + 1;
-			}
-			else
-			{	
-				counts[itemArray[i]] = 1;
-			}
-			
-			probabilityTotal += counts.Get(itemArray[i]);
-		}
-		
-		CE_ItemData itemData;
-		
-		foreach (CE_Item item : itemArray)
-		{
-			if (Probability(counts.Get(item), probabilityTotal))
-			{
-				itemData = item.Item;
-				break;
-			}
-		}
-		
-		//Print("Probability Total: " + probabilityTotal);
-		
-		return itemData;
-    }
-	
-	//------------------------------------------------------------------------------------------------
-	//! Selects item from itemArray, chooses it based on probability algorithm
-	protected array<CE_ItemData> SelectItemsFromUniversalConfig(array<ref CE_Item> itemArray, int minimum, int maximum)
-	{
-		if(itemArray.IsEmpty())
-			return null;
-
-		array<CE_ItemData> itemDatas = {};
-		
-		int randomCount = m_randomGen.RandIntInclusive(minimum, maximum);
-		
-		for (int a = 0; a < randomCount; a++)
-		{
-			map<CE_Item, int> counts = new map<CE_Item, int>;
-			
-			int probabilityTotal = 0;
-			
-			for (int i = 0; i < itemArray.Count(); i++)
-			{
-				if (itemArray.Contains(itemArray[i]))
-				{
-					counts[itemArray[i]] = counts[itemArray[i]] + 1;
-				}
-				else
-				{	
-					counts[itemArray[i]] = 1;
-				}
-				
-				probabilityTotal += counts.Get(itemArray[i]);
-			}
-			
-			
-			foreach (CE_Item item : itemArray)
-			{
-				if (Probability(counts.Get(item), probabilityTotal))
-				{
-					itemDatas.Insert(item.Item);
-					break;
-				}
-			}
-		}
-		
-		//Print("Probability Total: " + probabilityTotal);
-		
-		return itemDatas;
-    }
-	
-	//------------------------------------------------------------------------------------------------
-	//! Chooses a randomized number between 0 and the probabilityTotal to the select and item it it's value is greater than said randomized number
-	protected bool Probability(float probability, float probabilityTotal)
-	{
-		//Print("Probability: " + probability);
-		
-		int random = m_randomGen.RandInt(0, probabilityTotal);
-		
-		return probability >= random;
-	}
-	
-	// GameSystem stuff
-	//------------------------------------------------------------------------------------------------
-	//! Gets the system instance
-	static CE_ItemSpawningSystem GetInstance()
-	{
-		World world = GetGame().GetWorld();
-
+		World world = entity.GetWorld();
 		if (!world)
 			return null;
 
 		return CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
 	}
-
+	
 	//------------------------------------------------------------------------------------------------
 	//! Registers spawning component
 	void RegisterSpawner(notnull CE_ItemSpawningComponent component)
@@ -777,11 +789,7 @@ class CE_ItemSpawningSystem : GameSystem
 		if (!m_aSpawnerComponents.Contains(component))
 		{
 			m_aSpawnerComponents.Insert(component);
-			
-			if (!component.HasItemSpawned())
-				m_aComponentsWithoutItem.Insert(component);
 		}
-			
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -790,7 +798,7 @@ class CE_ItemSpawningSystem : GameSystem
 	{
 		m_aSpawnerComponents.RemoveItem(component);
 		
-		if (m_aSpawnerComponents.IsEmpty())
+		if (m_aSpawnerComponents.IsEmpty() && m_aContainerComponents.IsEmpty())
 			Enable(false);
 	}
 	
@@ -804,8 +812,9 @@ class CE_ItemSpawningSystem : GameSystem
 		if (!m_aContainerComponents.Contains(component))
 		{
 			m_aContainerComponents.Insert(component);
-		}
 			
+			ProcessContainer(component);
+		}
 	}
 
 	//------------------------------------------------------------------------------------------------
@@ -814,8 +823,48 @@ class CE_ItemSpawningSystem : GameSystem
 	{
 		m_aContainerComponents.RemoveItem(component);
 		
-		if (m_aContainerComponents.IsEmpty())
+		if (m_aSpawnerComponents.IsEmpty() && m_aContainerComponents.IsEmpty())
 			Enable(false);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Registers UsageTriggerArea
+	void RegisterUsageArea(notnull CE_UsageTriggerArea area)
+	{
+		if (!IsEnabled())
+			Enable(true);
+		
+		if (!m_aUsageAreas.Contains(area))
+		{
+			m_aUsageAreas.Insert(area);
+		}
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Unregisters UsageTriggerArea
+	void UnregisterUsageArea(notnull CE_UsageTriggerArea area)
+	{
+		m_aUsageAreas.RemoveItem(area);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Registers TierTriggerArea
+	void RegisterTierArea(notnull CE_TierTriggerArea area)
+	{
+		if (!IsEnabled())
+			Enable(true);
+		
+		if (!m_aTierAreas.Contains(area))
+		{
+			m_aTierAreas.Insert(area);
+		}
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Unregisters TierTriggerArea
+	void UnregisterTierArea(notnull CE_TierTriggerArea area)
+	{
+		m_aTierAreas.RemoveItem(area);
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -823,68 +872,96 @@ class CE_ItemSpawningSystem : GameSystem
 	//------------------------------------------------------------------------------------------------
 	
 	//------------------------------------------------------------------------------------------------
-	//! Gets spawned item array
-	array<ref CE_ItemData> GetSpawnedItems()
+	//! Gets m_aItems array
+	array<ref CE_Item> GetItems()
 	{
-		return m_aSpawnedItems;
+		return m_aItems;
+	}
+		
+	//------------------------------------------------------------------------------------------------
+	//! Gets m_iItemCount
+	int GetItemCount()
+	{
+		return m_iItemCount;
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Gets spawner array, but only of spawners WITHOUT an item
-	array<CE_ItemSpawningComponent> GetComponentsWithoutItem()
+	//! Sets m_iItemCount
+	void SetItemCount(int count)
 	{
-		return m_aComponentsWithoutItem;
+		m_iItemCount = count;
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Gets spawner array, but only of spawners WITH an item
-	array<CE_ItemSpawningComponent> GetComponentsWithItem()
+	//! Gets the m_iUsageAreasQueried count
+	int GetUsageAreasQueried()
 	{
-		return m_aComponentsWithItem;
+		return m_iUsageAreasQueried;
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Gets the array for items that are NOT restock ready
-	map<ref CE_ItemData, string> GetItemsNotRestockReady()
+	//! Sets the m_iUsageAreasQueried count
+	void SetUsageAreasQueried(int count)
 	{
-		return m_aItemsNotRestockReady;
+		m_iUsageAreasQueried = count;
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Gets the spawn item count
-	int GetSpawnedItemCount()
+	//! Gets the m_iTierAreasQueried count
+	int GetTierAreasQueried()
 	{
-		return m_iSpawnedItemCount;
+		return m_iTierAreasQueried;
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Sets the spawn item count
-	void SetSpawnedItemCount(int count)
+	//! Sets the m_iTierAreasQueried count
+	void SetTierAreasQueried(int count)
 	{
-		m_iSpawnedItemCount = count;
+		m_iTierAreasQueried = count;
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Gets all components registered to system
-	array<CE_ItemSpawningComponent> GetComponents()
+	//! Have usage and tier areas finished querying?
+	bool HaveAreasQueried()
 	{
-		return m_aSpawnerComponents;
+		return m_bHaveAreasQueried;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Sets if usage and tier areas finished querying
+	void SetHaveAreasQueried(bool queried)
+	{
+		m_bHaveAreasQueried = queried;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets CE_OnAreasQueriedInvoker script invoker
+	CE_OnAreasQueriedInvoker GetOnAreasQueriedInvoker()
+	{
+		return m_OnAreasQueriedInvoker;
 	}
 }
 
-class CE_Item
-{
-	CE_ItemData Item;
-	CE_ELootTier Tiers;
-	CE_ELootUsage Usages;
-	CE_ELootCategory Category;
-	
-	//------------------------------------------------------------------------------------------------
-	void CE_Item(CE_ItemData item, CE_ELootTier tiers, CE_ELootUsage usages, CE_ELootCategory category)
-	{
-		Item = item;
-		Tiers = tiers;
-		Usages = usages;
-		Category = category;
-	}
-}
+void CE_AreasQueried();
+typedef func CE_AreasQueried;
+typedef ScriptInvokerBase<CE_AreasQueried> CE_OnAreasQueriedInvoker;
+
+void CE_ItemSpawnedOnSpawner(IEntity itemEntity, CE_Item item, CE_Spawner spawner);
+typedef func CE_ItemSpawnedOnSpawner;
+typedef ScriptInvokerBase<CE_ItemSpawnedOnSpawner> CE_OnItemSpawnedOnSpawnerInvoker;
+
+void CE_ItemDespawnedFromSpawner(IEntity itemEntity, CE_Item item);
+typedef func CE_ItemDespawnedFromSpawner;
+typedef ScriptInvokerBase<CE_ItemDespawnedFromSpawner> CE_OnItemDespawnedFromSpawnerInvoker;
+
+void CE_SpawnerReset(CE_ItemSpawningComponent spawner);
+typedef func CE_SpawnerReset;
+typedef ScriptInvokerBase<CE_SpawnerReset> CE_OnSpawnerResetInvoker;
+
+void CE_ContainerSearched(CE_SearchableContainerComponent container, IEntity userEntity);
+typedef func CE_ContainerSearched;
+typedef ScriptInvokerBase<CE_ContainerSearched> CE_OnContainerSearchedInvoker;
+
+void CE_ContainerReset(CE_SearchableContainerComponent container);
+typedef func CE_ContainerReset;
+typedef ScriptInvokerBase<CE_ContainerReset> CE_OnContainerResetInvoker;
