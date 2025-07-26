@@ -145,7 +145,10 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 	//! Adjusts action name script
 	override bool GetActionNameScript(out string outName)
 	{
-		outName = "#CE-UserAction_Search" + " " + SCR_StringHelper.Translate(m_StorageUIInfo.GetName());
+		if (m_StorageUIInfo)
+		{
+			outName = string.Format("%1 %2", SCR_StringHelper.Translate("#CE-UserAction_Search"), SCR_StringHelper.Translate(m_StorageUIInfo.GetName()));
+		}
 		return true;
 	}
 }
