@@ -20,6 +20,7 @@ SCR_DestructibleBuildingEntity : "{85C6B051DE85112B}Prefabs/Structures/Industria
     }
    }
    coords -0.005 0.19 -0.2
+   angleY 90
   }
  }
 }

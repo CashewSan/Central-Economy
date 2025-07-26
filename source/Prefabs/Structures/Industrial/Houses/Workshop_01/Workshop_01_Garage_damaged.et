@@ -13,13 +13,14 @@ SCR_DestructibleBuildingEntity : "{85C6B051DE85112B}Prefabs/Structures/Industria
    DrawShape 0
   }
   GenericEntity : "{EF5366EC75D39FF9}Prefabs/Spawners/LootSpawner_Vehicles.et" {
-   ID "65EB47E8149EC9FE"
+   ID "65F51D70281D2E88"
    components {
     CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
      m_ItemUsage TOWN
     }
    }
    coords -0.005 0.19 -0.2
+   angleY 90
   }
  }
 }

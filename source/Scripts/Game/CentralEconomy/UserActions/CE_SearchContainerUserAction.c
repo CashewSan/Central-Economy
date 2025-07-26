@@ -302,7 +302,7 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 	{
 		if (m_StorageUIInfo)
 		{
-			outName = "#CE-UserAction_Search" + " " + SCR_StringHelper.Translate(m_StorageUIInfo.GetName());
+			outName = string.Format("%1 %2", SCR_StringHelper.Translate("#CE-UserAction_Search"), SCR_StringHelper.Translate(m_StorageUIInfo.GetName()));
 		}
 		return true;
 	}
