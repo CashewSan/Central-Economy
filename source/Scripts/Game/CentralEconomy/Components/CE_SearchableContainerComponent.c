@@ -57,6 +57,16 @@ class CE_SearchableContainerComponent : ScriptComponent
 	{
 		super.OnPostInit(owner);
 		
+		if (!GetGame().InPlayMode())
+			return;
+		
+		const RplComponent rplComp = RplComponent.Cast(owner.FindComponent(RplComponent));
+		
+		if (rplComp && rplComp.IsProxy())
+		{
+			return;
+		}
+		
 		owner.ClearFlags(EntityFlags.STATIC);
 		
 		m_SpawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(GetOwner());
@@ -236,6 +246,7 @@ class CE_SearchableContainerComponent : ScriptComponent
 		Replication.BumpMe();
 	}
 	
+	/*
 	//------------------------------------------------------------------------------------------------
 	// REPLICATION STUFF
 	//------------------------------------------------------------------------------------------------
@@ -255,6 +266,7 @@ class CE_SearchableContainerComponent : ScriptComponent
 		
 		return true;
 	}
+	*/
 	
 	//------------------------------------------------------------------------------------------------
 	// GETTERS/SETTERS
