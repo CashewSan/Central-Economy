@@ -4,9 +4,9 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 	protected ref SCR_AudioSourceConfiguration m_AudioSourceConfig;
 	
 	protected SCR_ItemAttributeCollection 									m_StorageItemAttributes;											// SCR_ItemAttributeCollection of the searchable container entity
-	protected UIInfo 													m_StorageUIInfo;													// UIInfo of the searchable container entity
+	protected UIInfo 														m_StorageUIInfo;													// UIInfo of the searchable container entity
 	
-	protected CE_ItemSpawningSystem 										m_SpawningSystem;												// item spawning system that handles all item spawning with CentralEconomy (A.K.A. the brain)
+	protected CE_ItemSpawningSystem 										m_SpawningSystem;													// item spawning system that handles all item spawning with CentralEconomy (A.K.A. the brain)
 	
 	protected CE_SearchableContainerComponent 								m_ContainerComponent;												// CE_SearchableContainerComponent corresponding to the searchable container entity
 	
@@ -257,28 +257,18 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 		if (!owner)
 			return;
 		
-		// Get SoundManagerEntity
-		SCR_SoundManagerEntity soundManagerEntity = GetGame().GetSoundManagerEntity();
-		if (!soundManagerEntity || !m_AudioSourceConfig || !m_AudioSourceConfig.IsValid())
+		SCR_SoundManagerModule soundManager = SCR_SoundManagerModule.GetInstance(owner.GetWorld());
+		if (!soundManager)
 			return;
 		
 		// Get AudioSource
-		SCR_AudioSource audioSource = soundManagerEntity.CreateAudioSource(owner, m_AudioSourceConfig);
+		SCR_AudioSource audioSource = soundManager.CreateAudioSource(owner, m_AudioSourceConfig);
 		if (!audioSource)
 			return;
 		
-		// Set position
-		vector mat[4];
-		owner.GetTransform(mat);
-		
-		// Get center of bounding box
-		vector mins;
-		vector maxs;
-		owner.GetWorldBounds(mins, maxs);
-		mat[3] = vector.Lerp(mins, maxs, 0.5);
 		
 		// Play sound
-		soundManagerEntity.PlayAudioSource(audioSource, mat);
+		soundManager.PlayAudioSource(audioSource);
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -289,11 +279,11 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 			return;
 		
 		// Get SoundManagerEntity
-		SCR_SoundManagerEntity soundManagerEntity = GetGame().GetSoundManagerEntity();
-		if (!soundManagerEntity)
+		SCR_SoundManagerModule soundManager = SCR_SoundManagerModule.GetInstance(owner.GetWorld());
+		if (!soundManager)
 			return;
 		
-		soundManagerEntity.TerminateAudioSource(owner);
+		soundManager.TerminateAudioSource(owner);
 	}
 	
 	//------------------------------------------------------------------------------------------------
