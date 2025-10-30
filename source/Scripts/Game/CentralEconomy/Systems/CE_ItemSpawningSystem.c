@@ -39,7 +39,7 @@ class CE_ItemSpawningSystem : GameSystem
 		const RplId systemRplId = Replication.FindItemId(this);
 		const RplNode systemRplNode = Replication.FindNode(systemRplId);
 		
-		if (systemRplNode.GetRole() == RplRole.Proxy)
+		if (systemRplNode && systemRplNode.GetRole() == RplRole.Proxy)
 			return;
 		
 		CE_WorldValidationComponent m_WorldValidationComponent;
@@ -175,7 +175,7 @@ class CE_ItemSpawningSystem : GameSystem
 		}
 		*/
 		
-		if (systemRplNode.GetRole() == RplRole.Proxy)
+		if (systemRplNode && systemRplNode.GetRole() == RplRole.Proxy)
 			return;
 		
 		if (GetUsageAreasQueried() >= m_aUsageAreas.Count() 
@@ -640,7 +640,7 @@ class CE_ItemSpawningSystem : GameSystem
 		const RplId systemRplId = Replication.FindItemId(this);
 		const RplNode systemRplNode = Replication.FindNode(systemRplId);
 		
-		if (systemRplNode.GetRole() == RplRole.Proxy)
+		if (systemRplNode && systemRplNode.GetRole() == RplRole.Proxy)
 			return;
 		
 		if (!containerComp)

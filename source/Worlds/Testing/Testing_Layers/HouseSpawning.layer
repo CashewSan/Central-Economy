@@ -1,5 +1,5 @@
 SCR_DestructibleBuildingEntity : "{38A5F3E4578087AB}Prefabs/Structures/Houses/Town/House_Town_E_2I01/House_Town_E_2I01.et" {
- coords 190.039 -0 155.147
+ coords 190.039 0 155.147
 }
 CE_TierTriggerArea : "{B91017820A9D1F10}Prefabs/Areas/Tiers/TierArea_Tier2.et" {
  coords 190.916 1 155.138

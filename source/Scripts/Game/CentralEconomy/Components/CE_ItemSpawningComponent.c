@@ -44,6 +44,16 @@ class CE_ItemSpawningComponent : ScriptComponent
 	{
 		super.OnPostInit(owner);
 		
+		if (!GetGame().InPlayMode())
+			return;
+		
+		const RplComponent rplComp = RplComponent.Cast(owner.FindComponent(RplComponent));
+		
+		if (rplComp && rplComp.IsProxy())
+		{
+			return;
+		}
+		
 		HookEvents();
 		
 		if (m_ItemUsage)

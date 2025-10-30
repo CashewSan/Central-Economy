@@ -16,7 +16,7 @@ class CE_ItemSpawnableSystem : GameSystem
 		const RplId systemRplId = Replication.FindItemId(this);
 		const RplNode systemRplNode = Replication.FindNode(systemRplId);
 		
-		if (systemRplNode.GetRole() == RplRole.Proxy)
+		if (systemRplNode && systemRplNode.GetRole() == RplRole.Proxy)
 			return;
 		
 		float timeSlice = GetWorld().GetFixedTimeSlice();
