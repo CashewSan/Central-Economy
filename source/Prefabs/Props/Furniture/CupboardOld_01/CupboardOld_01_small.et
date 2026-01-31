@@ -8,8 +8,12 @@ GenericEntity : "{4AD200C829CAFE34}Prefabs/Props/Furniture/CupboardOld_01/Cupboa
    ActionContexts {
     UserActionContext "{65B13D6C0BE660F4}" {
      Position PointInfo "{65673B14082308AC}" {
-      Offset -0.67 1 0.6
+      Offset -0.67 0.75 0.4
      }
+    }
+   }
+   additionalActions {
+    CE_SearchContainerUserAction "{65B13D6C31B93AAD}" {
     }
    }
   }

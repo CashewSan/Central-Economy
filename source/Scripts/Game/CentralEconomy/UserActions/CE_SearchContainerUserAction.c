@@ -148,8 +148,6 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 			
 			if (m_StorageItemAttributes)
 			{
-				m_StorageItemAttributes.CE_SetVisible(false);
-				
 				m_StorageUIInfo = m_StorageItemAttributes.GetUIInfo();
 			}
 		}
@@ -164,8 +162,10 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 		
 		PlaySound(owner);
 		
+		/*
 		if (m_StorageItemAttributes)
 			m_StorageItemAttributes.CE_SetVisible(true);
+		*/
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -176,8 +176,10 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 		
 		StopSound(pOwnerEntity);
 		
+		/*
 		if (m_StorageItemAttributes)
 			m_StorageItemAttributes.CE_SetVisible(false);
+		*/
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -204,8 +206,10 @@ class CE_SearchContainerUserAction : ScriptedUserAction
 			PerformActionInternal(genericInventoryManager, pOwnerEntity, pUserEntity);
 		}
 		
+		/*
 		if (m_StorageItemAttributes)
 			m_StorageItemAttributes.CE_SetVisible(false);
+		*/
 	}
 	
 	//------------------------------------------------------------------------------------------------

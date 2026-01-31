@@ -64,6 +64,7 @@ modded class SCR_OpenStorageAction : SCR_InventoryAction
 		return super.CanBePerformedScript(user);
 	}
 	
+	/*
 	//------------------------------------------------------------------------------------------------
 	override void Init(IEntity pOwnerEntity, GenericComponent pManagerComponent)
 	{
@@ -116,6 +117,7 @@ modded class SCR_OpenStorageAction : SCR_InventoryAction
 		}
 	}
 	
+	
 	//------------------------------------------------------------------------------------------------
 	override void PerformAction(IEntity pOwnerEntity, IEntity pUserEntity)
 	{
@@ -129,4 +131,5 @@ modded class SCR_OpenStorageAction : SCR_InventoryAction
 				m_StorageItemAttributes.CE_SetVisible(false);
 		}
 	}
+	*/
 };

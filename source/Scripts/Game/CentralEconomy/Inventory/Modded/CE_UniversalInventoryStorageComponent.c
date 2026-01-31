@@ -16,4 +16,17 @@ modded class SCR_UniversalInventoryStorageComponent
 		
 		return super.CanStoreItem(item, slotID);
 	}
+	
+	//------------------------------------------------------------------------------------------------
+	override bool ShouldHideInVicinity()
+	{
+		CE_SearchableContainerComponent searchableContainer = CE_SearchableContainerComponent.Cast(GetOwner().FindComponent(CE_SearchableContainerComponent));
+		if (searchableContainer)
+		{
+			bool searched = searchableContainer.HasBeenSearched();
+			return !searched; // if container has been searched, don't hide
+		}
+		
+		return super.ShouldHideInVicinity();
+	}
 }

@@ -1,4 +1,4 @@
-GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et" {
+GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/DestructibleMultiPhase_Props_Base.et" {
  ID "F0DBA538AC2A0552"
  components {
   CE_SearchableContainerComponent "{65B13D6B780D081C}" {
@@ -22,7 +22,7 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et
     m_Size SLOT_3x3
     m_SlotType SLOT_LOOT_STORAGE
     m_bDraggable 0
-    m_bVisible 0
+    m_bVisible 1
     m_bStackable 0
     m_bRefundable 0
    }
@@ -38,8 +38,9 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et
     UserActionContext "{65B13D6B0561C0BF}" {
      ContextName "default"
      Position PointInfo "{65673B14082308AC}" {
-      Offset -0.75 1.1 0.675
+      Offset -0.75 1.1 0.4
      }
+     Radius 0.6
      Height 0
      Omnidirectional 0
     }

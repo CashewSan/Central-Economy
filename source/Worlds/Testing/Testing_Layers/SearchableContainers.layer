@@ -1,15 +1,206 @@
+GenericEntity : "{1ED9E780B8829B78}Prefabs/Props/Furniture/Cupboard_01/Cupboard_01_A.et" {
+ coords 151.211 1 150.632
+}
+GenericEntity : "{23EDC2B8CDEE124F}Prefabs/Props/Furniture/Cupboard_01/Cupboard_01_F.et" {
+ coords 150.959 1 152.754
+}
 GenericEntity : "{39419B55C4CFD156}Prefabs/Props/Furniture/Wardrobe_02.et" {
- coords 146.626 1 151.979
+ components {
+  ActionsManagerComponent "{65B559EBF5DAC5EB}" {
+   ActionContexts {
+    UserActionContext "{65B559EBF89E1AD9}" {
+    }
+   }
+   additionalActions {
+    CE_SearchContainerUserAction "{65B559EBEDF6A53C}" : "{CD6CC67961CA6C80}Prefabs/SearchContainerUserAction.conf" {
+    }
+   }
+  }
+ }
+ coords 145.738 1 150.646
+}
+GenericEntity : "{4AD200C829CAFE34}Prefabs/Props/Furniture/CupboardOld_01/CupboardOld_01_base.et" {
+ coords 149.805 1 152.841
+}
+GenericEntity : "{4FB9F658712A9D61}Prefabs/Props/Furniture/Cupboard_01/Cupboard_01_E.et" {
+ coords 152.869 1 152.735
+}
+GenericEntity : "{530C3C02C09C6B68}Prefabs/Props/Furniture/CabinetMetal_01_Base.et" {
+ coords 145.974 1 153.191
+}
+GenericEntity : "{547D462165B175C2}Prefabs/Props/Furniture/CupboardOld_01/CupboardOld_01_small.et" {
+ coords 147.87 1 152.838
+}
+GenericEntity : "{5D12784AFD6B64B2}Prefabs/Props/Furniture/CabinetMetal_02_Base.et" {
+ coords 145.471 1 152.91
+}
+GenericEntity : "{619DB0302E0696DC}Prefabs/Props/Furniture/Bookshelf_02/Bookshelf_02.et" {
+ coords 149.359 1 150.613
+}
+GenericEntity : "{728DD36004461456}Prefabs/Props/Furniture/Cupboard_01/Cupboard_01_B.et" {
+ coords 153.041 1 150.672
 }
 CE_UsageTriggerArea : "{78155C5236E20EEB}Prefabs/Areas/Usages/UsageArea_Town.et" {
  coords 145.889 1 152.391
  BoxMins -2 -5 -2
- BoxMaxs 2 5 2
- DrawShape 0
+ BoxMaxs 10 5 10
+}
+GenericEntity : "{97119F9908A3833D}Prefabs/Props/Furniture/Cupboard_01/Cupboard_01_C.et" {
+ coords 154.756 1 150.662
+}
+GenericEntity : "{AA25BAA17DCF0A0A}Prefabs/Props/Furniture/Cupboard_01/Cupboard_01_D.et" {
+ components {
+  CE_SearchableContainerComponent "{65B13D6E798A7259}" {
+   m_Categories 57
+  }
+  MeshObject "{5872F0EB7FA40561}" {
+   Object "{2AA783ECD8FD8862}Assets/Props/Furniture/Cupboard_01/Cupboard_01_D.xob"
+  }
+  RigidBody "{5872F0EB7DFB5A9D}" {
+   ResponseIndex "MediumDestructible"
+   ModelGeometry 1
+   Static 1
+  }
+  SCR_DestructionMultiPhaseComponent "{5624A88D86EFE8BA}" : "{76DA308CC9E2AB84}Prefabs/Props/Core/DestructionMultiPhase_Base.ct" {
+   Enabled 1
+   "Additional hit zones" {
+    SCR_HitZone Default : "{08EE9251C32CBE4C}Configs/Destruction/MultiphaseDestruction/HitZone/HitZone_Wood_Planks.conf" {
+     "Kinetic multiplier" 0.5
+    }
+   }
+   m_fBaseHealth 3000
+   m_bPassDamageToChildren 1
+   m_bDestroyChildrenWhenDestroyed 1
+   m_DestroySpawnObjects {
+    SCR_DebrisSpawnable "{6252D1443C17A74A}" : "{38A75EBDDCB8B715}Configs/Destruction/MultiphaseDestruction/FX_Debris/FX_Debris_Wood_Planks_Small.conf" {
+    }
+    SCR_ParticleSpawnable "{6252D143225E2AA2}" {
+     m_Particle "{63D673751320F318}Particles/Props/Dest_Prop_Wood_Medium.ptc"
+    }
+   }
+   m_bDeleteAfterFinalPhase 0
+   m_aDamagePhases {
+    SCR_DamagePhaseData "{520E7D4E10863806}" {
+     m_fPhaseHealth 2500
+     m_PhaseModel "{82C7857140ADE3D5}Assets/Props/Furniture/Cupboard_01/dst/Cupboard_01_D_dst_01.xob"
+    }
+   }
+   m_eMaterialSoundType BREAK_WOOD_SOLID
+  }
+  SCR_UniversalInventoryStorageComponent "{65B13D6E69CC88FF}" {
+   Attributes SCR_ItemAttributeCollection "{65B13D6E6F673FCB}" {
+    ItemDisplayName UIInfo "{65AF0EA7E572D457}" {
+     Name "#CE-Item_Cupboard_Name"
+     Description "#CE-Item_Cupboard_Description"
+    }
+    CustomAttributes {
+     PreviewRenderAttributes "{65AF0EA7ECBC1DE5}" {
+      CameraDistanceToItem 2.5
+      FOV 60
+      AspectRatio 1
+      LodModel 1
+     }
+    }
+    m_Size SLOT_3x3
+    m_SlotType SLOT_LOOT_STORAGE
+    m_bDraggable 0
+    m_bStackable 0
+    m_bRefundable 0
+   }
+   UseCapacityCoefficient 0
+   MaxCumulativeVolume 1000000
+   MaxItemSize 15 15 15
+   m_fMaxWeight 1000000
+  }
+  RplComponent "{5624A88DC2D9928D}" {
+   Enabled 1
+  }
+ }
+ coords 154.738 1 152.711
 }
 CE_TierTriggerArea : "{B91017820A9D1F10}Prefabs/Areas/Tiers/TierArea_Tier2.et" {
  coords 145.89 0.999 152.391
  TriggerShapeType "Oriented Bounding Box"
  BoxMins -2 -5 -2
- BoxMaxs 2 5 2
+ BoxMaxs 10 5 10
+ DrawShape 1
+}
+GenericEntity : "{F77F7F847CC6455F}Prefabs/Props/Furniture/Bookshelf_01/Bookshelf_01.et" {
+ components {
+  CE_SearchableContainerComponent "{657806F77AF61666}" {
+   m_ContainerUsage 2147483647
+   m_Categories 25
+  }
+  MeshObject "{5872F0EB7FA40561}" {
+   Object "{1BC99377A2D6406E}Assets/Props/Furniture/Bookshelf_01/Bookshelf_01.xob"
+  }
+  RigidBody "{5872F0EB7DFB5A9D}" {
+   ResponseIndex "LargeDestructible"
+   ModelGeometry 1
+   Static 1
+  }
+  SCR_DestructionMultiPhaseComponent "{5624A88D86EFE8BA}" : "{76DA308CC9E2AB84}Prefabs/Props/Core/DestructionMultiPhase_Base.ct" {
+   Enabled 1
+   "Additional hit zones" {
+    SCR_HitZone Default : "{08EE9251C32CBE4C}Configs/Destruction/MultiphaseDestruction/HitZone/HitZone_Wood_Planks.conf" {
+     "Kinetic multiplier" 0.5
+    }
+   }
+   m_fBaseHealth 3000
+   m_bPassDamageToChildren 1
+   m_bDestroyChildrenWhenDestroyed 1
+   m_DestroySpawnObjects {
+    SCR_DebrisSpawnable "{6252D144E5B76947}" : "{38A75EBDDCB8B715}Configs/Destruction/MultiphaseDestruction/FX_Debris/FX_Debris_Wood_Planks_Small.conf" {
+    }
+    SCR_ParticleSpawnable "{6252D144E34383A5}" {
+     m_vOffsetPosition 0 1 0
+     m_Particle "{63D673751320F318}Particles/Props/Dest_Prop_Wood_Medium.ptc"
+    }
+   }
+   m_bDeleteAfterFinalPhase 0
+   m_aDamagePhases {
+    SCR_DamagePhaseData "{520CB8CFB89E7DA2}" {
+     m_fPhaseHealth 3000
+     m_PhaseModel "{FA022F19A1F843BE}Assets/Props/Furniture/Bookshelf_01/dst/Bookshelf_01_dst_01.xob"
+    }
+   }
+   m_eMaterialSoundType BREAK_WOOD_SOLID
+  }
+  SCR_UniversalInventoryStorageComponent "{65673B1169DC20A5}" {
+   Attributes SCR_ItemAttributeCollection "{65673B1FBD2645A0}" {
+    ItemDisplayName UIInfo "{65673B1C18EBADBA}" {
+     Name "#CE-Item_Bookshelf_Name"
+     Description "#CE-Item_Bookshelf_Description"
+    }
+    CustomAttributes {
+     PreviewRenderAttributes "{65673B1FABBFE6EE}" {
+      CameraDistanceToItem 2.5
+      LodModel 1
+     }
+    }
+    m_Size SLOT_3x3
+    m_SlotType SLOT_LOOT_STORAGE
+    m_bDraggable 0
+    m_bStackable 0
+    m_bRefundable 0
+   }
+   UseCapacityCoefficient 0
+   MaxCumulativeVolume 1000000
+   MaxItemSize 15 15 15
+   m_fMaxWeight 1000000
+  }
+  ActionsManagerComponent "{65673B1400C83A0D}" {
+   ActionContexts {
+    UserActionContext "{65673B14056FD54E}" {
+     Position PointInfo "{65673B14082308AC}" {
+     }
+     Radius 0.6
+    }
+   }
+  }
+  RplComponent "{5624A88DC2D9928D}" {
+   Enabled 1
+  }
+ }
+ coords 147.618 1 150.577
 }
