@@ -1,9 +1,11 @@
 class CE_Spawner
 {
-	protected CE_ItemSpawningComponent m_SpawningComponent;
-	protected CE_Item m_ItemSpawned;
+	//protected CE_ItemSpawningComponent m_SpawningComponent;
+	protected IEntity m_SpawnerEntity;
+	protected ref CE_Item m_ItemSpawned;
 	protected bool m_ReadyForItem;
 	
+	/*
 	//------------------------------------------------------------------------------------------------
 	void CE_Spawner(CE_ItemSpawningComponent spawningComponent, CE_Item itemSpawned, bool readyForItem)
 	{
@@ -11,7 +13,23 @@ class CE_Spawner
 		m_ItemSpawned = itemSpawned;
 		m_ReadyForItem = readyForItem;
 	}
+	*/
 	
+	//------------------------------------------------------------------------------------------------
+	//! 
+	IEntity GetSpawnerEntity()
+	{
+		return m_SpawnerEntity;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! 
+	void SetSpawnerEntity(IEntity entity)
+	{
+		m_SpawnerEntity = entity;
+	}
+	
+	/*
 	//------------------------------------------------------------------------------------------------
 	//! Returns the CE_ItemSpawningComponent corresponding to this CE_Spawner
 	CE_ItemSpawningComponent GetSpawningComponent()
@@ -25,6 +43,7 @@ class CE_Spawner
 	{
 		m_SpawningComponent = spawningComponent;
 	}
+	*/
 	
 	//------------------------------------------------------------------------------------------------
 	//! Returns the CE_Item corresponding to this CE_Spawner

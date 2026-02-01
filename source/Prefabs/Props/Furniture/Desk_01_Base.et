@@ -1,6 +1,8 @@
-GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et" {
+GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/DestructibleMultiPhase_Props_Base.et" {
  ID "F0DBA538AC2A0552"
  components {
+  Persistence "{687F27BF16CFFA62}" {
+  }
   CE_SearchableContainerComponent "{65B32156E2F6E7CE}" {
    m_Categories 57
    m_iContainerItemMaximum 2
@@ -22,7 +24,6 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et
     m_Size SLOT_3x3
     m_SlotType SLOT_LOOT_STORAGE
     m_bDraggable 0
-    m_bVisible 0
     m_bStackable 0
     m_bRefundable 0
    }
@@ -38,8 +39,9 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et
     UserActionContext "{65B3215768DCB131}" {
      ContextName "default"
      Position PointInfo "{65673B14082308AC}" {
-      Offset -0.4 0.835 0.75
+      Offset -0.4 0.835 0.4
      }
+     Radius 0.5
      Height 0
      Omnidirectional 0
     }
@@ -53,9 +55,8 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et
       Name "#AR-Inventory_OpenStorage"
      }
     }
-    CE_SearchContainerUserAction "{65B3215733E9F68A}" {
-     ParentContextList {
-      "default"
+    CE_SearchContainerUserAction "{65B3215733E9F68A}" : "{CD6CC67961CA6C80}Prefabs/SearchContainerUserAction_Wood.conf" {
+     ParentContextList +{
      }
      UIInfo SCR_ActionUIInfo "{65673B1E58068524}" {
       Name "#CE-UserAction_SearchContainer"

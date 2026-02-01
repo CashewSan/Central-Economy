@@ -1,6 +1,8 @@
 GenericEntity {
  ID "626B3C846EE806A7"
  components {
+  Persistence "{687F15967A27116E}" {
+  }
   CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
   }
   RplComponent "{645F746B5AA158CA}" {

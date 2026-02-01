@@ -1,6 +1,8 @@
-GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et" {
+GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/DestructibleMultiPhase_Props_Base.et" {
  ID "F0DBA538AC2A0552"
  components {
+  Persistence "{687F27BCF09FC9E3}" {
+  }
   CE_SearchableContainerComponent "{65B3215F3863EF8F}" {
    m_ContainerUsage MEDIC
    m_Categories TOOLS
@@ -14,16 +16,15 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et
     }
     CustomAttributes {
      PreviewRenderAttributes "{65AF0EA7ECBC1DE5}" {
-      CameraDistanceToItem 2.5
+      CameraDistanceToItem 0.75
       FOV 60
       AspectRatio 1
       LodModel 1
      }
     }
-    m_Size SLOT_3x3
+    m_Size SLOT_2x2
     m_SlotType SLOT_LOOT_STORAGE
     m_bDraggable 0
-    m_bVisible 0
     m_bStackable 0
     m_bRefundable 0
    }
@@ -39,7 +40,7 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et
     UserActionContext "{65B3215D7507AB24}" {
      ContextName "default"
      Position PointInfo "{65673B14082308AC}" {
-      Offset 0 0.25 0.095
+      Offset 0 0.25 0.05
      }
      Height 0
      Omnidirectional 0
@@ -54,9 +55,8 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et
       Name "#AR-Inventory_OpenStorage"
      }
     }
-    CE_SearchContainerUserAction "{65B3215D1C964A82}" {
-     ParentContextList {
-      "default"
+    CE_SearchContainerUserAction "{65B3215D1C964A82}" : "{07F153E3BC8A3F59}Prefabs/SearchContainerUserAction_Metal.conf" {
+     ParentContextList +{
      }
      UIInfo SCR_ActionUIInfo "{65673B1E58068524}" {
       Name "#CE-UserAction_SearchContainer"

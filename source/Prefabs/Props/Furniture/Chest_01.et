@@ -1,6 +1,8 @@
-GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et" {
+GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/DestructibleMultiPhase_Props_Base.et" {
  ID "F0DBA538AC2A0552"
  components {
+  Persistence "{687F27BF0A5299E7}" {
+  }
   CE_SearchableContainerComponent "{65B13D68F40B1296}" {
    m_Categories 57
    m_iContainerItemMaximum 1
@@ -13,7 +15,7 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et
     }
     CustomAttributes {
      PreviewRenderAttributes "{65AF0EA7ECBC1DE5}" {
-      CameraDistanceToItem 2.5
+      CameraDistanceToItem 1
       FOV 60
       AspectRatio 1
       LodModel 1
@@ -22,7 +24,6 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et
     m_Size SLOT_3x3
     m_SlotType SLOT_LOOT_STORAGE
     m_bDraggable 0
-    m_bVisible 0
     m_bStackable 0
     m_bRefundable 0
    }
@@ -38,7 +39,7 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et
     UserActionContext "{65B13D689CE136C5}" {
      ContextName "default"
      Position PointInfo "{65673B14082308AC}" {
-      Offset 0 0.31 0.25
+      Offset 0 0.31 0.07
      }
      Height 0
      Omnidirectional 0
@@ -53,9 +54,8 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et
       Name "#AR-Inventory_OpenStorage"
      }
     }
-    CE_SearchContainerUserAction "{65B13D68B4D2D9A8}" {
-     ParentContextList {
-      "default"
+    CE_SearchContainerUserAction "{65B13D68B4D2D9A8}" : "{CD6CC67961CA6C80}Prefabs/SearchContainerUserAction_Wood.conf" {
+     ParentContextList +{
      }
      UIInfo SCR_ActionUIInfo "{65673B1E58068524}" {
       Name "#CE-UserAction_SearchContainer"

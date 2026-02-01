@@ -31,6 +31,15 @@ class CE_ItemSpawningSystem : GameSystem
 	protected bool										m_bProcessingSpawn				= false;											// is the system currently processing a spawn?
 	
 	//------------------------------------------------------------------------------------------------
+	override static void InitInfo(WorldSystemInfo outInfo)
+	{
+		outInfo
+			.SetAbstract(false)
+			.SetLocation(WorldSystemLocation.Both)
+			.AddPoint(ESystemPoint.FixedFrame);
+	}
+	
+	//------------------------------------------------------------------------------------------------
 	//! On system start
 	override void OnStarted()
 	{
@@ -109,8 +118,13 @@ class CE_ItemSpawningSystem : GameSystem
 				{
 					array<ref CE_Item> items = {};
 					
-					CE_ItemSpawningComponent spawningComponent = spawner.GetSpawningComponent();
+					//CE_ItemSpawningComponent spawningComponent = spawner.GetSpawningComponent();
 					
+					IEntity spawnerEntity = spawner.GetSpawnerEntity();
+					if (!spawnerEntity)
+						continue;
+					
+					CE_ItemSpawningComponent spawningComponent = CE_ItemSpawningComponent.Cast(spawnerEntity.FindComponent(CE_ItemSpawningComponent));
 					if (spawningComponent && spawningComponent.HasConfig() && spawningComponent.HaveItemsProcessed())
 					{
 						items = spawningComponent.GetItems();
@@ -217,8 +231,12 @@ class CE_ItemSpawningSystem : GameSystem
 				{
 					array<ref CE_Item> items = {};
 					
-					CE_ItemSpawningComponent spawningComponent = spawner.GetSpawningComponent();
+					//CE_ItemSpawningComponent spawningComponent = spawner.GetSpawningComponent();
+					IEntity spawnerEntity = spawner.GetSpawnerEntity();
+					if (spawnerEntity)
+						return;
 					
+					CE_ItemSpawningComponent spawningComponent = CE_ItemSpawningComponent.Cast(spawnerEntity.FindComponent(CE_ItemSpawningComponent));
 					if (spawningComponent && spawningComponent.HasConfig() && spawningComponent.HaveItemsProcessed())
 					{
 						items = spawningComponent.GetItems();
@@ -358,7 +376,11 @@ class CE_ItemSpawningSystem : GameSystem
 			}
 			else
 			{
-				CE_Spawner spawner = new CE_Spawner(spawnerComponent, spawnerComponent.GetItemSpawned(), spawnerComponent.IsReadyForItem());
+				CE_Spawner spawner = new CE_Spawner();
+				
+				spawner.SetSpawnerEntity(spawnerComponent.GetOwner());
+				spawner.SetItemSpawned(spawnerComponent.GetItemSpawned());
+				spawner.SetReadyForItem(spawnerComponent.IsReadyForItem());
 				
 				if (!spawnersProcessed.Contains(spawner))
 				{
@@ -473,7 +495,13 @@ class CE_ItemSpawningSystem : GameSystem
 		if (itemsArrayCopy.IsEmpty())
 			return null;
 		
-		CE_ItemSpawningComponent spawnerComponent = spawner.GetSpawningComponent();
+		//CE_ItemSpawningComponent spawnerComponent = spawner.GetSpawningComponent();
+		
+		IEntity spawnerEntity = spawner.GetSpawnerEntity();
+		if (!spawnerEntity)
+			return null;
+		
+		CE_ItemSpawningComponent spawnerComponent = CE_ItemSpawningComponent.Cast(spawnerEntity.FindComponent(CE_ItemSpawningComponent));
 		if (!spawnerComponent)
 			return null;
 		
@@ -563,16 +591,16 @@ class CE_ItemSpawningSystem : GameSystem
 	{
 		if (item && spawner)
 		{
-			CE_ItemSpawningComponent spawnerComponent = spawner.GetSpawningComponent();
+			IEntity spawnEntity = spawner.GetSpawnerEntity();
+			if (!spawnEntity)
+				return false;
+			
+			CE_ItemSpawningComponent spawnerComponent = CE_ItemSpawningComponent.Cast(spawnEntity.FindComponent(CE_ItemSpawningComponent));
 			if (!spawnerComponent)
 				return false;
 			
 			CE_ItemData itemData = item.GetItemData();
 			if (!itemData)
-				return false;
-			
-			IEntity spawnEntity = spawnerComponent.GetOwner();
-			if (!spawnEntity)
 				return false;
 		
 			vector m_WorldTransform[4];

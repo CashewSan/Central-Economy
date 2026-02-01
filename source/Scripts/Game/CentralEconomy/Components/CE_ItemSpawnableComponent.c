@@ -7,18 +7,19 @@ class CE_ItemSpawnableComponent : ScriptComponent
 {
 	protected ref CE_ItemLifetimeEndedInvoker 				m_OnItemLifetimeEndedInvoker 					= new CE_ItemLifetimeEndedInvoker();	// script invoker for when the item's lifetime has ended
 	protected ref CE_ItemRestockEndedInvoker 				m_OnItemRestockEndedInvoker 					= new CE_ItemRestockEndedInvoker();	// script invoker for when the item's restock time has ended
-	protected ref CE_OnItemDepositedInvoker				m_OnItemDepositedInvoker						= new CE_OnItemDepositedInvoker();	// script invoker for when the item has be deposited into a CE Searchable Container
-	protected ref CE_OnItemSpawnedInvoker					m_OnItemSpawnedInvoker						= new CE_OnItemSpawnedInvoker();		// script invoker for when the item has been spawned on the spawner
+	protected ref CE_OnItemDepositedInvoker					m_OnItemDepositedInvoker						= new CE_OnItemDepositedInvoker();	// script invoker for when the item has be deposited into a CE Searchable Container
+	protected ref CE_OnItemSpawnedInvoker					m_OnItemSpawnedInvoker							= new CE_OnItemSpawnedInvoker();		// script invoker for when the item has been spawned on the spawner
 	
 	protected CE_ItemSpawnableSystem 						m_SpawnableSystem;																// the spawnable item game system
-	protected CE_Spawner									m_Spawner;																		// which CE_ItemSpawningComponent does this CE_ItemSpawnableComponent correspond to?
+	protected ref CE_Spawner								m_Spawner;																		// which CE_ItemSpawningComponent does this CE_ItemSpawnableComponent correspond to?
 	protected ref CE_Item									m_Item;																			// which CE_Item does this CE_ItemSpawnableComponent correspond to?
 	
 	protected int										m_iTotalRestockTime							= 0;									// total restock time (set from the CE_ItemDataConfig)
-	protected int										m_iCurrentRestockTime							= 0;									// current restock time
-	protected int										m_iTotalLifetime								= 0;									// total lifetime (set from the CE_ItemDataConfig)
+	protected int										m_iCurrentRestockTime						= 0;									// current restock time
+	protected int										m_iTotalLifetime							= 0;									// total lifetime (set from the CE_ItemDataConfig)
 	protected int										m_iCurrentLifetime							= 0;									// current lifetime
 	
+	protected bool										m_bWasSpawnedBySystem						= false;								// was this item spawn by the CentralEconomy system?
 	protected bool										m_bHasRestockEnded							= false;								// has this item's restock ended?
 	protected bool										m_bHasLifetimeEnded							= false;								// has this item's lifetime ended?
 	protected bool										m_bWasItemTaken								= false;								// was item taken from it's spawner or searchable container?
@@ -111,6 +112,8 @@ class CE_ItemSpawnableComponent : ScriptComponent
 			m_iCurrentLifetime = itemData.GetLifetime();
 		}
 		
+		m_bWasSpawnedBySystem = true; // sets that the item was indeed spawned by the CE system
+		
 		InventoryItemComponent itemComponent = InventoryItemComponent.Cast(GetOwner().FindComponent(InventoryItemComponent));
 		if (itemComponent)
 			itemComponent.m_OnParentSlotChangedInvoker.Insert(OnItemTaken);
@@ -200,6 +203,8 @@ class CE_ItemSpawnableComponent : ScriptComponent
 			item.SetAvailableCount(item.GetAvailableCount() + 1);
 			
 			DisconnectFromItemSpawnableSystem();
+			
+			m_bWasSpawnedBySystem = false; // sets that the item is no longer controlled by the CE system
 		}
 	}
 	
@@ -213,10 +218,16 @@ class CE_ItemSpawnableComponent : ScriptComponent
 			
 			if (GetSpawner())
 			{
-				CE_ItemSpawningComponent spawnerComp = GetSpawner().GetSpawningComponent();
-			
-				if (spawnerComp)
-					spawnerComp.GetSpawnerResetnvoker().Invoke(spawnerComp);
+				//CE_ItemSpawningComponent spawnerComp = GetSpawner().GetSpawningComponent();
+				
+				IEntity spawnerEntity = GetSpawner().GetSpawnerEntity();
+				if (spawnerEntity)
+				{
+					CE_ItemSpawningComponent spawnerComp = CE_ItemSpawningComponent.Cast(spawnerEntity.FindComponent(CE_ItemSpawningComponent));
+					if (spawnerComp)
+						spawnerComp.GetSpawnerResetnvoker().Invoke(spawnerComp);
+				}
+				
 			}
 			
 			DisconnectFromItemSpawnableSystem();
@@ -301,6 +312,20 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	void SetCurrentLifetime(int time)
 	{
 		m_iCurrentLifetime = time;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Was the item spawned by the CentralEconomy system?
+	bool WasSpawnedBySystem()
+	{
+		return m_bWasSpawnedBySystem;
+	}
+		
+	//------------------------------------------------------------------------------------------------
+	//! Set if the item was spawned by the CentralEconomy system or not
+	void SetWasSpawnedBySystem(bool spawned)
+	{
+		m_bWasSpawnedBySystem = spawned;
 	}
 	
 	//------------------------------------------------------------------------------------------------

@@ -23,8 +23,8 @@ modded class SCR_UniversalInventoryStorageComponent
 		CE_SearchableContainerComponent searchableContainer = CE_SearchableContainerComponent.Cast(GetOwner().FindComponent(CE_SearchableContainerComponent));
 		if (searchableContainer)
 		{
-			bool searched = searchableContainer.HasBeenSearched();
-			return !searched; // if container has been searched, don't hide
+			//bool searched = searchableContainer.HasBeenSearched();
+			return !searchableContainer.HasBeenSearched(); // if container has been searched, don't hide
 		}
 		
 		return super.ShouldHideInVicinity();

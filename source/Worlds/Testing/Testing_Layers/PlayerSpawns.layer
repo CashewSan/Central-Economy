@@ -1,4 +1,4 @@
 SCR_SpawnPoint : "{5A2220DD0C16958B}Prefabs/MP/Spawning/SpawnPoint_US.et" {
- coords 145.331 1 155.375
- angleY 131.883
+ coords 126.415 1 158.682
+ angles 0 131.883 0
 }

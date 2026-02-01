@@ -10,6 +10,15 @@ class CE_ItemSpawnableSystem : GameSystem
 	protected float										m_fCheckFrequency			= 1; 									// how often (in seconds) the system will update CE_ItemSpawnableComponents
 	
 	//------------------------------------------------------------------------------------------------
+	override static void InitInfo(WorldSystemInfo outInfo)
+	{
+		outInfo
+			.SetAbstract(false)
+			.SetLocation(WorldSystemLocation.Both)
+			.AddPoint(ESystemPoint.FixedFrame);
+	}
+	
+	//------------------------------------------------------------------------------------------------
 	//! Tick method, handles timing for the spawnables
 	override event protected void OnUpdate(ESystemPoint point)
 	{

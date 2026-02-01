@@ -1,6 +1,8 @@
 GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/DestructibleMultiPhase_Props_Base.et" {
  ID "6093E737E5FCED5E"
  components {
+  Persistence "{687F27BF33D76325}" {
+  }
   CE_SearchableContainerComponent "{65B13D6F08981AEA}" {
    m_Categories 57
   }

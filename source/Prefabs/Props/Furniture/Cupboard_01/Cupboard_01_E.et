@@ -1,6 +1,8 @@
 GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/DestructibleMultiPhase_Props_Base.et" {
  ID "6093E737E4B1D454"
  components {
+  Persistence "{687F27BF346BD121}" {
+  }
   CE_SearchableContainerComponent "{65B13D6EBBC3D255}" {
    m_Categories 57
   }
@@ -52,7 +54,7 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/DestructibleMultiPhase_Pro
       Name "#AR-Inventory_OpenStorage"
      }
     }
-    CE_SearchContainerUserAction "{65B13D6F77550D3F}" : "{CD6CC67961CA6C80}Prefabs/SearchContainerUserAction.conf" {
+    CE_SearchContainerUserAction "{65B13D6F77550D3F}" : "{CD6CC67961CA6C80}Prefabs/SearchContainerUserAction_Wood.conf" {
      ParentContextList +{
      }
      UIInfo SCR_ActionUIInfo "{65673B1E58068524}" {
