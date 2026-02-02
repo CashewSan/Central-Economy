@@ -23,33 +23,33 @@ class CE_SearchableContainerComponent : ScriptComponent
 	[Attribute("3", UIWidgets.EditBox, desc: "Maximum amount of items you want this searchable container to potentially spawn.", params: "0 inf 1", category: "Container Data")] // default set to 3
 	protected int m_iContainerItemMaximum;
 	
-	protected CE_ELootUsage 								m_Usage; 																	// gets set by the Usage Trigger Area Entity once they're finished querying
-	protected CE_ELootTier 								m_Tier; 																		// gets set by the Tier Trigger Area Entity once they're finished querying
+	protected CE_ELootUsage 							m_Usage; 																	// gets set by the Usage Trigger Area Entity once they're finished querying
+	protected CE_ELootTier 								m_Tier; 																	// gets set by the Tier Trigger Area Entity once they're finished querying
 	
-	protected bool 										m_bHasConfig 							= false;								// does the searchable container have a custom item data config? (NOT THE UNIVERSAL ONE)
-	
-	[RplProp()]
-	protected bool 										m_bHasBeenSearched						= false;								// has the container been searched?
+	protected bool 										m_bHasConfig 							= false;							// does the searchable container have a custom item data config? (NOT THE UNIVERSAL ONE)
 	
 	[RplProp()]
-	protected bool										m_bIsSearchable							= false;								// is the container searchable?
-	protected bool										m_bHaveItemsProcessed	;														// have the items of the container been processed? ONLY APPLICABLE IF m_ItemDataConfig IS SET!
-	protected bool										m_bHasUsage								= false;								// does the container have a usage set through the component? Not set from the Usage Trigger Area Entities!
+	protected bool 										m_bHasBeenSearched						= false;							// has the container been searched?
+	
+	[RplProp()]
+	protected bool										m_bIsSearchable							= false;							// is the container searchable?
+	protected bool										m_bHaveItemsProcessed	;													// have the items of the container been processed? ONLY APPLICABLE IF m_ItemDataConfig IS SET!
+	protected bool										m_bHasUsage								= false;							// does the container have a usage set through the component? Not set from the Usage Trigger Area Entities!
 	protected bool 										m_bReadyForItems 						= true;								// is the container ready for items to be spawned in it?
 	
-	protected int										m_iCurrentContainerResetTime				= 0;									// current container reset time
+	protected int										m_iCurrentContainerResetTime			= 0;								// current container reset time
 	
-	protected ref CE_OnContainerSearchedInvoker 			m_OnContainerSearchedInvoker 				= new CE_OnContainerSearchedInvoker();	// script invoker for when the container is searched
-	protected ref CE_OnContainerResetInvoker 				m_OnContainerResetInvoker 				= new CE_OnContainerResetInvoker();	// script invoker for when the container is reset
+	protected ref CE_OnContainerSearchedInvoker 			m_OnContainerSearchedInvoker 			= new CE_OnContainerSearchedInvoker();	// script invoker for when the container is searched
+	protected ref CE_OnContainerResetInvoker 				m_OnContainerResetInvoker 				= new CE_OnContainerResetInvoker();		// script invoker for when the container is reset
 	protected ref CE_OnAreasQueriedInvoker					m_OnAreasQueriedInvoker					= new CE_OnAreasQueriedInvoker();		// script invoker for when all areas have been queried
 	
-	protected ref array<ref CE_Item>						m_aItems;																	// CE_Item array, items processed from system IF the container has it's own config set (m_ItemDataConfig)
+	protected ref array<ref CE_Item>						m_aItems;																		// CE_Item array, items processed from system IF the container has it's own config set (m_ItemDataConfig)
 	protected ref array<ref CE_Item> 						m_aItemsSpawned							= new array<ref CE_Item>;				// CE_Item array that has spawned on the container
 	
-	protected ref RandomGenerator 						m_RandomGen								= new RandomGenerator();				// vanilla random generator
+	protected ref RandomGenerator 							m_RandomGen								= new RandomGenerator();				// vanilla random generator
 	
-	protected CE_ItemSpawningSystem 						m_SpawningSystem;															// the spawning game system used to control spawning
-	protected CE_ContainerTimingSystem					m_TimingSystem;																// the timing system for controlling container reset
+	protected CE_ItemSpawningSystem 						m_SpawningSystem;																// the spawning game system used to control spawning
+	protected CE_ContainerTimingSystem						m_TimingSystem;																	// the timing system for controlling container reset
 	
 	//------------------------------------------------------------------------------------------------
 	//! Event on post initiailization

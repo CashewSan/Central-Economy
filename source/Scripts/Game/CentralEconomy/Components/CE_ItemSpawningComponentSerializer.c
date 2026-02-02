@@ -13,9 +13,10 @@ class CE_ItemSpawningComponentSerializer : ScriptedComponentSerializer
 
 		context.WriteValue("version", 1);
 		context.WriteValue("readyForItem", spawningComp.IsReadyForItem());
+		context.WriteValue("itemTaken", spawningComp.HasSpawnedItemBeenTaken());
 		context.WriteValue("itemSpawned", spawningComp.GetItemSpawned());
-		//context.WriteValue("entitySpawned", spawningComp.GetEntitySpawned());
 		context.WriteValue("currentResetTime", spawningComp.GetCurrentSpawnerResetTime());
+		context.WriteValue("spawnerUUID", spawningComp.GetSpawnerUUID());
 		return ESerializeResult.OK;
 	}
 
@@ -28,23 +29,34 @@ class CE_ItemSpawningComponentSerializer : ScriptedComponentSerializer
 		context.Read(version);
 
 		bool readyForItem;
+		bool itemTaken;
 		CE_Item itemSpawned;
-		//IEntity entitySpawned;
 		int currentResetTime;
+		UUID spawnerUUID;
 		
 		if (context.Read(readyForItem))
 			spawningComp.SetReadyForItem(readyForItem);
 		
+		if (context.Read(itemTaken))
+			spawningComp.SetHasSpawnedItemBeenTaken(itemTaken);
+		
 		if (context.Read(itemSpawned))
 			spawningComp.SetItemSpawned(itemSpawned);
 		
-		/*
-		if (context.Read(entitySpawned))
-			spawningComp.SetEntitySpawned(entitySpawned);
-		*/
-		
 		if (context.Read(currentResetTime))
 			spawningComp.SetCurrentSpawnerResetTime(currentResetTime);
+		
+		if (context.Read(spawnerUUID))
+			spawningComp.SetSpawnerUUID(spawnerUUID);
+		
+		if (itemTaken == true)
+		{
+			CE_SpawnerTimingSystem spawnerTimingSystem = CE_SpawnerTimingSystem.GetByEntityWorld(owner);
+			if (spawnerTimingSystem)
+			{
+				spawnerTimingSystem.RegisterSpawner(spawningComp);
+			}
+		}
 
 		return true;
 	}

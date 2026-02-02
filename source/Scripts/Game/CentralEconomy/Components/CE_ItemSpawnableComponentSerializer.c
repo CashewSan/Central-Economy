@@ -90,22 +90,21 @@ class CE_ItemSpawnableComponentSerializer : ScriptedComponentSerializer
 				
 				if (spawner)
 				{
-					IEntity spawnerEntity = spawner.GetSpawnerEntity();
-					if (spawnerEntity)
+					UUID spawnerUUID = spawner.GetSpawnerUUID();
+					
+					CE_ItemSpawningSystem spawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(owner);
+					if (spawningSystem)
 					{
-						CE_ItemSpawningComponent spawnerComp = CE_ItemSpawningComponent.Cast(spawnerEntity.FindComponent(CE_ItemSpawningComponent));
-						if (spawnerComp)
+						foreach (CE_ItemSpawningComponent spawningComp : spawningSystem.GetSpawnerComponents())
 						{
-							spawnerComp.SetEntitySpawned(owner);
+							UUID spawningCompUUID = spawningComp.GetSpawnerUUID();
+							if (spawningCompUUID == spawnerUUID)
+							{
+								spawningComp.SetEntitySpawned(owner);
+							}
 						}
-						else
-							Print("[CENTRALECONOMY::CE_ItemSpawnableComponentSerializer] - COULD NOT SET ENTITY SPAWNED. NO CE_ItemSpawningComponent", LogLevel.ERROR);
 					}
-					else
-						Print("[CENTRALECONOMY::CE_ItemSpawnableComponentSerializer] - COULD NOT SET ENTITY SPAWNED. NO Spawner Entity", LogLevel.ERROR);
 				}
-				else
-					Print("[CENTRALECONOMY::CE_ItemSpawnableComponentSerializer] - COULD NOT SET ENTITY SPAWNED. NO CE_Spawner", LogLevel.ERROR);
 			}
 			
 			CE_ItemSpawnableSystem spawnableSystem = CE_ItemSpawnableSystem.GetByEntityWorld(owner);

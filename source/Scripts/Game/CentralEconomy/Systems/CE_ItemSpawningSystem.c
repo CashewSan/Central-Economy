@@ -7,28 +7,29 @@ class CE_ItemSpawningSystem : GameSystem
 			- Cashew
 	*/
 	
-	protected ref array<CE_ItemSpawningComponent> 			m_aSpawnerComponents		 		= new array<CE_ItemSpawningComponent>(); 			// ALL registered spawner components in the world
+	protected ref array<CE_ItemSpawningComponent> 			m_aSpawnerComponents		 	= new array<CE_ItemSpawningComponent>(); 			// ALL registered spawner components in the world
 	protected ref array<CE_SearchableContainerComponent> 	m_aContainerComponents 			= new array<CE_SearchableContainerComponent>(); 	// ALL registered searchable container components in the world
-	protected ref array<ref CE_Item>						m_aItems 						= new array<ref CE_Item>();						// processed CE_ItemData into CE_Item
-	protected ref array<CE_UsageTriggerArea>				m_aUsageAreas					= new array<CE_UsageTriggerArea>();				// usage areas registered to the system
-	protected ref array<CE_TierTriggerArea>				m_aTierAreas						= new array<CE_TierTriggerArea>();				// tier areas registered to the system
+	protected ref array<ref CE_Item>						m_aItems 						= new array<ref CE_Item>();							// processed CE_ItemData into CE_Item
+	protected ref array<ref CE_Spawner>						m_aSpawners 					= new array<ref CE_Spawner>();						// processed Spawner Entities into CE_Spawners
+	protected ref array<CE_UsageTriggerArea>				m_aUsageAreas					= new array<CE_UsageTriggerArea>();					// usage areas registered to the system
+	protected ref array<CE_TierTriggerArea>					m_aTierAreas					= new array<CE_TierTriggerArea>();					// tier areas registered to the system
 	
-	protected ref RandomGenerator 						m_RandomGen						= new RandomGenerator();							// vanilla random generator
+	protected ref RandomGenerator 							m_RandomGen						= new RandomGenerator();							// vanilla random generator
 	protected ref CE_OnAreasQueriedInvoker					m_OnAreasQueriedInvoker			= new CE_OnAreasQueriedInvoker();					// script invoker for when all areas have been queried
 	
-	protected float 										m_fTimer							= 0;												// timer for spawning check interval
-	protected float										m_fItemSpawningFrequency			= 0; 											// frequency (in seconds) that an item will spawn
+	protected float 									m_fTimer							= 0;												// timer for spawning check interval
+	protected float										m_fItemSpawningFrequency			= 0; 												// frequency (in seconds) that an item will spawn
 	protected float										m_fItemSpawningRatio				= 0;												// ratio of items the system will aim to spawn compared to spawners
 	
 	protected int										m_iItemCount						= 0;												// count of items currently on a spawner
 	protected int										m_iSpawnerRatioCount				= 0;												// count of spawners multiplied by the m_fItemSpawningRatio
 	protected int										m_iUsageAreasQueried				= 0;												// count of usage areas queried
-	protected int										m_iTierAreasQueried				= 0;												// count of tier areas queried
+	protected int										m_iTierAreasQueried					= 0;												// count of tier areas queried
 	
 	[RplProp()]
-	protected bool										m_bHaveAreasQueried				= false;											// have the usage and tier areas finished querying?
+	protected bool										m_bHaveAreasQueried					= false;											// have the usage and tier areas finished querying?
 	protected bool										m_bInitialSpawningRan				= false;											// has the system ran it's initial spawning phase?
-	protected bool										m_bProcessingSpawn				= false;											// is the system currently processing a spawn?
+	protected bool										m_bProcessingSpawn					= false;											// is the system currently processing a spawn?
 	
 	//------------------------------------------------------------------------------------------------
 	override static void InitInfo(WorldSystemInfo outInfo)
@@ -67,10 +68,19 @@ class CE_ItemSpawningSystem : GameSystem
 				
 				CE_ItemDataConfig m_Config = m_WorldValidationComponent.GetItemDataConfig();
 				
+				/*
 				if (!m_aItems.IsEmpty())
 					m_aItems.Clear();
+				*/
 				
-				m_aItems = ProcessItemData(m_Config);
+				array<ref CE_Item> processedItems = ProcessItemData(m_Config);
+				
+				foreach (CE_Item processedItem : processedItems)
+				{
+					m_aItems.Insert(processedItem);
+				}
+				
+				RemoveObsoleteItemData(m_Config);
 			}
 			else
 			{
@@ -311,6 +321,13 @@ class CE_ItemSpawningSystem : GameSystem
 					itemCount--;
 					continue;
 				}
+				else if (ItemExistenceCheck(itemData.GetName()))
+				{
+					//Print("[CentralEconomy::CE_ItemSpawningSystem] " + itemData.GetName() + " already exists! Will not add to m_aItems!", LogLevel.ERROR);
+					itemDataToBeProcessed.Remove(0);
+					itemCount--;
+					continue;
+				}
 				else
 				{
 					CE_Item item = new CE_Item();
@@ -335,6 +352,65 @@ class CE_ItemSpawningSystem : GameSystem
 		}
 		
 		return null;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Checks if item already exists within the m_aItems array, returns true if match is found, false otherwise
+	protected bool ItemExistenceCheck(string itemName)
+	{
+		foreach	(CE_Item item : m_aItems)
+		{
+			CE_ItemData itemData = item.GetItemData();
+			if (itemData)
+			{
+				string itemDataName = itemData.GetName();
+				if (itemDataName == itemName)
+				{
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Takes the config and removes obsolete items from m_aItems (in the case of if they were removed from the CE_ItemDataConfig, but still exist in persistent m_aItems)
+	protected void RemoveObsoleteItemData(CE_ItemDataConfig config)
+	{
+		if (m_aItems && !m_aItems.IsEmpty() && config && config.GetItemDataArray())
+		{
+			foreach (CE_Item persistentItem : m_aItems)
+			{
+				bool safe = false;
+				CE_ItemData persistentItemData = persistentItem.GetItemData();
+				if (!persistentItemData)
+				{
+					Print("[CentralEconomy::CE_ItemSpawningSystem] Something has gone terribly wrong with registering CE_Items to m_aItems! Please fix or report!", LogLevel.ERROR);
+					m_aItems.RemoveItem(persistentItem);
+					continue;
+				}
+				
+				string persistentItemDataName = persistentItemData.GetName();
+				
+				if (persistentItemDataName)
+				{
+					foreach (CE_ItemData itemData : config.GetItemDataArray())
+					{
+						string itemDataName = itemData.GetName();
+						
+						if (persistentItemDataName == itemDataName)
+						{
+							safe = true;
+							break;
+						}
+					}
+				}
+				
+				if (!safe)
+					m_aItems.RemoveItem(persistentItem);
+			}
+		}
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -374,10 +450,46 @@ class CE_ItemSpawningSystem : GameSystem
 				
 				continue;
 			}
+			else if (!spawnerComponent.GetSpawnerUUID().IsNull())
+			{
+				Print("[CentralEconomy::CE_ItemSpawningSystem] Potential matching CE_Spawner?");
+				
+				bool matchFound = false;
+				
+				foreach (CE_Spawner spawner : m_aSpawners)
+				{
+					// if matching UUID found, set to corresponding spawner entity to the CE_Spawner
+					UUID spawnerUUID = spawner.GetSpawnerUUID();
+					if (spawnerUUID == spawnerComponent.GetSpawnerUUID())
+					{
+						Print("[CentralEconomy::CE_ItemSpawningSystem] Matching CE_Spawner found!");
+						
+						spawner.SetSpawnerEntity(spawnerComponent.GetOwner());
+						matchFound = true;
+						spawnersToBeProcessed.Remove(0);
+						spawnerCount--;
+						break;
+					}
+				}
+				
+				if (!matchFound)
+				{
+					Print("[CentralEconomy::CE_ItemSpawningSystem] Matching CE_Spawner not found! Resetting UUID", LogLevel.ERROR);
+					spawnerComponent.SetSpawnerUUID(UUID.NULL_UUID) // reset UUID if no match found
+				}
+				
+				continue;
+			}
 			else
 			{
+				Print("MEOW Creation Call");
+				
 				CE_Spawner spawner = new CE_Spawner();
 				
+				UUID spawnerUUID = UUID.GenV4();
+				
+				spawnerComponent.SetSpawnerUUID(spawnerUUID);
+				spawner.SetSpawnerUUID(spawnerUUID);
 				spawner.SetSpawnerEntity(spawnerComponent.GetOwner());
 				spawner.SetItemSpawned(spawnerComponent.GetItemSpawned());
 				spawner.SetReadyForItem(spawnerComponent.IsReadyForItem());
@@ -385,6 +497,11 @@ class CE_ItemSpawningSystem : GameSystem
 				if (!spawnersProcessed.Contains(spawner))
 				{
 					spawnersProcessed.Insert(spawner);
+				}
+				
+				if (!m_aSpawners.Contains(spawner))
+				{
+					m_aSpawners.Insert(spawner);
 				}
 			}
 			
@@ -808,6 +925,17 @@ class CE_ItemSpawningSystem : GameSystem
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Returns instance of system within the entity's world
+	static CE_ItemSpawningSystem GetInstance()
+	{
+		World world = GetGame().GetWorld();
+		if (!world)
+			return null;
+
+		return CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+	}
+	
+	//------------------------------------------------------------------------------------------------
 	//! Registers spawning component
 	void RegisterSpawner(notnull CE_ItemSpawningComponent component)
 	{
@@ -900,10 +1028,24 @@ class CE_ItemSpawningSystem : GameSystem
 	//------------------------------------------------------------------------------------------------
 	
 	//------------------------------------------------------------------------------------------------
+	//! Gets m_aSpawnerComponents array
+	array<CE_ItemSpawningComponent> GetSpawnerComponents()
+	{
+		return m_aSpawnerComponents;
+	}
+	
+	//------------------------------------------------------------------------------------------------
 	//! Gets m_aItems array
 	array<ref CE_Item> GetItems()
 	{
 		return m_aItems;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets m_aSpawners array
+	array<ref CE_Spawner> GetSpawners()
+	{
+		return m_aSpawners;
 	}
 		
 	//------------------------------------------------------------------------------------------------

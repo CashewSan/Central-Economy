@@ -1,10 +1,23 @@
 class CE_Item
 {
-	protected CE_ItemData m_ItemData;
+	protected ref CE_ItemData m_ItemData;
 	protected CE_ELootTier m_Tiers;
 	protected CE_ELootUsage m_Usages;
 	protected CE_ELootCategory m_Category;
 	protected int m_iAvailableCount;
+	
+	void CE_Item()
+	{
+		//TESTING PURPOSES
+		GetGame().GetCallqueue().CallLater(PrintItemEntity, 5000, true);
+	}
+	
+	void PrintItemEntity()
+	{
+		//Print("MEOW Spawner Entity " + m_SpawnerEntity);
+		//Print("MEOW Spawner Entity UUID " + m_sSpawnerUUID);
+		Print("MEOW Item " + this);
+	}
 	
 	//------------------------------------------------------------------------------------------------
 	//! Returns the CE_ItemData corresponding to this CE_Item

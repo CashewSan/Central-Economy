@@ -1,14 +1,10 @@
 /*
-class CE_Item_Data : PersistentState
-{
-}
-
 class CE_ItemSerializer : ScriptedStateSerializer
 {
 	//------------------------------------------------------------------------------------------------
 	override static typename GetTargetType()
 	{
-		return CE_Item_Data;
+		return CE_Item;
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -17,7 +13,7 @@ class CE_ItemSerializer : ScriptedStateSerializer
 		const CE_Item itemInstance = CE_Item.Cast(instance);
 		
 		context.WriteValue("version", 1);
-		//context.WriteValue("itemData", itemInstance.GetItemData());
+		context.WriteValue("itemData", itemInstance.GetItemData());
 		context.WriteValue("availableCount", itemInstance.GetAvailableCount());
 		return ESerializeResult.OK;
 	}
@@ -31,9 +27,13 @@ class CE_ItemSerializer : ScriptedStateSerializer
 		context.Read(version);
 
 		int availableCount;
+		CE_ItemData itemData;
 		
 		if (context.Read(availableCount))
 			itemInstance.SetAvailableCount(availableCount);
+		
+		if (context.Read(itemData))
+			itemInstance.SetItemData(itemData);
 
 		return true;
 	}

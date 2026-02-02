@@ -17,26 +17,28 @@ class CE_ItemSpawningComponent : ScriptComponent
 	[Attribute("1800", UIWidgets.EditBox, desc: "Time (in seconds) it takes for the spawner to reset after spawned item was taken from it. Helps prevent loot camping.", params: "10 inf 10", category: "Spawner Data")] // default set to 1800 seconds (30 minutes)
 	protected int m_iSpawnerResetTime;
 	
-	protected CE_ELootUsage 								m_Usage; 																			// what is the usage of this spawner component? Can be either m_ItemUsage or set throughout the world
-	protected CE_ELootTier 								m_Tier; 																				// what is the tier of this spawner component?
+	protected CE_ELootUsage 							m_Usage; 																			// what is the usage of this spawner component? Can be either m_ItemUsage or set throughout the world
+	protected CE_ELootTier 								m_Tier; 																			// what is the tier of this spawner component?
 	
-	protected bool 										m_bHasConfig 							= false;										// does the spawner have a config set in the component?
-	protected bool 										m_bReadyForItem 							= true;										// has item spawned on the spawner?
-	protected bool										m_bHaveItemsProcessed	;																// have the items of the spawner been processed? ONLY APPLICABLE IF m_ItemDataConfig IS SET!
-	protected bool										m_bHasUsage								= false;										// does the spawner have a usage set through the component?
+	protected bool 										m_bHasConfig 							= false;									// does the spawner have a config set in the component?
+	protected bool 										m_bReadyForItem 						= true;										// has item spawned on the spawner?
+	protected bool										m_bHaveItemsProcessed;																// have the items of the spawner been processed? ONLY APPLICABLE IF m_ItemDataConfig IS SET!
+	protected bool										m_bHasUsage								= false;									// does the spawner have a usage set through the component?
+	protected bool										m_bItemTaken							= false;									// was the spawned item taken from the spawner?
 	
 	protected int										m_iCurrentSpawnerResetTime				= 0;											// current spawner reset time
 	
 	protected ref CE_OnItemSpawnedOnSpawnerInvoker 		m_OnItemSpawnedInvoker 					= new CE_OnItemSpawnedOnSpawnerInvoker();		// script invoker for when a item has spawned on the spawner
-	protected ref CE_OnItemDespawnedFromSpawnerInvoker 	m_OnItemDespawnedInvoker 					= new CE_OnItemDespawnedFromSpawnerInvoker();	// script invoker for when a item has despawned from the spawner
-	protected ref CE_OnSpawnerResetInvoker 				m_OnSpawnerResetInvoker 					= new CE_OnSpawnerResetInvoker();				// script invoker for when a spawner has been reset
+	protected ref CE_OnItemDespawnedFromSpawnerInvoker m_OnItemDespawnedInvoker 				= new CE_OnItemDespawnedFromSpawnerInvoker();	// script invoker for when a item has despawned from the spawner
+	protected ref CE_OnSpawnerResetInvoker 				m_OnSpawnerResetInvoker 				= new CE_OnSpawnerResetInvoker();				// script invoker for when a spawner has been reset
 	
-	protected ref array<ref CE_Item>						m_aItems;																			// CE_Item array, items processed from system IF the spawner has it's own config set (m_ItemDataConfig)
+	protected ref array<ref CE_Item>					m_aItems;																			// CE_Item array, items processed from system IF the spawner has it's own config set (m_ItemDataConfig)
 	
 	protected ref CE_Item 								m_ItemSpawned;																		// CE_Item that has spawned on the spawner
-	protected IEntity 									m_EntitySpawned;																		// IEntity that has spawned on the spawner
-	protected CE_ItemSpawningSystem 						m_SpawningSystem;																	// item spawning system that handles all item spawning with CentralEconomy (A.K.A. the brain)
-	protected CE_SpawnerTimingSystem 						m_TimingSystem;																		// spawner timing system that handles all spawner reset timings
+	protected IEntity 									m_EntitySpawned;																	// IEntity that has spawned on the spawner
+	protected CE_ItemSpawningSystem 					m_SpawningSystem;																	// item spawning system that handles all item spawning with CentralEconomy (A.K.A. the brain)
+	protected CE_SpawnerTimingSystem 					m_TimingSystem;																		// spawner timing system that handles all spawner reset timings
+	protected UUID										m_sSpawnerUUID;																		// the spawner's UUID correlating to this component and entity
 	
 	//------------------------------------------------------------------------------------------------
 	//! Post initialization
@@ -66,7 +68,17 @@ class CE_ItemSpawningComponent : ScriptComponent
 			LoadConfig();
 		else
 			ConnectToItemSpawningSystem();
+		
+		//TESTING PURPOSES
+		//GetGame().GetCallqueue().CallLater(PrintSpawnedEntity, 5000);
 	}
+	
+	/*
+	void PrintSpawnedEntity()
+	{
+		Print("MEOW Spawned Entity " + m_EntitySpawned);
+	}
+	*/
 	
 	//------------------------------------------------------------------------------------------------
 	//! Gets called from the m_TimingSystem to control spawner reset
@@ -198,9 +210,11 @@ class CE_ItemSpawningComponent : ScriptComponent
 		}
 		
 		m_bReadyForItem = false;
+		m_bItemTaken = false;
 		m_ItemSpawned = item;
 		m_iCurrentSpawnerResetTime = m_iSpawnerResetTime;
 		m_EntitySpawned = itemEntity;
+
 		
 		InventoryItemComponent itemComponent = InventoryItemComponent.Cast(itemEntity.FindComponent(InventoryItemComponent));
 		if (itemComponent)
@@ -224,6 +238,8 @@ class CE_ItemSpawningComponent : ScriptComponent
 	//! Called when the item is taken
 	protected void OnItemTaken(InventoryStorageSlot oldSlot, InventoryStorageSlot newSlot)
 	{
+		m_bItemTaken = true;
+		
 		m_TimingSystem = CE_SpawnerTimingSystem.GetByEntityWorld(GetOwner());
 		if (m_TimingSystem)
 		{
@@ -268,6 +284,20 @@ class CE_ItemSpawningComponent : ScriptComponent
 	//------------------------------------------------------------------------------------------------
 	// GETTERS/SETTERS
 	//------------------------------------------------------------------------------------------------
+	
+	//------------------------------------------------------------------------------------------------
+	//! Returns the spawner's UUID
+	UUID GetSpawnerUUID()
+	{
+		return m_sSpawnerUUID;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Sets the spawner's UUID
+	void SetSpawnerUUID(UUID uuid)
+	{
+		m_sSpawnerUUID = uuid;
+	}
 	
 	//------------------------------------------------------------------------------------------------
 	//! Is the spawner ready for an item to be spawned on it?
@@ -400,6 +430,20 @@ class CE_ItemSpawningComponent : ScriptComponent
 	bool HaveItemsProcessed()
 	{
 		return m_bHaveItemsProcessed;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Has the spawned item been taken from the spawner?
+	bool HasSpawnedItemBeenTaken()
+	{
+		return m_bItemTaken;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Set if the spawned item been taken from the spawner
+	void SetHasSpawnedItemBeenTaken(bool taken)
+	{
+		m_bItemTaken = taken;
 	}
 	
 	//------------------------------------------------------------------------------------------------
