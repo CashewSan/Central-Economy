@@ -129,3 +129,6 @@ The CE_WorldValidationComponent has 3 attribute parameters that you can adjust i
   - Open it in a text editor, like Notepad, and change CE_LootSpawningConfig on the first line to **CE_ItemDataConfig**, save the file, then reload it into workbench.
 
 **IF YOU EXPERIENCE ANY BUGS OR ISSUES, PLEASE REPORT THEM IN [ISSUES](https://github.com/CashewSan/Central-Economy/issues) HERE ON GITHUB OR DIRECTLY TO ME IN THE [ARMA DISCORD](https://discord.com/channels/105462288051380224/1301291009635909664) @CASHEWSAN**
+
+## ATTRIBUTION
+While the current version of the code currently is written by myself, the original basis of the mod relied on some code from [Zeliks Loot Spawners](https://reforger.armaplatform.com/workshop/5C8540DA49BA6AFC-ZeliksLootSpawners), so will give credit where it is due!
