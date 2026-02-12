@@ -10,6 +10,9 @@ class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 	protected ResourceName m_testConfig;
 	*/
 	
+	[Attribute("5", UIWidgets.EditBox, desc: "Time (in seconds) before the system does it's intial item spawning (after the system is initialized)", params: "5 inf 1", category: "Item Spawning System")] // default set to 5 seconds
+	protected float m_fInitialDelayTime;
+	
 	[Attribute("30", UIWidgets.EditBox, desc: "Frequency (in seconds) that an item will spawn, LOWER TAKES MORE PERFORMANCE (E.G. If set to 5, an item will attempt to spawn every 5 seconds)", params: "0 inf 1", category: "Item Spawning System")] // default set to 30 seconds
 	protected float m_fItemSpawningFrequency;
 	
@@ -120,6 +123,13 @@ class CE_WorldValidationComponent: SCR_BaseGameModeComponent
 	float GetSearchableContainerChance()
 	{
 		return m_fSearchableContainerChance;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Returns the initial delay time before the starting the initial spawning phase
+	float GetInitialDelayTime()
+	{
+		return m_fInitialDelayTime;
 	}
 	
 	//------------------------------------------------------------------------------------------------

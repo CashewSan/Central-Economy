@@ -17,10 +17,6 @@ class CE_ItemSpawnableComponentSerializer : ScriptedComponentSerializer
 		// only write data if the item was spawned by the CE system
 		if (spawnableComp.WasSpawnedBySystem())
 		{
-			Print("MEOW WRITING DATA");
-			
-			context.WriteValue("spawner", spawnableComp.GetSpawner());
-			context.WriteValue("item", spawnableComp.GetItem());
 			context.WriteValue("totalRestockTime", spawnableComp.GetTotalRestockTime());
 			context.WriteValue("currentRestockTime", spawnableComp.GetCurrentRestockTime());
 			context.WriteValue("totalLifetime", spawnableComp.GetTotalLifetime());
@@ -28,6 +24,8 @@ class CE_ItemSpawnableComponentSerializer : ScriptedComponentSerializer
 			context.WriteValue("restockEnded", spawnableComp.HasRestockEnded());
 			context.WriteValue("itemTaken", spawnableComp.WasItemTaken());
 			context.WriteValue("wasDeposited", spawnableComp.WasDepositedByAction());
+			context.WriteValue("itemUUID", spawnableComp.GetSpawnedItemUUID());
+			context.WriteValue("spawnerUUID", spawnableComp.GetSpawnerUUID());
 		}
 		
 		return ESerializeResult.OK;
@@ -48,10 +46,8 @@ class CE_ItemSpawnableComponentSerializer : ScriptedComponentSerializer
 		// only read data if the item was spawned by the CE system
 		if (spawnedBySystem == true)
 		{
-			Print("MEOW READING DATA");
+			CE_ItemSpawningSystem spawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(owner);
 			
-			CE_Spawner spawner;
-			CE_Item item;
 			int totalRestockTime;
 			int currentRestockTime;
 			int totalLifetime;
@@ -59,6 +55,8 @@ class CE_ItemSpawnableComponentSerializer : ScriptedComponentSerializer
 			bool restockEnded;
 			bool itemTaken;
 			bool wasDeposited;
+			UUID itemUUID;
+			UUID spawnerUUID;
 			
 			if (context.Read(totalRestockTime))
 				spawnableComp.SetTotalRestockTime(totalRestockTime);
@@ -81,29 +79,27 @@ class CE_ItemSpawnableComponentSerializer : ScriptedComponentSerializer
 			if (context.Read(wasDeposited))
 				spawnableComp.SetWasDepositedByAction(wasDeposited);
 			
-			if (context.Read(item))
-				spawnableComp.SetItem(item);
-			
-			if (context.Read(spawner))
+			if (context.Read(itemUUID))
 			{
-				spawnableComp.SetSpawner(spawner);
+				spawnableComp.SetSpawnedItemUUID(itemUUID);
 				
-				if (spawner)
+				if (!itemUUID.IsNull() && spawningSystem)
 				{
-					UUID spawnerUUID = spawner.GetSpawnerUUID();
+					spawnableComp.SetSpawnedItem(spawningSystem.FindItemByUUID(itemUUID));
+				}
+			}
+			
+			if (context.Read(spawnerUUID))
+			{
+				spawnableComp.SetSpawnerUUID(spawnerUUID);
+				
+				if (!spawnerUUID.IsNull() && spawningSystem)
+				{
+					spawnableComp.SetSpawner(spawningSystem.FindSpawnerByUUID(spawnerUUID));
 					
-					CE_ItemSpawningSystem spawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(owner);
-					if (spawningSystem)
-					{
-						foreach (CE_ItemSpawningComponent spawningComp : spawningSystem.GetSpawnerComponents())
-						{
-							UUID spawningCompUUID = spawningComp.GetSpawnerUUID();
-							if (spawningCompUUID == spawnerUUID)
-							{
-								spawningComp.SetEntitySpawned(owner);
-							}
-						}
-					}
+					CE_ItemSpawningComponent spawningComp = spawningSystem.FindSpawningComponentByUUID(spawnerUUID);
+					if (spawningComp)
+						spawningComp.SetEntitySpawned(owner);
 				}
 			}
 			
@@ -111,6 +107,20 @@ class CE_ItemSpawnableComponentSerializer : ScriptedComponentSerializer
 			if (spawnableSystem)
 			{
 				spawnableSystem.Register(spawnableComp);
+			}
+			
+			if (!itemTaken && !spawnerUUID.IsNull() && !itemUUID.IsNull() && spawningSystem)
+			{
+				//spawningSystem.RegisterSpawnable(spawnableComp);
+				CE_Spawner spawner = spawningSystem.FindSpawnerByUUID(spawnerUUID);
+				CE_ItemSpawningComponent spawningComp = spawningSystem.FindSpawningComponentByUUID(spawnerUUID);
+				CE_Item item = spawningSystem.FindItemByUUID(itemUUID);
+				
+				if (spawningComp && spawner && item)
+				{
+					Print("MEOW ITEM NOT TAKEN INVOKING");
+					spawningComp.GetItemSpawnedInvoker().Invoke(owner, item, spawner);
+				}
 			}
 		}
 

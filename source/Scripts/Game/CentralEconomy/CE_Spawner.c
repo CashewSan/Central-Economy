@@ -2,9 +2,10 @@ class CE_Spawner
 {
 	protected UUID m_sSpawnerUUID;
 	protected IEntity m_SpawnerEntity;
-	protected ref CE_Item m_ItemSpawned;
 	protected bool m_bReadyForItem;
+	protected UUID m_sItemUUID;
 	
+	/*
 	void CE_Spawner()
 	{
 		//TESTING PURPOSES
@@ -14,9 +15,10 @@ class CE_Spawner
 	void PrintSpawnerEntity()
 	{
 		//Print("MEOW Spawner Entity " + m_SpawnerEntity);
+		Print("MEOW Spawner " + this + " " + m_sSpawnerUUID);
 		//Print("MEOW Spawner Entity UUID " + m_sSpawnerUUID);
-		Print("MEOW Spawner " + this);
 	}
+	*/
 	
 	//------------------------------------------------------------------------------------------------
 	//! Returns the spawner's UUID
@@ -47,20 +49,6 @@ class CE_Spawner
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Returns the CE_Item corresponding to this CE_Spawner
-	CE_Item GetItemSpawned()
-	{
-		return m_ItemSpawned;
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Sets the CE_Item corresponding to this CE_Spawner
-	void SetItemSpawned(CE_Item itemSpawned)
-	{
-		m_ItemSpawned = itemSpawned;
-	}
-	
-	//------------------------------------------------------------------------------------------------
 	//! Returns if the CE_Spawner is ready for an item to be spawned
 	bool IsReadyForItem()
 	{
@@ -72,5 +60,33 @@ class CE_Spawner
 	void SetReadyForItem(bool readyForItem)
 	{
 		m_bReadyForItem = readyForItem;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Returns the spawned item's UUID
+	UUID GetSpawnedItemUUID()
+	{
+		return m_sItemUUID;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Sets the spawned item's UUID
+	void SetSpawnedItemUUID(UUID uuid)
+	{
+		m_sItemUUID = uuid;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Returns the CE_Item corresponding to this CE_Spawner, returns null if no item
+	CE_Item GetItemSpawned()
+	{
+		if (!m_sItemUUID)
+			return null;
+		
+		CE_ItemSpawningSystem spawningSystem = CE_ItemSpawningSystem.GetInstance();
+		if (!spawningSystem)
+			return null;
+		
+		return spawningSystem.FindItemByUUID(m_sItemUUID);
 	}
 }

@@ -11,8 +11,10 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	protected ref CE_OnItemSpawnedInvoker					m_OnItemSpawnedInvoker							= new CE_OnItemSpawnedInvoker();		// script invoker for when the item has been spawned on the spawner
 	
 	protected CE_ItemSpawnableSystem 						m_SpawnableSystem;																// the spawnable item game system
-	protected ref CE_Spawner								m_Spawner;																		// which CE_ItemSpawningComponent does this CE_ItemSpawnableComponent correspond to?
+	protected ref CE_Spawner								m_Spawner;																		// which CE_Spawner does this CE_ItemSpawnableComponent correspond to?
+	protected UUID											m_sSpawnerUUID;																	// what is the corresponding CE_Spawner UUID for this component?	
 	protected ref CE_Item									m_Item;																			// which CE_Item does this CE_ItemSpawnableComponent correspond to?
+	protected UUID											m_sItemUUID;																	// what is the corresponding CE_Item UUID for this component?
 	
 	protected int										m_iTotalRestockTime							= 0;									// total restock time (set from the CE_ItemDataConfig)
 	protected int										m_iCurrentRestockTime						= 0;									// current restock time
@@ -54,7 +56,7 @@ class CE_ItemSpawnableComponent : ScriptComponent
 			{
 				m_bHasLifetimeEnded = true;
 				
-				m_OnItemLifetimeEndedInvoker.Invoke(this, GetItem());
+				m_OnItemLifetimeEndedInvoker.Invoke(this, m_Item);
 			}
 			
 			//Print("Lifetime: " + GetCurrentLifetime());
@@ -67,7 +69,7 @@ class CE_ItemSpawnableComponent : ScriptComponent
 			{
 				m_bHasRestockEnded = true;
 				
-				m_OnItemRestockEndedInvoker.Invoke(this, GetItem());
+				m_OnItemRestockEndedInvoker.Invoke(this, m_Item);
 			}
 			
 			//Print("Restock: " + GetCurrentRestockTime());
@@ -97,11 +99,46 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
+	//! Connects to item spawnable system and registers this component
+	protected void ConnectToItemSpawningSystem()
+	{
+		CE_ItemSpawningSystem spawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(GetOwner());
+		if (!spawningSystem)
+			return;
+		
+		spawningSystem.RegisterSpawnable(this);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Disonnects from item spawning system and unregisters this component
+	protected void DisconnectFromItemSpawningSystem()
+	{
+		CE_ItemSpawningSystem spawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(GetOwner());
+		if (!spawningSystem)
+			return;
+
+		spawningSystem.UnregisterSpawnable(this);
+	}
+	
+	//------------------------------------------------------------------------------------------------
 	//! Called when the item is spawned onto a CE_Spawner
 	protected void OnItemSpawned(CE_Item item, CE_Spawner spawner)
 	{
-		m_Item = item;
-		m_Spawner = spawner;
+		ConnectToItemSpawningSystem();
+		
+		m_sItemUUID = item.GetItemUUID();
+		m_Item = GetSpawnedItemFromSystem();
+		m_sSpawnerUUID = spawner.GetSpawnerUUID();
+		
+		World world = GetOwner().GetWorld();
+		if (world)
+		{
+			CE_ItemSpawningSystem spawningSystem = CE_ItemSpawningSystem.Cast(world.FindSystem(CE_ItemSpawningSystem));
+			if (spawningSystem)
+			{
+				m_Spawner = spawningSystem.FindSpawnerByUUID(m_sSpawnerUUID);
+			}
+		}
 		
 		CE_ItemData itemData = item.GetItemData();
 		if (itemData)
@@ -157,11 +194,13 @@ class CE_ItemSpawnableComponent : ScriptComponent
 		m_bWasItemTaken = true;
 		m_iTotalLifetime = 0;
 		
-		ConnectToItemSpawnableSystem();
-		
 		if (WasDepositedByAction())
+		{	
+			ConnectToItemSpawnableSystem(); // only call this if it was deposited to searchable container, no need for regular spawned items
 			m_bWasDepositedByAction = false; // can no longer be put back into searchable container
+		}
 		
+		DisconnectFromItemSpawningSystem();
 		World world = GetOwner().GetWorld();
 		if (world)
 		{
@@ -189,6 +228,7 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	//! Calls for disconnect from item spawnable system on deletion of component
 	override void OnDelete(IEntity owner)
 	{
+		DisconnectFromItemSpawningSystem();
 		DisconnectFromItemSpawnableSystem();
 
 		super.OnDelete(owner);
@@ -216,11 +256,11 @@ class CE_ItemSpawnableComponent : ScriptComponent
 		{
 			item.SetAvailableCount(item.GetAvailableCount() + 1);
 			
-			if (GetSpawner())
+			if (m_Spawner)
 			{
 				//CE_ItemSpawningComponent spawnerComp = GetSpawner().GetSpawningComponent();
 				
-				IEntity spawnerEntity = GetSpawner().GetSpawnerEntity();
+				IEntity spawnerEntity = m_Spawner.GetSpawnerEntity();
 				if (spawnerEntity)
 				{
 					CE_ItemSpawningComponent spawnerComp = CE_ItemSpawningComponent.Cast(spawnerEntity.FindComponent(CE_ItemSpawningComponent));
@@ -230,6 +270,7 @@ class CE_ItemSpawnableComponent : ScriptComponent
 				
 			}
 			
+			DisconnectFromItemSpawningSystem();
 			DisconnectFromItemSpawnableSystem();
 			
 			SCR_EntityHelper.DeleteEntityAndChildren(GetOwner());
@@ -387,31 +428,73 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Gets the CE_Item corresponding to this CE_ItemSpawnableComponent
-	CE_Item GetItem()
+	//! Returns the CE_Item corresponding to this CE_ItemSpawnableComponent
+	CE_Item GetSpawnedItem()
 	{
 		return m_Item;
 	}
-		
+	
 	//------------------------------------------------------------------------------------------------
 	//! Sets the CE_Item corresponding to this CE_ItemSpawnableComponent
-	void SetItem(CE_Item item)
+	void SetSpawnedItem(CE_Item item)
 	{
 		m_Item = item;
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Gets the CE_Spawner corresponding to this CE_ItemSpawnableComponent
+	//! Gets the CE_Item from the spawning system corresponding to this CE_ItemSpawnableComponent
+	CE_Item GetSpawnedItemFromSystem()
+	{
+		if (!m_sItemUUID)
+			return null;
+		
+		CE_ItemSpawningSystem spawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(GetOwner());
+		if (!spawningSystem)
+			return null;
+		
+		return spawningSystem.FindItemByUUID(m_sItemUUID);
+	}
+		
+	//------------------------------------------------------------------------------------------------
+	//! Sets the CE_Item UUID corresponding to this CE_ItemSpawnableComponent
+	void SetSpawnedItemUUID(UUID itemUUID)
+	{
+		m_sItemUUID = itemUUID;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets the CE_Item UUID corresponding to this CE_ItemSpawnableComponent
+	UUID GetSpawnedItemUUID()
+	{
+		return m_sItemUUID;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Returns the CE_Spawner corresponding to this CE_ItemSpawnableComponent
 	CE_Spawner GetSpawner()
 	{
 		return m_Spawner;
 	}
-		
+	
 	//------------------------------------------------------------------------------------------------
 	//! Sets the CE_Spawner corresponding to this CE_ItemSpawnableComponent
 	void SetSpawner(CE_Spawner spawner)
 	{
 		m_Spawner = spawner;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets the CE_Spawner UUID corresponding to this CE_ItemSpawnableComponent
+	UUID GetSpawnerUUID()
+	{
+		return m_sSpawnerUUID;
+	}
+		
+	//------------------------------------------------------------------------------------------------
+	//! Sets the CE_Spawner UUID corresponding to this CE_ItemSpawnableComponent
+	void SetSpawnerUUID(UUID uuid)
+	{
+		m_sSpawnerUUID = uuid;
 	}
 	
 	//------------------------------------------------------------------------------------------------

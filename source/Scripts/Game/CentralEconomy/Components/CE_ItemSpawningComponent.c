@@ -26,7 +26,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	protected bool										m_bHasUsage								= false;									// does the spawner have a usage set through the component?
 	protected bool										m_bItemTaken							= false;									// was the spawned item taken from the spawner?
 	
-	protected int										m_iCurrentSpawnerResetTime				= 0;											// current spawner reset time
+	protected int										m_iCurrentSpawnerResetTime				= -1;										// current spawner reset time
 	
 	protected ref CE_OnItemSpawnedOnSpawnerInvoker 		m_OnItemSpawnedInvoker 					= new CE_OnItemSpawnedOnSpawnerInvoker();		// script invoker for when a item has spawned on the spawner
 	protected ref CE_OnItemDespawnedFromSpawnerInvoker m_OnItemDespawnedInvoker 				= new CE_OnItemDespawnedFromSpawnerInvoker();	// script invoker for when a item has despawned from the spawner
@@ -35,6 +35,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	protected ref array<ref CE_Item>					m_aItems;																			// CE_Item array, items processed from system IF the spawner has it's own config set (m_ItemDataConfig)
 	
 	protected ref CE_Item 								m_ItemSpawned;																		// CE_Item that has spawned on the spawner
+	protected UUID										m_sSpawnedItemUUID;																	// CE_Item's UUID that has spawned on the spawner
 	protected IEntity 									m_EntitySpawned;																	// IEntity that has spawned on the spawner
 	protected CE_ItemSpawningSystem 					m_SpawningSystem;																	// item spawning system that handles all item spawning with CentralEconomy (A.K.A. the brain)
 	protected CE_SpawnerTimingSystem 					m_TimingSystem;																		// spawner timing system that handles all spawner reset timings
@@ -210,11 +211,15 @@ class CE_ItemSpawningComponent : ScriptComponent
 		}
 		
 		m_bReadyForItem = false;
+		spawner.SetReadyForItem(false);
+		m_sSpawnedItemUUID = item.GetItemUUID();
+		spawner.SetSpawnedItemUUID(item.GetItemUUID());
 		m_bItemTaken = false;
 		m_ItemSpawned = item;
-		m_iCurrentSpawnerResetTime = m_iSpawnerResetTime;
 		m_EntitySpawned = itemEntity;
-
+		
+		if (m_iCurrentSpawnerResetTime == -1)
+			m_iCurrentSpawnerResetTime = m_iSpawnerResetTime;
 		
 		InventoryItemComponent itemComponent = InventoryItemComponent.Cast(itemEntity.FindComponent(InventoryItemComponent));
 		if (itemComponent)
@@ -297,6 +302,20 @@ class CE_ItemSpawningComponent : ScriptComponent
 	void SetSpawnerUUID(UUID uuid)
 	{
 		m_sSpawnerUUID = uuid;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Returns the spawned item's UUID
+	UUID GetSpawnedItemUUID()
+	{
+		return m_sSpawnedItemUUID;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Sets the spawned item's UUID
+	void SetSpawnedItemUUID(UUID itemUUID)
+	{
+		m_sSpawnedItemUUID = itemUUID;
 	}
 	
 	//------------------------------------------------------------------------------------------------
