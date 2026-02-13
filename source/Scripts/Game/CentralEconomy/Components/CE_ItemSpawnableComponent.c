@@ -16,10 +16,10 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	protected ref CE_Item									m_Item;																			// which CE_Item does this CE_ItemSpawnableComponent correspond to?
 	protected UUID											m_sItemUUID;																	// what is the corresponding CE_Item UUID for this component?
 	
-	protected int										m_iTotalRestockTime							= 0;									// total restock time (set from the CE_ItemDataConfig)
-	protected int										m_iCurrentRestockTime						= 0;									// current restock time
-	protected int										m_iTotalLifetime							= 0;									// total lifetime (set from the CE_ItemDataConfig)
-	protected int										m_iCurrentLifetime							= 0;									// current lifetime
+	protected int										m_iTotalRestockTime							= -1;									// total restock time (set from the CE_ItemDataConfig)
+	protected int										m_iCurrentRestockTime						= -1;									// current restock time
+	protected int										m_iTotalLifetime							= -1;									// total lifetime (set from the CE_ItemDataConfig)
+	protected int										m_iCurrentLifetime							= -1;									// current lifetime
 	
 	protected bool										m_bWasSpawnedBySystem						= false;								// was this item spawn by the CentralEconomy system?
 	protected bool										m_bHasRestockEnded							= false;								// has this item's restock ended?
@@ -98,6 +98,7 @@ class CE_ItemSpawnableComponent : ScriptComponent
 		m_SpawnableSystem.Unregister(this);
 	}
 	
+	/*
 	//------------------------------------------------------------------------------------------------
 	//! Connects to item spawnable system and registers this component
 	protected void ConnectToItemSpawningSystem()
@@ -119,12 +120,13 @@ class CE_ItemSpawnableComponent : ScriptComponent
 
 		spawningSystem.UnregisterSpawnable(this);
 	}
+	*/
 	
 	//------------------------------------------------------------------------------------------------
 	//! Called when the item is spawned onto a CE_Spawner
 	protected void OnItemSpawned(CE_Item item, CE_Spawner spawner)
 	{
-		ConnectToItemSpawningSystem();
+		//ConnectToItemSpawningSystem();
 		
 		m_sItemUUID = item.GetItemUUID();
 		m_Item = GetSpawnedItemFromSystem();
@@ -192,7 +194,8 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	protected void OnItemTaken(InventoryStorageSlot oldSlot, InventoryStorageSlot newSlot)
 	{
 		m_bWasItemTaken = true;
-		m_iTotalLifetime = 0;
+		m_iTotalLifetime = -1;
+		m_iCurrentLifetime = -1;
 		
 		if (WasDepositedByAction())
 		{	
@@ -200,7 +203,8 @@ class CE_ItemSpawnableComponent : ScriptComponent
 			m_bWasDepositedByAction = false; // can no longer be put back into searchable container
 		}
 		
-		DisconnectFromItemSpawningSystem();
+		//DisconnectFromItemSpawningSystem();
+		/*
 		World world = GetOwner().GetWorld();
 		if (world)
 		{
@@ -209,6 +213,13 @@ class CE_ItemSpawnableComponent : ScriptComponent
 			{
 				spawningSystem.SetItemCount(spawningSystem.GetItemCount() - 1);
 			}
+		}
+		*/
+		
+		CE_ItemSpawningSystem spawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(GetOwner());
+		if (spawningSystem)
+		{
+			spawningSystem.SetItemCount(spawningSystem.GetItemCount() - 1);
 		}
 		
 		InventoryItemComponent itemComponent = InventoryItemComponent.Cast(GetOwner().FindComponent(InventoryItemComponent));
@@ -228,7 +239,7 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	//! Calls for disconnect from item spawnable system on deletion of component
 	override void OnDelete(IEntity owner)
 	{
-		DisconnectFromItemSpawningSystem();
+		//DisconnectFromItemSpawningSystem();
 		DisconnectFromItemSpawnableSystem();
 
 		super.OnDelete(owner);
@@ -244,7 +255,10 @@ class CE_ItemSpawnableComponent : ScriptComponent
 			
 			DisconnectFromItemSpawnableSystem();
 			
-			m_bWasSpawnedBySystem = false; // sets that the item is no longer controlled by the CE system
+			m_bWasSpawnedBySystem = false; // sets that the item is no longer controlled by the CE 
+			
+			m_iTotalRestockTime = -1;
+			m_iCurrentRestockTime = -1;
 		}
 	}
 	
@@ -254,6 +268,12 @@ class CE_ItemSpawnableComponent : ScriptComponent
 	{
 		if (HasLifetimeEnded() && !WasItemTaken())
 		{
+			CE_ItemSpawningSystem spawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(GetOwner());
+			if (spawningSystem)
+			{
+				spawningSystem.SetItemCount(spawningSystem.GetItemCount() - 1);
+			}
+			
 			item.SetAvailableCount(item.GetAvailableCount() + 1);
 			
 			if (m_Spawner)
@@ -270,7 +290,7 @@ class CE_ItemSpawnableComponent : ScriptComponent
 				
 			}
 			
-			DisconnectFromItemSpawningSystem();
+			//DisconnectFromItemSpawningSystem();
 			DisconnectFromItemSpawnableSystem();
 			
 			SCR_EntityHelper.DeleteEntityAndChildren(GetOwner());

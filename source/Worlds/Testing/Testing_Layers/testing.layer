@@ -8,6 +8,11 @@ CE_UsageTriggerArea : "{78155C5236E20EEB}Prefabs/Areas/Usages/UsageArea_Town.et"
  DrawShape 1
 }
 GenericEntity : "{B620FF8F28CA768D}Prefabs/Spawners/LootSpawner_Clothing.et" {
+ components {
+  CE_ItemSpawningComponent "{629D0CFA8EBBE727}" {
+   m_iSpawnerResetTime 30
+  }
+ }
  coords 125.137 1 154.937
 }
 CE_TierTriggerArea : "{B91017820A9D1F10}Prefabs/Areas/Tiers/TierArea_Tier2.et" {

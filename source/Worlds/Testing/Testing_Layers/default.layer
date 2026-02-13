@@ -37,6 +37,7 @@ RadioManagerEntity RadioManager : "{B8E09FAB91C4ECCD}Prefabs/Systems/Radio/Radio
 SCR_BaseGameMode GameModeSF : "{ECEEDB2D3737204B}Prefabs/Systems/ScenarioFramework/GameModeSF.et" {
  components {
   CE_WorldValidationComponent "{629F0149901D11AC}" {
+   m_fItemSpawningFrequency 5
    m_fItemSpawningRatio 1
    m_fSearchableContainerChance 1
   }

@@ -214,7 +214,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 		spawner.SetReadyForItem(false);
 		m_sSpawnedItemUUID = item.GetItemUUID();
 		spawner.SetSpawnedItemUUID(item.GetItemUUID());
-		m_bItemTaken = false;
+		//m_bItemTaken = false;
 		m_ItemSpawned = item;
 		m_EntitySpawned = itemEntity;
 		
@@ -225,11 +225,13 @@ class CE_ItemSpawningComponent : ScriptComponent
 		if (itemComponent)
 			itemComponent.m_OnParentSlotChangedInvoker.Insert(OnItemTaken);
 		
+		/*
 		m_SpawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(GetOwner());
 		if (m_SpawningSystem)
 		{
 			m_SpawningSystem.UnregisterSpawner(this);
 		}
+		*/
 	}
 	
 	//------------------------------------------------------------------------------------------------
@@ -258,7 +260,9 @@ class CE_ItemSpawningComponent : ScriptComponent
 	{
 		m_EntitySpawned = null;
 		m_ItemSpawned = null;
+		m_sSpawnedItemUUID = UUID.NULL_UUID;
 		m_bReadyForItem = true;
+		m_bItemTaken = false;
 		
 		m_TimingSystem = CE_SpawnerTimingSystem.GetByEntityWorld(GetOwner());
 		if (m_TimingSystem)
@@ -269,7 +273,14 @@ class CE_ItemSpawningComponent : ScriptComponent
 		m_SpawningSystem = CE_ItemSpawningSystem.GetByEntityWorld(GetOwner());
 		if (m_SpawningSystem)
 		{
-			m_SpawningSystem.RegisterSpawner(this);
+			//m_SpawningSystem.RegisterSpawner(this);
+			
+			CE_Spawner ce_spawner = m_SpawningSystem.FindSpawnerByUUID(m_sSpawnerUUID);
+			if (ce_spawner)
+			{
+				ce_spawner.SetSpawnedItemUUID(UUID.NULL_UUID);
+				ce_spawner.SetReadyForItem(true);
+			}
 		}
 	}
 	

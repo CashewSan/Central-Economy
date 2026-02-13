@@ -9,7 +9,7 @@ class CE_ItemSpawningSystem : GameSystem
 	
 	protected ref array<CE_ItemSpawningComponent> 			m_aSpawnerComponents		 	= new array<CE_ItemSpawningComponent>(); 			// ALL registered spawner components in the world
 	protected ref array<CE_SearchableContainerComponent> 	m_aContainerComponents 			= new array<CE_SearchableContainerComponent>(); 	// ALL registered searchable container components in the world
-	protected ref array<CE_ItemSpawnableComponent> 			m_aSpawnableComponents 			= new array<CE_ItemSpawnableComponent>; 			// ALL CE_ItemSpawnableComponents registered to this system
+	//protected ref array<CE_ItemSpawnableComponent> 			m_aSpawnableComponents 			= new array<CE_ItemSpawnableComponent>; 			// ALL CE_ItemSpawnableComponents registered to this system
 	protected ref array<ref CE_Item>						m_aItems 						= new array<ref CE_Item>();							// processed CE_ItemData into CE_Item
 	protected ref array<ref CE_Spawner>						m_aSpawners 					= new array<ref CE_Spawner>();						// processed spawning entities into CE_Spawners
 	protected ref array<CE_UsageTriggerArea>				m_aUsageAreas					= new array<CE_UsageTriggerArea>();					// usage areas registered to the system
@@ -267,13 +267,15 @@ class CE_ItemSpawningSystem : GameSystem
 				
 				CE_Spawner spawner = SelectSpawner(m_aSpawners);
 				
+				Print("MEOW Spawner " + spawner);
+				
 				if (spawner)
 				{
-					array<ref CE_Item> items = {};
+					array<ref CE_Item> items;
 					
 					//CE_ItemSpawningComponent spawningComponent = spawner.GetSpawningComponent();
 					IEntity spawnerEntity = spawner.GetSpawnerEntity();
-					if (spawnerEntity)
+					if (!spawnerEntity)
 						return;
 					
 					CE_ItemSpawningComponent spawningComponent = CE_ItemSpawningComponent.Cast(spawnerEntity.FindComponent(CE_ItemSpawningComponent));
@@ -285,6 +287,8 @@ class CE_ItemSpawningSystem : GameSystem
 					{
 						items = m_aItems;
 					}
+					
+					Print("MEOW Items Count " + items.Count());
 					
 					if (!items.IsEmpty())
 						GetGame().GetCallqueue().CallLater(DelayedItemSelection, (m_fItemSpawningFrequency * 1000) * 0.25, false, spawner, items); // so if spawning frequency is set to 30 seconds, we multiply it by 1000 (to get 30000ms), then multiply by 0.25 to get a total 7500ms (7.5 seconds)
@@ -609,6 +613,8 @@ class CE_ItemSpawningSystem : GameSystem
 		if (spawnersArray.IsEmpty())
 			return null;
 		
+		Print("MEOW ARRAY NOT EMPTY");
+		
 		array<ref CE_Spawner> spawnerArrayCopy = {};
 		
 		foreach (CE_Spawner spawner : spawnersArray)
@@ -622,13 +628,17 @@ class CE_ItemSpawningSystem : GameSystem
 			
 			CE_Spawner spawnerSelected = spawnerArrayCopy[randomIndex];
 			
+			Print("MEOW Item Spawned " + spawnerSelected.GetItemSpawned());
+			
 			if (spawnerSelected.IsReadyForItem()
 			&& !spawnerSelected.GetItemSpawned())
 			{
+				Print("MEOW SPAWNER SELECTED");
 				return spawnerSelected;
 			}
 			else
 			{
+				Print("MEOW SPAWNER REMOVED");
 				spawnerArrayCopy.RemoveItem(spawnerSelected);
 				continue;
 			}
@@ -1031,6 +1041,7 @@ class CE_ItemSpawningSystem : GameSystem
 			Enable(false);
 	}
 	
+	/*
 	//------------------------------------------------------------------------------------------------
 	//! Registers spawning component
 	void RegisterSpawnable(notnull CE_ItemSpawnableComponent component)
@@ -1047,6 +1058,7 @@ class CE_ItemSpawningSystem : GameSystem
 	{
 		m_aSpawnableComponents.RemoveItem(component);
 	}
+	*/
 	
 	//------------------------------------------------------------------------------------------------
 	//! Registers UsageTriggerArea
@@ -1145,6 +1157,7 @@ class CE_ItemSpawningSystem : GameSystem
 		return null;
 	}
 		
+	/*
 	//------------------------------------------------------------------------------------------------
 	//! Finds corresponding CE_ItemSpawnableComponent by the item's UUID, returns null if not found
 	CE_ItemSpawnableComponent FindItemSpawnableByUUID(UUID itemUUID)
@@ -1159,6 +1172,7 @@ class CE_ItemSpawningSystem : GameSystem
 		}
 		return null;
 	}
+	*/
 	
 	//------------------------------------------------------------------------------------------------
 	//! Finds corresponding CE_ItemSpawningComponent by the spawner's UUID, returns null if not found
