@@ -1,6 +1,8 @@
 GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/DestructibleMultiPhase_Props_Base.et" {
  ID "F0DBA538AC2A0552"
  components {
+  Persistence "{687F27BCD9B4769A}" {
+  }
   CE_SearchableContainerComponent "{65B559E653C6C28A}" {
    m_Categories TOOLS
    m_iContainerItemMaximum 4
@@ -9,7 +11,7 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/DestructibleMultiPhase_Pro
    Attributes SCR_ItemAttributeCollection "{65B559E64951AB57}" {
     ItemDisplayName UIInfo "{65AF0EA7E572D457}" {
      Name "#CE-Item_Workbench_Name"
-     Description "#CE-Item_Workbench_Description"
+     Description "#CE-Item_Generic_Description"
     }
     CustomAttributes {
      PreviewRenderAttributes "{65AF0EA7ECBC1DE5}" {
@@ -69,8 +71,6 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/DestructibleMultiPhase_Pro
   }
   RplComponent "{5624A88DC2D9928D}" {
    Enabled 1
-  }
-  Persistence "{687F27BCD9B4769A}" {
   }
  }
 }

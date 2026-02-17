@@ -68,7 +68,7 @@ class CE_ItemSpawningSystem : GameSystem
 			{
 				m_fInitialDelayTime = m_WorldValidationComponent.GetInitialDelayTime();
 				
-				m_OnAreasQueriedInvoker.Insert(InitialSpawningPhase);
+				m_OnAreasQueriedInvoker.Insert(PopulateSpawnerArray);
 				
 				m_fItemSpawningFrequency = m_WorldValidationComponent.GetItemSpawningFrequency();
 				m_fItemSpawningRatio = m_WorldValidationComponent.GetItemSpawningRatio();
@@ -102,14 +102,18 @@ class CE_ItemSpawningSystem : GameSystem
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Handles the initial spawning phase, is called when all usage and tier areas have been queried, or from on update if first call fails the fallthrough
-	protected void InitialSpawningPhase()
+	//! Populates the m_aSpawners array with processed spawners and sets the m_iSpawnerRatioCount variable for further use
+	protected void PopulateSpawnerArray()
 	{
 		// if there is existing persistence data available, only continue if data is finished deserializing
 		if (ExistingPersistenceDataAvailability() && !IsPersistenceFinished())
+		{
+			// try it again in 1 second, but shouldn't be an issue (hopefully)
+			GetGame().GetCallqueue().CallLater(PopulateSpawnerArray, 1000, false);
 			return;
+		}
 		
-		Print("MEOW InitialSpawningPhase");
+		Print("MEOW PopulatingSpawnerArray");
 		
 		array<ref CE_Spawner> processedSpawners = ProcessSpawners();
 		foreach (CE_Spawner processedSpawner : processedSpawners)
@@ -117,22 +121,41 @@ class CE_ItemSpawningSystem : GameSystem
 			m_aSpawners.Insert(processedSpawner);
 		}
 		
+		int spawnersCount = m_aSpawners.Count();
+		
+		if (spawnersCount == 0)
+		{
+			Print("[CentralEconomy::CE_ItemSpawningSystem] NO SPAWNERS FOUND IN WORLD!", LogLevel.ERROR);
+		}
+		else if (spawnersCount == 1)
+		{
+			m_iSpawnerRatioCount = 1;
+		}
+		else
+			m_iSpawnerRatioCount = Math.Round(spawnersCount * m_fItemSpawningRatio);
+		
+		InitialSpawningPhase();
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Handles the initial spawning phase, is called when m_aSpawners has been populated
+	protected void InitialSpawningPhase()
+	{
+		// if the initial spawn has already been ran
+		if (m_bInitialSpawningRan)
+			return;
+		
+		Print("MEOW InitialSpawningPhase");
+		
+		array<ref CE_Spawner> processedSpawnersArray = {};
+			
+		foreach (CE_Spawner spawner : m_aSpawners)
+		{
+			processedSpawnersArray.Insert(spawner);
+		}
+		
 		if (m_aItems && !m_aItems.IsEmpty())
 		{
-			array<ref CE_Spawner> processedSpawnersArray = {};
-			
-			foreach (CE_Spawner spawner : m_aSpawners)
-			{
-				processedSpawnersArray.Insert(spawner);
-			}
-			
-			if (processedSpawnersArray.Count() == 1)
-			{
-				m_iSpawnerRatioCount = 1;
-			}
-			else
-				m_iSpawnerRatioCount = Math.Round(processedSpawnersArray.Count() * m_fItemSpawningRatio);
-			
 			int runCount = 0;
 			int failCount = 0;
 			
@@ -231,26 +254,16 @@ class CE_ItemSpawningSystem : GameSystem
 			return;
 		}
 		
-		if (GetUsageAreasQueried() >= m_aUsageAreas.Count() 
+		if (!HaveAreasQueried() && GetUsageAreasQueried() >= m_aUsageAreas.Count() 
 		&& GetTierAreasQueried() >= m_aTierAreas.Count())
 		{
-			if (HaveAreasQueried() == false)
-			{
-				m_bHaveAreasQueried = true;
-				Replication.BumpMe();
-				
-				m_OnAreasQueriedInvoker.Invoke();
-			}
+			m_bHaveAreasQueried = true;
+			Replication.BumpMe();
 			
-			/*
-			if (!m_bInitialSpawningRan)
-			{
-				InitialSpawningPhase();
-			}
-			*/
+			m_OnAreasQueriedInvoker.Invoke();
 			
 			m_aUsageAreas.Clear();	// no point of keeping in memory once queried since querying only happens once at launch of server
-			m_aTierAreas.Clear();		// no point of keeping in memory once queried since querying only happens once at launch of server
+			m_aTierAreas.Clear();	// no point of keeping in memory once queried since querying only happens once at launch of server
 		}
 		
 		if (GetItemCount() >= m_iSpawnerRatioCount)
@@ -400,7 +413,6 @@ class CE_ItemSpawningSystem : GameSystem
 			
 			if (item.GetItemDataName() == itemName)
 				return true;
-			
 			
 			/*
 			CE_ItemData itemData = item.GetItemData();
@@ -1315,6 +1327,20 @@ class CE_ItemSpawningSystem : GameSystem
 	void SetPersistenceFinished(bool finished)
 	{
 		m_bPersistenceFinished = finished;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Has the initial spawning phase already ran?
+	bool HasInitialSpawnRan()
+	{
+		return m_bInitialSpawningRan;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Sets if the initial spawning phase has been ran
+	void SetHasInitialSpawnRan(bool ran)
+	{
+		m_bInitialSpawningRan = ran;
 	}
 	
 	//------------------------------------------------------------------------------------------------

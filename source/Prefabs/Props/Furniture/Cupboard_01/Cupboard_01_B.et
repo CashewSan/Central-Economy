@@ -11,7 +11,7 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/DestructibleMultiPhase_Pro
    Attributes SCR_ItemAttributeCollection "{65AF0EA08D6E62B9}" {
     ItemDisplayName UIInfo "{65AF0EA0B2A291AE}" {
      Name "#CE-Item_Cupboard_Name"
-     Description "#CE-Item_Cupboard_Description"
+     Description "#CE-Item_Generic_Description"
     }
     CustomAttributes {
      PreviewRenderAttributes "{65AF0EA0ABA4EC8C}" {

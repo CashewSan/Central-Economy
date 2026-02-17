@@ -65,6 +65,7 @@ class CE_ItemSpawningSystemSerializer : ScriptedStateSerializer
 		
 		context.WriteValue("version", 1);
 		context.WriteValue("availablePersistence", system.ExistingPersistenceDataAvailability());
+		context.WriteValue("initialSpawnRan", system.HasInitialSpawnRan());
 		context.WriteValue("itemCount", system.GetItemCount());
 		
 		const bool prev = context.EnableTypeDiscriminator(false);
@@ -91,6 +92,10 @@ class CE_ItemSpawningSystemSerializer : ScriptedStateSerializer
 		bool availablePersistence;
 		if (context.Read(availablePersistence))
 			system.SetPersistenceDataAvailability(availablePersistence);
+		
+		bool initialSpawnRan;
+		if (context.Read(initialSpawnRan))
+			system.SetHasInitialSpawnRan(initialSpawnRan);
 
 		int itemCount;
 		if (context.Read(itemCount))

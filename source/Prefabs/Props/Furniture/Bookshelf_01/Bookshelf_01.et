@@ -1,6 +1,8 @@
 GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/DestructibleMultiPhase_Props_Base.et" {
  ID "6093E7379D01B0FF"
  components {
+  Persistence "{687F27BF7A05C9E0}" {
+  }
   CE_SearchableContainerComponent "{657806F77AF61666}" {
    m_ContainerUsage 2147483647
    m_Categories 25
@@ -44,7 +46,7 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/DestructibleMultiPhase_Pro
    Attributes SCR_ItemAttributeCollection "{65673B1FBD2645A0}" {
     ItemDisplayName UIInfo "{65673B1C18EBADBA}" {
      Name "#CE-Item_Bookshelf_Name"
-     Description "#CE-Item_Bookshelf_Description"
+     Description "#CE-Item_Generic_Description"
     }
     CustomAttributes {
      PreviewRenderAttributes "{65673B1FABBFE6EE}" {
@@ -101,8 +103,6 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/DestructibleMultiPhase_Pro
   }
   RplComponent "{5624A88DC2D9928D}" {
    Enabled 1
-  }
-  Persistence "{687F27BF7A05C9E0}" {
   }
  }
 }

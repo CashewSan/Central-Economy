@@ -10,7 +10,7 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/DestructibleMultiPhase_Pro
    Attributes SCR_ItemAttributeCollection "{65AD231754749D61}" {
     ItemDisplayName UIInfo "{65AD23175D6A4627}" {
      Name "#CE-Item_Bookshelf_Name"
-     Description "#CE-Item_Bookshelf_Description"
+     Description "#CE-Item_Generic_Description"
     }
     CustomAttributes {
      PreviewRenderAttributes "{65AD23174CB4741D}" {

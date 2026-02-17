@@ -1,6 +1,8 @@
 GenericEntity : "{66C6CD1240D39509}Prefabs/Props/Industrial/ToolBox_02/ToolBox_02_base.et" {
  ID "F0DBA538AC2A0552"
  components {
+  Persistence "{687F27BCDDF317CD}" {
+  }
   CE_SearchableContainerComponent "{65B559E533CFE76C}" {
    m_Categories TOOLS
    m_iContainerItemMaximum 1
@@ -9,7 +11,7 @@ GenericEntity : "{66C6CD1240D39509}Prefabs/Props/Industrial/ToolBox_02/ToolBox_0
    Attributes SCR_ItemAttributeCollection "{65B559E5207782CA}" {
     ItemDisplayName UIInfo "{65AF0EA7E572D457}" {
      Name "#CE-Item_Toolbox_Name"
-     Description "#CE-Item_Toolbox_Description"
+     Description "#CE-Item_Generic_Description"
     }
     CustomAttributes {
      PreviewRenderAttributes "{65AF0EA7ECBC1DE5}" {
@@ -69,8 +71,6 @@ GenericEntity : "{66C6CD1240D39509}Prefabs/Props/Industrial/ToolBox_02/ToolBox_0
   }
   RplComponent "{5624A88DC2D9928D}" {
    Enabled 1
-  }
-  Persistence "{687F27BCDDF317CD}" {
   }
  }
 }
