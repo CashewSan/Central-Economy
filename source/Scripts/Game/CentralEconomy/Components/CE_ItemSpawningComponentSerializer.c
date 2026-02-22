@@ -82,8 +82,6 @@ class CE_ItemSpawningComponentSerializer : ScriptedComponentSerializer
 		
 		if (itemTaken)
 		{
-			Print("MEOW ITEM TAKEN REGISTER");
-			
 			CE_SpawnerTimingSystem spawnerTimingSystem = CE_SpawnerTimingSystem.GetByEntityWorld(owner);
 			if (spawnerTimingSystem)
 			{

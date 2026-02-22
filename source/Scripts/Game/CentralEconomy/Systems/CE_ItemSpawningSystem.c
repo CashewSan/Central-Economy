@@ -113,8 +113,6 @@ class CE_ItemSpawningSystem : GameSystem
 			return;
 		}
 		
-		Print("MEOW PopulatingSpawnerArray");
-		
 		array<ref CE_Spawner> processedSpawners = ProcessSpawners();
 		foreach (CE_Spawner processedSpawner : processedSpawners)
 		{
@@ -144,8 +142,6 @@ class CE_ItemSpawningSystem : GameSystem
 		// if the initial spawn has already been ran
 		if (m_bInitialSpawningRan)
 			return;
-		
-		Print("MEOW InitialSpawningPhase");
 		
 		array<ref CE_Spawner> processedSpawnersArray = {};
 			
@@ -280,8 +276,6 @@ class CE_ItemSpawningSystem : GameSystem
 				
 				CE_Spawner spawner = SelectSpawner(m_aSpawners);
 				
-				Print("MEOW Spawner " + spawner);
-				
 				if (spawner)
 				{
 					array<ref CE_Item> items;
@@ -300,8 +294,6 @@ class CE_ItemSpawningSystem : GameSystem
 					{
 						items = m_aItems;
 					}
-					
-					Print("MEOW Items Count " + items.Count());
 					
 					if (!items.IsEmpty())
 						GetGame().GetCallqueue().CallLater(DelayedItemSelection, (m_fItemSpawningFrequency * 1000) * 0.25, false, spawner, items); // so if spawning frequency is set to 30 seconds, we multiply it by 1000 (to get 30000ms), then multiply by 0.25 to get a total 7500ms (7.5 seconds)
@@ -625,8 +617,6 @@ class CE_ItemSpawningSystem : GameSystem
 		if (spawnersArray.IsEmpty())
 			return null;
 		
-		Print("MEOW ARRAY NOT EMPTY");
-		
 		array<ref CE_Spawner> spawnerArrayCopy = {};
 		
 		foreach (CE_Spawner spawner : spawnersArray)
@@ -639,18 +629,13 @@ class CE_ItemSpawningSystem : GameSystem
 			int randomIndex = m_RandomGen.RandInt(0, spawnerArrayCopy.Count());
 			
 			CE_Spawner spawnerSelected = spawnerArrayCopy[randomIndex];
-			
-			Print("MEOW Item Spawned " + spawnerSelected.GetItemSpawned());
-			
 			if (spawnerSelected.IsReadyForItem()
 			&& !spawnerSelected.GetItemSpawned())
 			{
-				Print("MEOW SPAWNER SELECTED");
 				return spawnerSelected;
 			}
 			else
 			{
-				Print("MEOW SPAWNER REMOVED");
 				spawnerArrayCopy.RemoveItem(spawnerSelected);
 				continue;
 			}
@@ -767,7 +752,6 @@ class CE_ItemSpawningSystem : GameSystem
 	//! Tries to spawn the CE_Item to the CE_Spawner, returns true if item spawned properly
 	protected bool TryToSpawnItem(CE_Spawner spawner, CE_Item item)
 	{
-		Print("MEOW TryToSpawnItem");
 		if (item && spawner)
 		{
 			IEntity spawnEntity = spawner.GetSpawnerEntity();

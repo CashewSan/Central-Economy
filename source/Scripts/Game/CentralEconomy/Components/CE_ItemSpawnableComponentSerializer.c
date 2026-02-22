@@ -118,7 +118,6 @@ class CE_ItemSpawnableComponentSerializer : ScriptedComponentSerializer
 				
 				if (spawningComp && spawner && item)
 				{
-					Print("MEOW ITEM NOT TAKEN INVOKING");
 					spawningComp.GetItemSpawnedInvoker().Invoke(owner, item, spawner);
 				}
 			}
