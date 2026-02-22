@@ -507,7 +507,7 @@ class CE_ItemSpawningSystem : GameSystem
 			}
 			else if (!spawnerComponent.GetSpawnerUUID().IsNull())
 			{
-				Print("[CentralEconomy::CE_ItemSpawningSystem] Potential matching CE_Spawner?");
+				//Print("[CentralEconomy::CE_ItemSpawningSystem] Potential matching CE_Spawner?");
 				
 				bool matchFound = false;
 				
@@ -517,7 +517,7 @@ class CE_ItemSpawningSystem : GameSystem
 					UUID spawnerUUID = spawner.GetSpawnerUUID();
 					if (spawnerUUID == spawnerComponent.GetSpawnerUUID())
 					{
-						Print("[CentralEconomy::CE_ItemSpawningSystem] Matching CE_Spawner found!");
+						//Print("[CentralEconomy::CE_ItemSpawningSystem] Matching CE_Spawner found!");
 						matchFound = true;
 						spawner.SetSpawnerEntity(spawnerComponent.GetOwner());
 						spawnersToBeProcessed.Remove(0);
