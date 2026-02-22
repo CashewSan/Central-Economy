@@ -1,56 +1,92 @@
 class CE_Spawner
 {
-	protected CE_ItemSpawningComponent m_SpawningComponent;
-	protected CE_Item m_ItemSpawned;
-	protected bool m_ReadyForItem;
+	protected UUID m_sSpawnerUUID;
+	protected IEntity m_SpawnerEntity;
+	protected bool m_bReadyForItem;
+	protected UUID m_sItemUUID;
+	
+	/*
+	void CE_Spawner()
+	{
+		//TESTING PURPOSES
+		GetGame().GetCallqueue().CallLater(PrintSpawnerEntity, 5000, true);
+	}
+	
+	void PrintSpawnerEntity()
+	{
+		//Print("MEOW Spawner Entity " + m_SpawnerEntity);
+		Print("MEOW Spawner " + this + " " + m_sSpawnerUUID);
+		//Print("MEOW Spawner Entity UUID " + m_sSpawnerUUID);
+	}
+	*/
 	
 	//------------------------------------------------------------------------------------------------
-	void CE_Spawner(CE_ItemSpawningComponent spawningComponent, CE_Item itemSpawned, bool readyForItem)
+	//! Returns the spawner's UUID
+	UUID GetSpawnerUUID()
 	{
-		m_SpawningComponent = spawningComponent;
-		m_ItemSpawned = itemSpawned;
-		m_ReadyForItem = readyForItem;
+		return m_sSpawnerUUID;
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Returns the CE_ItemSpawningComponent corresponding to this CE_Spawner
-	CE_ItemSpawningComponent GetSpawningComponent()
+	//! Sets the spawner's UUID
+	void SetSpawnerUUID(UUID uuid)
 	{
-		return m_SpawningComponent;
+		m_sSpawnerUUID = uuid;
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Sets the CE_ItemSpawningComponent corresponding to this CE_Spawner
-	void SetSpawningComponent(CE_ItemSpawningComponent spawningComponent)
+	//! Returns the spawner entity
+	IEntity GetSpawnerEntity()
 	{
-		m_SpawningComponent = spawningComponent;
+		return m_SpawnerEntity;
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Returns the CE_Item corresponding to this CE_Spawner
-	CE_Item GetItemSpawned()
+	//! Sets the spawner entity
+	void SetSpawnerEntity(IEntity entity)
 	{
-		return m_ItemSpawned;
-	}
-	
-	//------------------------------------------------------------------------------------------------
-	//! Sets the CE_Item corresponding to this CE_Spawner
-	void SetItemSpawned(CE_Item itemSpawned)
-	{
-		m_ItemSpawned = itemSpawned;
+		m_SpawnerEntity = entity;
 	}
 	
 	//------------------------------------------------------------------------------------------------
 	//! Returns if the CE_Spawner is ready for an item to be spawned
 	bool IsReadyForItem()
 	{
-		return m_ReadyForItem;
+		return m_bReadyForItem;
 	}
 	
 	//------------------------------------------------------------------------------------------------
 	//! Sets if the CE_Spawner is ready for an item to be spawned
 	void SetReadyForItem(bool readyForItem)
 	{
-		m_ReadyForItem = readyForItem;
+		m_bReadyForItem = readyForItem;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Returns the spawned item's UUID
+	UUID GetSpawnedItemUUID()
+	{
+		return m_sItemUUID;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Sets the spawned item's UUID
+	void SetSpawnedItemUUID(UUID uuid)
+	{
+		m_sItemUUID = uuid;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Returns the CE_Item corresponding to this CE_Spawner, returns null if no item
+	CE_Item GetItemSpawned()
+	{
+		if (!m_sItemUUID)
+			return null;
+		
+		CE_ItemSpawningSystem spawningSystem = CE_ItemSpawningSystem.GetInstance();
+		if (!spawningSystem)
+			return null;
+		
+		return spawningSystem.FindItemByUUID(m_sItemUUID);
 	}
 }

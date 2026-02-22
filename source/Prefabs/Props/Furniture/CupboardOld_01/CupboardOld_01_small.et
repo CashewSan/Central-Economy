@@ -2,14 +2,23 @@ GenericEntity : "{4AD200C829CAFE34}Prefabs/Props/Furniture/CupboardOld_01/Cupboa
  ID "F0DBA538AC2A0552"
  components {
   SCR_UniversalInventoryStorageComponent "{65B13D6C77596145}" {
+   Attributes SCR_ItemAttributeCollection "{65B13D6C7A14CD15}" {
+    ItemDisplayName UIInfo "{65AF0EA7E572D457}" {
+     Description "#CE-Item_Generic_Description"
+    }
+   }
    MaxItemSize 15 15 15
   }
   ActionsManagerComponent "{65B13D6C07A15AC0}" {
    ActionContexts {
     UserActionContext "{65B13D6C0BE660F4}" {
      Position PointInfo "{65673B14082308AC}" {
-      Offset -0.67 1 0.6
+      Offset -0.67 0.75 0.4
      }
+    }
+   }
+   additionalActions {
+    CE_SearchContainerUserAction "{65B13D6C31B93AAD}" {
     }
    }
   }

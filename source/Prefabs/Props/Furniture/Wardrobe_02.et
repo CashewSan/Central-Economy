@@ -1,6 +1,8 @@
-GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et" {
+GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/DestructibleMultiPhase_Props_Base.et" {
  ID "F0DBA538AC2A0552"
  components {
+  Persistence "{687F27BF7FAEAD78}" {
+  }
   CE_SearchableContainerComponent "{65B559EBD2FFE461}" {
    m_Categories CLOTHING
    m_iContainerItemMinimum 0
@@ -10,7 +12,7 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et
    Attributes SCR_ItemAttributeCollection "{65B559EBC671DC62}" {
     ItemDisplayName UIInfo "{65AF0EA7E572D457}" {
      Name "#CE-Item_Wardrobe_Name"
-     Description "#CE-Item_Wardrobe_Description"
+     Description "#CE-Item_Generic_Description"
     }
     CustomAttributes {
      PreviewRenderAttributes "{65AF0EA7ECBC1DE5}" {
@@ -23,11 +25,10 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et
     m_Size SLOT_3x3
     m_SlotType SLOT_LOOT_STORAGE
     m_bDraggable 0
-    m_bVisible 0
     m_bStackable 0
     m_bRefundable 0
    }
-   StoragePurpose 1
+   StoragePurpose 0x1 0
    UseCapacityCoefficient 0
    MaxCumulativeVolume 1000000
    MaxItemSize 40 40 40
@@ -40,8 +41,9 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et
     UserActionContext "{65B559EBF89E1AD9}" {
      ContextName "default"
      Position PointInfo "{65673B14082308AC}" {
-      Offset -0.7 1.125 0.8
+      Offset -0.7 1.125 0.4
      }
+     Radius 0.6
      Height 0
      Omnidirectional 0
     }

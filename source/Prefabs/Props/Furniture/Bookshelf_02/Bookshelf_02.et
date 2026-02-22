@@ -1,6 +1,8 @@
-GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et" {
+GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/DestructibleMultiPhase_Props_Base.et" {
  ID "F0DBA538AC2A0552"
  components {
+  Persistence "{687F27BF48575374}" {
+  }
   CE_SearchableContainerComponent "{65AD2318BAD86FC4}" {
    m_Categories 25
   }
@@ -8,7 +10,7 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et
    Attributes SCR_ItemAttributeCollection "{65AD231754749D61}" {
     ItemDisplayName UIInfo "{65AD23175D6A4627}" {
      Name "#CE-Item_Bookshelf_Name"
-     Description "#CE-Item_Bookshelf_Description"
+     Description "#CE-Item_Generic_Description"
     }
     CustomAttributes {
      PreviewRenderAttributes "{65AD23174CB4741D}" {
@@ -21,7 +23,6 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et
     m_Size SLOT_3x3
     m_SlotType SLOT_LOOT_STORAGE
     m_bDraggable 0
-    m_bVisible 0
     m_bStackable 0
     m_bRefundable 0
    }
@@ -37,8 +38,9 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et
     UserActionContext "{65AD231737C6E147}" {
      ContextName "default"
      Position PointInfo "{65673B14082308AC}" {
-      Offset -0.71 1 0.5
+      Offset -0.71 1 0.3
      }
+     Radius 0.6
      Height 0
      Omnidirectional 0
     }
@@ -52,9 +54,8 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et
       Name "#AR-Inventory_OpenStorage"
      }
     }
-    CE_SearchContainerUserAction "{65AD2317CD312308}" {
-     ParentContextList {
-      "default"
+    CE_SearchContainerUserAction "{65AD2317CD312308}" : "{CD6CC67961CA6C80}Prefabs/SearchContainerUserAction_Wood.conf" {
+     ParentContextList +{
      }
      UIInfo SCR_ActionUIInfo "{65673B1E58068524}" {
       Name "#CE-UserAction_SearchContainer"

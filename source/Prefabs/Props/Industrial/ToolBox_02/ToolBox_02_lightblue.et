@@ -1,6 +1,8 @@
 GenericEntity : "{66C6CD1240D39509}Prefabs/Props/Industrial/ToolBox_02/ToolBox_02_base.et" {
  ID "F0DBA538AC2A0552"
  components {
+  Persistence "{687F27BCDDF317CD}" {
+  }
   CE_SearchableContainerComponent "{65B559E533CFE76C}" {
    m_Categories TOOLS
    m_iContainerItemMaximum 1
@@ -9,20 +11,19 @@ GenericEntity : "{66C6CD1240D39509}Prefabs/Props/Industrial/ToolBox_02/ToolBox_0
    Attributes SCR_ItemAttributeCollection "{65B559E5207782CA}" {
     ItemDisplayName UIInfo "{65AF0EA7E572D457}" {
      Name "#CE-Item_Toolbox_Name"
-     Description "#CE-Item_Toolbox_Description"
+     Description "#CE-Item_Generic_Description"
     }
     CustomAttributes {
      PreviewRenderAttributes "{65AF0EA7ECBC1DE5}" {
-      CameraDistanceToItem 2.5
+      CameraPreset Top
+      CameraDistanceToItem 0.3
       FOV 60
       AspectRatio 1
       LodModel 1
      }
     }
-    m_Size SLOT_3x3
     m_SlotType SLOT_LOOT_STORAGE
     m_bDraggable 0
-    m_bVisible 0
     m_bStackable 0
     m_bRefundable 0
    }
@@ -38,8 +39,9 @@ GenericEntity : "{66C6CD1240D39509}Prefabs/Props/Industrial/ToolBox_02/ToolBox_0
     UserActionContext "{65B559E5C4CFC82E}" {
      ContextName "default"
      Position PointInfo "{65673B14082308AC}" {
-      Offset 0 0.035 0.11
+      Offset 0 0.035 0.04
      }
+     Radius 0.25
      Height 0
      Omnidirectional 0
     }
@@ -53,9 +55,8 @@ GenericEntity : "{66C6CD1240D39509}Prefabs/Props/Industrial/ToolBox_02/ToolBox_0
       Name "#AR-Inventory_OpenStorage"
      }
     }
-    CE_SearchContainerUserAction "{65B559E5EA57322F}" {
-     ParentContextList {
-      "default"
+    CE_SearchContainerUserAction "{65B559E5EA57322F}" : "{07F153E3BC8A3F59}Prefabs/SearchContainerUserAction_Metal.conf" {
+     ParentContextList +{
      }
      UIInfo SCR_ActionUIInfo "{65673B1E58068524}" {
       Name "#CE-UserAction_SearchContainer"

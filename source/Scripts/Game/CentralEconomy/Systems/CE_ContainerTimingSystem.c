@@ -10,6 +10,15 @@ class CE_ContainerTimingSystem : GameSystem
 	protected const float									m_fCheckInterval				= 1; 												// how often (in seconds) the system will update CE_SearchableContainerComponents
 	
 	//------------------------------------------------------------------------------------------------
+	override static void InitInfo(WorldSystemInfo outInfo)
+	{
+		outInfo
+			.SetAbstract(false)
+			.SetLocation(WorldSystemLocation.Both)
+			.AddPoint(ESystemPoint.FixedFrame);
+	}
+	
+	//------------------------------------------------------------------------------------------------
 	//! Tick method, handles updates for CE_SearchableContainerComponents
 	override event protected void OnUpdate(ESystemPoint point)
 	{

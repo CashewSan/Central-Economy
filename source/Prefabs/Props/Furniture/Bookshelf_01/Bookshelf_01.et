@@ -1,15 +1,52 @@
-GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et" {
+GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/DestructibleMultiPhase_Props_Base.et" {
  ID "6093E7379D01B0FF"
  components {
+  Persistence "{687F27BF7A05C9E0}" {
+  }
   CE_SearchableContainerComponent "{657806F77AF61666}" {
    m_ContainerUsage 2147483647
    m_Categories 25
+  }
+  MeshObject "{5872F0EB7FA40561}" {
+   Object "{1BC99377A2D6406E}Assets/Props/Furniture/Bookshelf_01/Bookshelf_01.xob"
+  }
+  RigidBody "{5872F0EB7DFB5A9D}" {
+   ResponseIndex "LargeDestructible"
+   ModelGeometry 1
+   Static 1
+  }
+  SCR_DestructionMultiPhaseComponent "{5624A88D86EFE8BA}" {
+   Enabled 1
+   "Additional hit zones" {
+    SCR_HitZone Default {
+     "Kinetic multiplier" 0.5
+    }
+   }
+   m_fBaseHealth 3000
+   m_bPassDamageToChildren 1
+   m_bDestroyChildrenWhenDestroyed 1
+   m_DestroySpawnObjects {
+    SCR_DebrisSpawnable "{6252D144E5B76947}" {
+    }
+    SCR_ParticleSpawnable "{6252D144E34383A5}" {
+     m_vOffsetPosition 0 1 0
+     m_Particle "{63D673751320F318}Particles/Props/Dest_Prop_Wood_Medium.ptc"
+    }
+   }
+   m_bDeleteAfterFinalPhase 0
+   m_aDamagePhases {
+    SCR_DamagePhaseData "{520CB8CFB89E7DA2}" {
+     m_fPhaseHealth 3000
+     m_PhaseModel "{FA022F19A1F843BE}Assets/Props/Furniture/Bookshelf_01/dst/Bookshelf_01_dst_01.xob"
+    }
+   }
+   m_eMaterialSoundType BREAK_WOOD_SOLID
   }
   SCR_UniversalInventoryStorageComponent "{65673B1169DC20A5}" {
    Attributes SCR_ItemAttributeCollection "{65673B1FBD2645A0}" {
     ItemDisplayName UIInfo "{65673B1C18EBADBA}" {
      Name "#CE-Item_Bookshelf_Name"
-     Description "#CE-Item_Bookshelf_Description"
+     Description "#CE-Item_Generic_Description"
     }
     CustomAttributes {
      PreviewRenderAttributes "{65673B1FABBFE6EE}" {
@@ -20,7 +57,6 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et
     m_Size SLOT_3x3
     m_SlotType SLOT_LOOT_STORAGE
     m_bDraggable 0
-    m_bVisible 0
     m_bStackable 0
     m_bRefundable 0
    }
@@ -36,8 +72,9 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et
     UserActionContext "{65673B14056FD54E}" {
      ContextName "default"
      Position PointInfo "{65673B14082308AC}" {
-      Offset -0.8 1 0.5
+      Offset -0.8 1 0.25
      }
+     Radius 0.6
      Omnidirectional 0
     }
    }
@@ -50,9 +87,8 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et
       Name "#AR-Inventory_OpenStorage"
      }
     }
-    CE_SearchContainerUserAction "{65673B11AD632C98}" {
-     ParentContextList {
-      "default"
+    CE_SearchContainerUserAction "{65673B11AD632C98}" : "{CD6CC67961CA6C80}Prefabs/SearchContainerUserAction_Wood.conf" {
+     ParentContextList +{
      }
      UIInfo SCR_ActionUIInfo "{65673B1E58068524}" {
       Name "#CE-UserAction_SearchContainer"
@@ -64,6 +100,9 @@ GenericEntity : "{4CC2C69DE1AEF103}Prefabs/Props/Core/Destructible_Props_Base.et
      }
     }
    }
+  }
+  RplComponent "{5624A88DC2D9928D}" {
+   Enabled 1
   }
  }
 }

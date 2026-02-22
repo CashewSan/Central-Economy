@@ -1,15 +1,111 @@
+GenericEntity : "{0BB4B21E4F560431}Prefabs/Props/Furniture/Chest_01.et" {
+ coords 144.44 1 154.885
+}
+GenericEntity : "{174E332EF84362B2}Prefabs/Props/Industrial/ToolBox_01/ToolBox_01_base.et" {
+ coords 148.591 1 156.848
+}
+GenericEntity : "{1ED9E780B8829B78}Prefabs/Props/Furniture/Cupboard_01/Cupboard_01_A.et" {
+ coords 151.211 1 150.632
+}
+GenericEntity : "{23EDC2B8CDEE124F}Prefabs/Props/Furniture/Cupboard_01/Cupboard_01_F.et" {
+ coords 150.959 1 152.754
+}
+GenericEntity : "{31627435F2C7CBF4}Prefabs/Props/Services/Healthcare/CabinetMedical_01_single.et" {
+ coords 147.667 1 159.134
+}
 GenericEntity : "{39419B55C4CFD156}Prefabs/Props/Furniture/Wardrobe_02.et" {
- coords 146.626 1 151.979
+ components {
+  ActionsManagerComponent "{65B559EBF5DAC5EB}" {
+   ActionContexts {
+    UserActionContext "{65B559EBF89E1AD9}" {
+    }
+   }
+   additionalActions {
+    CE_SearchContainerUserAction "{65B559EBEDF6A53C}" : "{CD6CC67961CA6C80}Prefabs/SearchContainerUserAction_Wood.conf" {
+    }
+   }
+  }
+ }
+ coords 145.738 1 150.646
+}
+GenericEntity : "{452C9FF31AAF2B82}Prefabs/Props/Services/Healthcare/CabinetMedical_01.et" {
+ coords 148.9 1 159.148
+}
+GenericEntity : "{4AD200C829CAFE34}Prefabs/Props/Furniture/CupboardOld_01/CupboardOld_01_base.et" {
+ coords 149.805 1 152.841
+}
+GenericEntity : "{4BC3BE99653BECCE}Prefabs/Props/Industrial/ToolBox_02/ToolBox_02_lightblue.et" {
+ coords 147.828 1 156.912
+}
+GenericEntity : "{4FB9F658712A9D61}Prefabs/Props/Furniture/Cupboard_01/Cupboard_01_E.et" {
+ coords 152.869 1 152.735
+}
+GenericEntity : "{530C3C02C09C6B68}Prefabs/Props/Furniture/CabinetMetal_01_Base.et" {
+ coords 145.974 1 153.191
+}
+GenericEntity : "{547D462165B175C2}Prefabs/Props/Furniture/CupboardOld_01/CupboardOld_01_small.et" {
+ coords 147.87 1 152.838
+}
+GenericEntity : "{5D12784AFD6B64B2}Prefabs/Props/Furniture/CabinetMetal_02_Base.et" {
+ coords 145.471 1 152.91
+}
+GenericEntity : "{5E7626D8E78566B4}Prefabs/Props/Furniture/Desk_01_long.et" {
+ coords 149.046 1 154.685
+}
+GenericEntity : "{619DB0302E0696DC}Prefabs/Props/Furniture/Bookshelf_02/Bookshelf_02.et" {
+ coords 149.359 1 150.613
+}
+GenericEntity : "{64A37FE9287F1A77}Prefabs/Props/Industrial/Workbench_02.et" {
+ coords 145.475 1 159.154
+}
+GenericEntity : "{6B7B7CCC74AACA67}Prefabs/Props/Furniture/Desk_01_short.et" {
+ coords 151.026 1 154.693
+}
+GenericEntity : "{728DD36004461456}Prefabs/Props/Furniture/Cupboard_01/Cupboard_01_B.et" {
+ coords 153.041 1 150.672
 }
 CE_UsageTriggerArea : "{78155C5236E20EEB}Prefabs/Areas/Usages/UsageArea_Town.et" {
  coords 145.889 1 152.391
  BoxMins -2 -5 -2
- BoxMaxs 2 5 2
- DrawShape 0
+ BoxMaxs 10 5 10
+}
+GenericEntity : "{95D947E744336F78}Prefabs/Props/Industrial/Workbench_01.et" {
+ coords 146.175 1 157.003
+}
+GenericEntity : "{97119F9908A3833D}Prefabs/Props/Furniture/Cupboard_01/Cupboard_01_C.et" {
+ coords 154.756 1 150.662
+}
+GenericEntity : "{A319C11D446D88B3}Prefabs/Props/Furniture/Dresser_01.et" {
+ coords 152.877 1 154.543
 }
 CE_TierTriggerArea : "{B91017820A9D1F10}Prefabs/Areas/Tiers/TierArea_Tier2.et" {
  coords 145.89 0.999 152.391
  TriggerShapeType "Oriented Bounding Box"
  BoxMins -2 -5 -2
- BoxMaxs 2 5 2
+ BoxMaxs 10 5 10
+ DrawShape 1
+}
+GenericEntity : "{D21DAFB24F46D64C}Prefabs/Props/Furniture/Nightstand_02.et" {
+ coords 152.447 1 156.835
+}
+GenericEntity : "{D31FBEC7A468AE3B}Prefabs/Props/Furniture/PantryOld_01.et" {
+ coords 151.75 1 156.513
+}
+GenericEntity : "{DD07AE4E1B3E5EE2}Prefabs/Props/Furniture/FirstAidBox_01.et" {
+ coords 153.367 1.68 154.992
+}
+GenericEntity : "{E66C895D628B01A2}Prefabs/Props/Furniture/Kitchen_01_base.et" {
+ coords 155.524 1 156.411
+}
+GenericEntity : "{EFCD232A50C15173}Prefabs/Props/Furniture/Nightstand_01.et" {
+ coords 154.07 1 154.954
+}
+GenericEntity : "{F77F7F847CC6455F}Prefabs/Props/Furniture/Bookshelf_01/Bookshelf_01.et" {
+ coords 147.618 1 150.577
+}
+GenericEntity : "{FA2806411E2B8AE7}Prefabs/Props/Furniture/Desk_01_Base.et" {
+ coords 146.802 1 154.637
+}
+GenericEntity : "{FD47FF9699A52E82}Prefabs/Props/Furniture/Wardrobe_01.et" {
+ coords 150.658 1 156.49
 }

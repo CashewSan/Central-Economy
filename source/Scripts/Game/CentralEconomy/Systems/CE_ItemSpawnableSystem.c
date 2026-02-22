@@ -6,8 +6,17 @@ class CE_ItemSpawnableSystem : GameSystem
 	
 	protected ref array<CE_ItemSpawnableComponent> 		m_aSpawnableComponents 		= new array<CE_ItemSpawnableComponent>; 	// array of CE_ItemSpawnableComponents registered to this system
 	
-	protected float 										m_fTimer						= 0;										// timer for check frequency
-	protected float										m_fCheckFrequency			= 1; 									// how often (in seconds) the system will update CE_ItemSpawnableComponents
+	protected float 									m_fTimer					= 0;										// timer for check frequency
+	protected float										m_fCheckFrequency			= 1; 										// how often (in seconds) the system will update CE_ItemSpawnableComponents
+	
+	//------------------------------------------------------------------------------------------------
+	override static void InitInfo(WorldSystemInfo outInfo)
+	{
+		outInfo
+			.SetAbstract(false)
+			.SetLocation(WorldSystemLocation.Both)
+			.AddPoint(ESystemPoint.FixedFrame);
+	}
 	
 	//------------------------------------------------------------------------------------------------
 	//! Tick method, handles timing for the spawnables

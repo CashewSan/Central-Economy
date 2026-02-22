@@ -11,6 +11,11 @@ GameProject {
     VideoUserSettings VideoUserSettings "{B272A67DB18E04F9}" {
     }
    }
+   SystemModuleSettings SystemModuleSettings "{5F10A1570304557B}" {
+    Configs + {
+     "{1F33EB1196D9E2BC}Configs/Systems/Testing.conf"
+    }
+   }
    WidgetManagerSettings WidgetManagerSettings "{AC4BE58770485E02}" {
     StringTables {
      StringTableDefinition "{65AF0EA1FDA6983E}" {

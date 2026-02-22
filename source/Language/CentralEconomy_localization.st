@@ -1,6 +1,26 @@
 StringTable {
  ItemClassName "CustomStringTableItem"
  Items {
+  CustomStringTableItem "{68A230DBDC2F4D74}" {
+   Id "CE-Item_Bookshelf_Description"
+   Target_en_us "A book shelf that may contain various items."
+   Target_fr_fr "Une étagère pouvant contenir divers objets."
+   Target_it_it "Una libreria che può contenere vari oggetti."
+   Target_de_de "Ein Bücherregal, das verschiedene Gegenstände enthalten kann."
+   Target_es_es "Una estantería que puede contener diversos objetos."
+   Target_cs_cz "Knihovna, která může obsahovat různé předměty."
+   Target_pl_pl "Półka na książki, na której można przechowywać różne przedmioty."
+   Target_ru_ru "Книжная полка, на которой могут находиться различные предметы."
+   Target_ja_jp "様々なアイテムを収納できる本棚。"
+   Target_ko_kr "다양한 물건을 담을 수 있는 책장."
+   Target_pt_br "Uma estante que pode conter vários itens."
+   Target_zh_cn "一个可能存放各种物品的书架。"
+   Target_uk_ua "Книжкова полиця, на якій можуть зберігатися різні предмети."
+   Status DEVELOPMENT_DONE
+   Modified 1755466704
+   Author "Cashew"
+   LastChanged "Cashew"
+  }
   CustomStringTableItem "{65AF0EA1BA57549A}" {
    Id "CE-Item_Bookshelf_Name"
    Target_en_us "Bookshelf"
@@ -21,6 +41,26 @@ StringTable {
    Author "Cashew"
    LastChanged "Cashew"
   }
+  CustomStringTableItem "{68A230DACDA384BB}" {
+   Id "CE-Item_Cabinet_Description"
+   Target_en_us "A cabinet that may contain various items."
+   Target_fr_fr "Une armoire pouvant contenir divers objets."
+   Target_it_it "Un armadio che può contenere vari oggetti."
+   Target_de_de "Ein Schrank, der verschiedene Gegenstände enthalten kann."
+   Target_es_es "Un armario que puede contener diversos objetos."
+   Target_cs_cz "Skříňka, která může obsahovat různé předměty."
+   Target_pl_pl "Szafka, w której można przechowywać różne przedmioty."
+   Target_ru_ru "Шкаф, в котором могут храниться различные предметы."
+   Target_ja_jp "様々な物品を収納できるキャビネット。"
+   Target_ko_kr "다양한 물건을 담을 수 있는 캐비닛."
+   Target_pt_br "Um armário que pode conter vários itens."
+   Target_zh_cn "一个可能存放各种物品的柜子。"
+   Target_uk_ua "Шафа, в якій можуть зберігатися різні предмети."
+   Status DEVELOPMENT_DONE
+   Modified 1755467098
+   Author "Cashew"
+   LastChanged "Cashew"
+  }
   CustomStringTableItem "{65B13D6BA4D63CBA}" {
    Id "CE-Item_Cabinet_Name"
    Target_en_us "Cabinet"
@@ -37,6 +77,26 @@ StringTable {
    Target_uk_ua "Кабінет"
    Status DEVELOPMENT_DONE
    Modified 1706117512
+   Author "Cashew"
+   LastChanged "Cashew"
+  }
+  CustomStringTableItem "{68A230DA5C03379B}" {
+   Id "CE-Item_Chest_Description"
+   Target_en_us "A chest that may contain various items."
+   Target_fr_fr "Un coffre pouvant contenir divers objets."
+   Target_it_it "Uno scrigno che può contenere vari oggetti."
+   Target_de_de "Eine Truhe, die verschiedene Gegenstände enthalten kann."
+   Target_es_es "Un cofre que puede contener varios objetos."
+   Target_cs_cz "Truhla, která může obsahovat různé předměty."
+   Target_pl_pl "Skrzynia, która może zawierać różne przedmioty."
+   Target_ru_ru "Сундук, в котором могут находиться различные предметы."
+   Target_ja_jp "様々なアイテムが入っているかもしれない箱。"
+   Target_ko_kr "다양한 아이템이 들어 있을 수 있는 상자."
+   Target_pt_br "Um baú que pode conter vários itens."
+   Target_zh_cn "一个可能装有各种物品的箱子。"
+   Target_uk_ua "Скриня, яка може містити різні предмети."
+   Status DEVELOPMENT_DONE
+   Modified 1755467393
    Author "Cashew"
    LastChanged "Cashew"
   }
@@ -60,6 +120,26 @@ StringTable {
    Author "Cashew"
    LastChanged "Cashew"
   }
+  CustomStringTableItem "{68A230DB7B369252}" {
+   Id "CE-Item_Cupboard_Description"
+   Target_en_us "A cupboard that may contain various items."
+   Target_fr_fr "Une armoire pouvant contenir divers objets."
+   Target_it_it "Un armadio che può contenere vari oggetti."
+   Target_de_de "Ein Schrank, der verschiedene Gegenstände enthalten kann."
+   Target_es_es "Un armario que puede contener diversos artículos."
+   Target_cs_cz "Skříň, která může obsahovat různé předměty."
+   Target_pl_pl "Szafka, w której mogą znajdować się różne przedmioty."
+   Target_ru_ru "Шкаф, в котором могут храниться различные предметы."
+   Target_ja_jp "様々な物品が入っているかもしれない戸棚。"
+   Target_ko_kr "여러 가지 물건이 들어 있을 수 있는 찬장."
+   Target_pt_br "Um armário que pode conter vários itens."
+   Target_zh_cn "一个可能存放各种物品的橱柜。"
+   Target_uk_ua "Шафа, в якій можуть зберігатися різні предмети."
+   Status DEVELOPMENT_DONE
+   Modified 1755466965
+   Author "Cashew"
+   LastChanged "Cashew"
+  }
   CustomStringTableItem "{65AF0EA0679DE5FB}" {
    Id "CE-Item_Cupboard_Name"
    Target_en_us "Cupboard"
@@ -80,6 +160,26 @@ StringTable {
    Author "Cashew"
    LastChanged "Cashew"
   }
+  CustomStringTableItem "{68A230C5FF987D55}" {
+   Id "CE-Item_Desk_Description"
+   Target_en_us "A desk that may contain various items."
+   Target_fr_fr "Un bureau pouvant contenir divers objets."
+   Target_it_it "Una scrivania che può contenere vari oggetti."
+   Target_de_de "Ein Schreibtisch, der verschiedene Gegenstände enthalten kann."
+   Target_es_es "Un escritorio que puede contener varios objetos."
+   Target_cs_cz "Stůl, na kterém mohou být různé předměty."
+   Target_pl_pl "Biurko, na którym mogą znajdować się różne przedmioty."
+   Target_ru_ru "Стол, на котором могут находиться различные предметы."
+   Target_ja_jp "様々な物品が入っている可能性のある机。"
+   Target_ko_kr "다양한 물건이 들어 있을 수 있는 책상."
+   Target_pt_br "Uma mesa que pode conter vários itens."
+   Target_zh_cn "一张可能存放各种物品的桌子。"
+   Target_uk_ua "Стіл, на якому можуть знаходитися різні предмети."
+   Status DEVELOPMENT_DONE
+   Modified 1755467802
+   Author "Cashew"
+   LastChanged "Cashew"
+  }
   CustomStringTableItem "{65B32156B55B1550}" {
    Id "CE-Item_Desk_Name"
    Target_en_us "Desk"
@@ -97,6 +197,26 @@ StringTable {
    Target_uk_ua "Стіл"
    Status DEVELOPMENT_DONE
    Modified 1706238806
+   Author "Cashew"
+   LastChanged "Cashew"
+  }
+  CustomStringTableItem "{68A230C564C04085}" {
+   Id "CE-Item_Dresser_Description"
+   Target_en_us "A dresser that may contain various items."
+   Target_fr_fr "Une commode pouvant contenir divers articles."
+   Target_it_it "Un comò che può contenere vari oggetti."
+   Target_de_de "Eine Kommode, die verschiedene Gegenstände enthalten kann."
+   Target_es_es "Una cómoda que puede contener diversos artículos."
+   Target_cs_cz "Komoda, která může obsahovat různé předměty."
+   Target_pl_pl "Komoda, w której można przechowywać różne przedmioty."
+   Target_ru_ru "Комод, в котором могут храниться различные предметы."
+   Target_ja_jp "様々な物品を収納できるドレッサー。"
+   Target_ko_kr "다양한 물건을 담을 수 있는 옷장."
+   Target_pt_br "Uma cômoda que pode conter vários itens."
+   Target_zh_cn "一个可能存放各种物品的梳妆台。"
+   Target_uk_ua "Комод, в якому можуть зберігатися різні предмети."
+   Status DEVELOPMENT_DONE
+   Modified 1755467972
    Author "Cashew"
    LastChanged "Cashew"
   }
@@ -137,6 +257,26 @@ StringTable {
    Target_uk_ua "Перша допомога"
    Status DEVELOPMENT_DONE
    Modified 1706243586
+   Author "Cashew"
+   LastChanged "Cashew"
+  }
+  CustomStringTableItem "{68A230C53F8CF00B}" {
+   Id "CE-Item_Generic_Description"
+   Target_en_us "May contain various items."
+   Target_fr_fr "Peut contenir divers articles."
+   Target_it_it "Può contenere vari articoli."
+   Target_de_de "Kann verschiedene Artikel enthalten."
+   Target_es_es "Puede contener varios artículos."
+   Target_cs_cz "Může obsahovat různé položky."
+   Target_pl_pl "Może zawierać różne przedmioty."
+   Target_ru_ru "Может содержать различные предметы."
+   Target_ja_jp "様々なアイテムが含まれている場合があります。"
+   Target_ko_kr "다양한 품목이 포함될 수 있습니다."
+   Target_pt_br "Pode conter vários itens."
+   Target_zh_cn "可能包含各种物品。"
+   Target_uk_ua "Може містити різні предмети."
+   Status DEVELOPMENT_DONE
+   Modified 1755468982
    Author "Cashew"
    LastChanged "Cashew"
   }
@@ -195,6 +335,26 @@ StringTable {
    Target_uk_ua "Інструментарій"
    Status DEVELOPMENT_DONE
    Modified 1706388279
+   Author "Cashew"
+   LastChanged "Cashew"
+  }
+  CustomStringTableItem "{68A230D842DA5006}" {
+   Id "CE-Item_Wardrobe_Description"
+   Target_en_us "A wardrobe that may contain various items."
+   Target_fr_fr "Une armoire pouvant contenir divers articles."
+   Target_it_it "Un armadio che può contenere vari oggetti."
+   Target_de_de "Ein Kleiderschrank, der verschiedene Gegenstände enthalten kann."
+   Target_es_es "Un armario que puede contener diversos artículos."
+   Target_cs_cz "Šatník, který může obsahovat různé předměty."
+   Target_pl_pl "Szafa, która może zawierać różne przedmioty."
+   Target_ru_ru "Шкаф для одежды, в котором могут храниться различные предметы."
+   Target_ja_jp "様々なアイテムが入っているかもしれないワードローブ。"
+   Target_ko_kr "다양한 물건이 들어 있을 수 있는 옷장."
+   Target_pt_br "Um guarda-roupa que pode conter vários itens."
+   Target_zh_cn "一个可能包含各种物品的衣柜。"
+   Target_uk_ua "Шафа, яка може містити різні предмети."
+   Status DEVELOPMENT_DONE
+   Modified 1755467228
    Author "Cashew"
    LastChanged "Cashew"
   }
