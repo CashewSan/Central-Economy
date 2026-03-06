@@ -1,14 +1,11 @@
-GenericEntity : "{39419B55C4CFD156}Prefabs/Props/Furniture/Wardrobe_02.et" {
- coords 131.308 1 153.611
+GenericEntity : "{0BB4B21E4F560431}Prefabs/Props/Furniture/Chest_01.et" {
+ coords 130.61 1 152.996
 }
 CE_UsageTriggerArea : "{78155C5236E20EEB}Prefabs/Areas/Usages/UsageArea_Town.et" {
  coords 130.62 1 155.14
  TriggerShapeType Sphere
  SphereRadius 10
  DrawShape 1
-}
-GenericEntity : "{AA25BAA17DCF0A0A}Prefabs/Props/Furniture/Cupboard_01/Cupboard_01_D.et" {
- coords 154.702 1 152.711
 }
 $grp GenericEntity : "{B620FF8F28CA768D}Prefabs/Spawners/LootSpawner_Clothing.et" {
  {

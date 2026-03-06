@@ -1,5 +1,6 @@
 modded class SCR_UniversalInventoryStorageComponent
 {
+	/*
 	//------------------------------------------------------------------------------------------------
 	override bool CanStoreItem(IEntity item, int slotID)
 	{
@@ -16,6 +17,7 @@ modded class SCR_UniversalInventoryStorageComponent
 		
 		return super.CanStoreItem(item, slotID);
 	}
+	*/
 	
 	//------------------------------------------------------------------------------------------------
 	override bool ShouldHideInVicinity()
