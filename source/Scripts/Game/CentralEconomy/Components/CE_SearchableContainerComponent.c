@@ -453,4 +453,11 @@ class CE_SearchableContainerComponent : ScriptComponent
 	{
 		return m_OnContainerResetInvoker;
 	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Gets the container's item data config, if set (if NOT set, will return null)
+	CE_ItemDataConfig GetConfig()
+	{
+		return m_ItemDataConfig;
+	}
 }

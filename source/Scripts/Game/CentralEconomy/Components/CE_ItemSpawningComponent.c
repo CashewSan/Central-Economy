@@ -131,7 +131,7 @@ class CE_ItemSpawningComponent : ScriptComponent
 	{
 		if (m_ItemDataConfig)
 		{
-			m_aItems	= new array<ref CE_Item>;
+			m_aItems = new array<ref CE_Item>;
 
 			m_bHasConfig = true;
 			

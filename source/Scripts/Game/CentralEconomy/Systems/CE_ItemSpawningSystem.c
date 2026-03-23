@@ -289,6 +289,9 @@ class CE_ItemSpawningSystem : GameSystem
 					if (spawningComponent && spawningComponent.HasConfig() && spawningComponent.HaveItemsProcessed())
 					{
 						items = spawningComponent.GetItems();
+						
+						//Print("MEOW Items Count: " + items.Count());
+						//Print("MEOW Item: " + items[0].GetItemDataName());
 					}
 					else
 					{
@@ -311,7 +314,9 @@ class CE_ItemSpawningSystem : GameSystem
 	protected void DelayedItemSelection(CE_Spawner spawner, array<ref CE_Item> items)
 	{
 		CE_Item item = SelectItem(items, spawner);
-					
+		
+		//Print("MEOW Item: " + item.GetItemDataName());
+		
 		if (item)
 			GetGame().GetCallqueue().CallLater(TryToSpawnItem, (m_fItemSpawningFrequency * 1000) * 0.25, false, spawner, item); // so if spawning frequency is set to 30 seconds, we multiply it by 1000 (to get 30000ms), then multiply by 0.25 to get a total 7500ms (7.5 seconds)
 		else
@@ -763,10 +768,21 @@ class CE_ItemSpawningSystem : GameSystem
 				return false;
 			
 			string itemDataName = item.GetItemDataName();
+			
 			if (SCR_StringHelper.IsEmptyOrWhiteSpace(itemDataName))
 				return false;
 			
-			CE_ItemData itemData = FindItemDataByName(itemDataName);
+			CE_ItemData itemData;
+			
+			if (spawnerComponent.HasConfig())
+			{
+				itemData = FindItemDataByNameFromSpawnerConfig(itemDataName, spawnerComponent.GetConfig());
+			}
+			else
+				itemData = FindItemDataByNameFromUniversalConfig(itemDataName);
+			
+			//Print("MEOW TryToSpawnItem itemData: " + itemData);
+			
 			if (!itemData)
 				return false;
 		
@@ -785,6 +801,9 @@ class CE_ItemSpawningSystem : GameSystem
 				return false;
 			
 			IEntity newEnt = GetGame().SpawnEntityPrefab(m_Resource, spawnEntity.GetWorld(), params);
+			
+			//Print("MEOW TryToSpawnItem newEnt: " + newEnt);
+			
 			if (!newEnt)
 				return false;
 			
@@ -859,7 +878,15 @@ class CE_ItemSpawningSystem : GameSystem
 			if (SCR_StringHelper.IsEmptyOrWhiteSpace(itemDataName))
 				return;
 			
-			CE_ItemData itemData = FindItemDataByName(itemDataName);
+			CE_ItemData itemData;
+			
+			if (containerComp.HasConfig())
+			{
+				itemData = FindItemDataByNameFromSpawnerConfig(itemDataName, containerComp.GetConfig());
+			}
+			else
+				itemData = FindItemDataByNameFromUniversalConfig(itemDataName);
+			
 			if (!itemData)
 				return;
 			
@@ -1187,7 +1214,7 @@ class CE_ItemSpawningSystem : GameSystem
 	
 	//------------------------------------------------------------------------------------------------
 	//! Finds corresponding CE_ItemData by it's name, returns null if not found
-	CE_ItemData FindItemDataByName(string itemDataName)
+	CE_ItemData FindItemDataByNameFromUniversalConfig(string itemDataName)
 	{
 		if (!m_Config)
 			return null;
@@ -1196,6 +1223,29 @@ class CE_ItemSpawningSystem : GameSystem
 			return null;
 		
 		array<ref CE_ItemData> itemDatas = m_Config.GetItemDataArray();
+		
+		if (!itemDatas || itemDatas && itemDatas.IsEmpty())
+			return null;
+		
+		foreach (CE_ItemData itemData : itemDatas)
+		{
+			if (itemData.GetName() && itemData.GetName() == itemDataName)
+				return itemData;
+		}
+		return null;
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Finds corresponding CE_ItemData by it's name, returns null if not found
+	CE_ItemData FindItemDataByNameFromSpawnerConfig(string itemDataName, CE_ItemDataConfig config)
+	{
+		if (!config)
+			return null;
+		
+		if (SCR_StringHelper.IsEmptyOrWhiteSpace(itemDataName))
+			return null;
+		
+		array<ref CE_ItemData> itemDatas = config.GetItemDataArray();
 		
 		if (!itemDatas || itemDatas && itemDatas.IsEmpty())
 			return null;

@@ -59,7 +59,7 @@ class CE_ItemSpawnableComponent : ScriptComponent
 				m_OnItemLifetimeEndedInvoker.Invoke(this, m_Item);
 			}
 			
-			//Print("Lifetime: " + GetCurrentLifetime());
+			//Print("MEOW Lifetime: " + GetCurrentLifetime());
 		}
 		
 		if (GetTotalRestockTime() && GetTotalRestockTime() != 0 && WasItemTaken())
@@ -72,7 +72,7 @@ class CE_ItemSpawnableComponent : ScriptComponent
 				m_OnItemRestockEndedInvoker.Invoke(this, m_Item);
 			}
 			
-			//Print("Restock: " + GetCurrentRestockTime());
+			//Print("MEOW Restock: " + GetCurrentRestockTime());
 		}
 	}
 	
@@ -129,7 +129,7 @@ class CE_ItemSpawnableComponent : ScriptComponent
 		//ConnectToItemSpawningSystem();
 		
 		m_sItemUUID = item.GetItemUUID();
-		m_Item = GetSpawnedItemFromSystem();
+		m_Item = item/*GetSpawnedItemFromSystem()*/;
 		m_sSpawnerUUID = spawner.GetSpawnerUUID();
 		
 		World world = GetOwner().GetWorld();
@@ -142,7 +142,21 @@ class CE_ItemSpawnableComponent : ScriptComponent
 			}
 		}
 		
-		CE_ItemData itemData = item.GetItemData();
+		IEntity spawnerEntity = spawner.GetSpawnerEntity();
+		if (!spawnerEntity)
+			return;
+		
+		CE_ItemSpawningComponent spawningComponent = CE_ItemSpawningComponent.Cast(spawnerEntity.FindComponent(CE_ItemSpawningComponent));
+		if (!spawningComponent)
+			return;
+		
+		CE_ItemData itemData;
+		
+		if (spawningComponent.HasConfig())
+			itemData = item.GetItemDataFromSpawnerConfig(spawningComponent);
+		else
+			itemData = item.GetItemData();
+		
 		if (itemData)
 		{
 			m_iTotalRestockTime = itemData.GetRestock();

@@ -108,7 +108,7 @@ class CE_Item
 	}
 	
 	//------------------------------------------------------------------------------------------------
-	//! Returns the CE_Item corresponding to this CE_Spawner, returns null if no item
+	//! Returns the CE_ItemData corresponding to this CE_Item, returns null if no item data found
 	CE_ItemData GetItemData()
 	{
 		if (SCR_StringHelper.IsEmptyOrWhiteSpace(m_sItemDataName))
@@ -118,6 +118,23 @@ class CE_Item
 		if (!spawningSystem)
 			return null;
 		
-		return spawningSystem.FindItemDataByName(m_sItemDataName);
+		return spawningSystem.FindItemDataByNameFromUniversalConfig(m_sItemDataName);
+	}
+	
+	//------------------------------------------------------------------------------------------------
+	//! Returns the CE_ItemData corresponding to this CE_Item, returns null if no item data found
+	CE_ItemData GetItemDataFromSpawnerConfig(CE_ItemSpawningComponent spawner)
+	{
+		if (!spawner)
+			return null;
+		
+		if (SCR_StringHelper.IsEmptyOrWhiteSpace(m_sItemDataName))
+			return null;
+		
+		CE_ItemSpawningSystem spawningSystem = CE_ItemSpawningSystem.GetInstance();
+		if (!spawningSystem)
+			return null;
+		
+		return spawningSystem.FindItemDataByNameFromSpawnerConfig(m_sItemDataName, spawner.GetConfig());
 	}
 }
